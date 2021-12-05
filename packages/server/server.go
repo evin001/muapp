@@ -9,11 +9,16 @@ import (
 	"muapp.ru/graph"
 	"muapp.ru/graph/generated"
 	"muapp.ru/internal/pkg"
+	"muapp.ru/internal/pkg/directives"
 )
 
 func main() {
 	port := pkg.GetEnv("SERVER_PORT")
-	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
+
+	cfg := generated.Config{Resolvers: &graph.Resolver{}}
+	cfg.Directives.Binding = directives.Binding
+
+	srv := handler.NewDefaultServer(generated.NewExecutableSchema(cfg))
 
 	http.Handle("/", playground.Handler("GraphQL playground", "/graphql"))
 	http.Handle("/graphql", srv)

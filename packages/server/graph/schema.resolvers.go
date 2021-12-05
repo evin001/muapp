@@ -5,19 +5,23 @@ package graph
 
 import (
 	"context"
-	"fmt"
 
+	"github.com/vektah/gqlparser/v2/gqlerror"
 	"muapp.ru/graph/generated"
-	"muapp.ru/internal/pkg"
+	"muapp.ru/internal/pkg/call"
 )
 
-func (r *mutationResolver) CallPassword(ctx context.Context, phone string) (*bool, error) {
-	res, err := pkg.MakeCall(phone, pkg.GenerateCode())
+func (r *mutationResolver) CallPassword(ctx context.Context, number string) (*bool, error) {
+	res, err := call.MakeCall(number, call.GenerateCode())
 	if err != nil {
-		return nil, err
+		return nil, gqlerror.Errorf(err.Error())
 	}
-	fmt.Printf("%+v", res)
-	return nil, nil
+
+	response := true
+	if res.Result == "error" {
+		response = false
+	}
+	return &response, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.

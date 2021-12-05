@@ -2,6 +2,10 @@
 #
 # https://gqlgen.com/getting-started/
 
+directive @binding(constraint: String!) on INPUT_FIELD_DEFINITION | ARGUMENT_DEFINITION
+
 type Mutation {
-  callPassword(phone: String!): Boolean
+  callPassword(
+    number: String! @binding(constraint: "required,e164")
+  ): Boolean
 }

@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"fmt"
 	"strconv"
 	"sync"
 
@@ -37,11 +38,12 @@ type ResolverRoot interface {
 }
 
 type DirectiveRoot struct {
+	Binding func(ctx context.Context, obj interface{}, next graphql.Resolver, constraint string) (res interface{}, err error)
 }
 
 type ComplexityRoot struct {
 	Mutation struct {
-		CallPassword func(childComplexity int, phone string) int
+		CallPassword func(childComplexity int, number string) int
 	}
 
 	Query struct {
@@ -49,7 +51,7 @@ type ComplexityRoot struct {
 }
 
 type MutationResolver interface {
-	CallPassword(ctx context.Context, phone string) (*bool, error)
+	CallPassword(ctx context.Context, number string) (*bool, error)
 }
 
 type executableSchema struct {
@@ -77,7 +79,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CallPassword(childComplexity, args["phone"].(string)), true
+		return e.complexity.Mutation.CallPassword(childComplexity, args["number"].(string)), true
 
 	}
 	return 0, false
@@ -147,8 +149,12 @@ var sources = []*ast.Source{
 #
 # https://gqlgen.com/getting-started/
 
+directive @binding(constraint: String!) on INPUT_FIELD_DEFINITION | ARGUMENT_DEFINITION
+
 type Mutation {
-  callPassword(phone: String!): Boolean
+  callPassword(
+    number: String! @binding(constraint: "required,e164")
+  ): Boolean
 }
 `, BuiltIn: false},
 }
@@ -158,18 +164,50 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
 // region    ***************************** args.gotpl *****************************
 
-func (ec *executionContext) field_Mutation_callPassword_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) dir_binding_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["phone"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("phone"))
+	if tmp, ok := rawArgs["constraint"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("constraint"))
 		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["phone"] = arg0
+	args["constraint"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_callPassword_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["number"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("number"))
+		directive0 := func(ctx context.Context) (interface{}, error) { return ec.unmarshalNString2string(ctx, tmp) }
+		directive1 := func(ctx context.Context) (interface{}, error) {
+			constraint, err := ec.unmarshalNString2string(ctx, "required,e164")
+			if err != nil {
+				return nil, err
+			}
+			if ec.directives.Binding == nil {
+				return nil, errors.New("directive binding is not implemented")
+			}
+			return ec.directives.Binding(ctx, rawArgs, directive0, constraint)
+		}
+
+		tmp, err = directive1(ctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if data, ok := tmp.(string); ok {
+			arg0 = data
+		} else {
+			return nil, graphql.ErrorOnPath(ctx, fmt.Errorf(`unexpected type %T from directive, should be string`, tmp))
+		}
+	}
+	args["number"] = arg0
 	return args, nil
 }
 
@@ -251,7 +289,7 @@ func (ec *executionContext) _Mutation_callPassword(ctx context.Context, field gr
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CallPassword(rctx, args["phone"].(string))
+		return ec.resolvers.Mutation().CallPassword(rctx, args["number"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)

@@ -1,4 +1,4 @@
-package pkg
+package call
 
 import (
 	"bytes"
@@ -9,6 +9,8 @@ import (
 	"net/http"
 	"strconv"
 	"time"
+
+	"muapp.ru/internal/pkg"
 )
 
 type CallRequest struct {
@@ -28,10 +30,12 @@ type CallResponse struct {
 	Code   string `json:"code"`
 }
 
+type Call struct{}
+
 const CALL_API_URL = "https://voice.mobilgroup.ru/api/voice-password/send/"
 
-func MakeCall(phone string, code string) (*CallResponse, error) {
-	call := &CallRequest{Number: phone, FlashCall: FlashCall{Code: code}}
+func MakeCall(number string, code string) (*CallResponse, error) {
+	call := &CallRequest{Number: number, FlashCall: FlashCall{Code: code}}
 	query, err := json.Marshal(&call)
 	if err != nil {
 		return nil, fmt.Errorf("%s", err)
@@ -39,7 +43,7 @@ func MakeCall(phone string, code string) (*CallResponse, error) {
 
 	req, err := http.NewRequest("POST", CALL_API_URL, bytes.NewBuffer(query))
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", GetEnv("CALL_API_KEY"))
+	req.Header.Set("Authorization", pkg.GetEnv("CALL_API_KEY"))
 
 	client := &http.Client{}
 	res, err := client.Do(req)
@@ -49,7 +53,6 @@ func MakeCall(phone string, code string) (*CallResponse, error) {
 	defer res.Body.Close()
 
 	body, _ := ioutil.ReadAll(res.Body)
-	fmt.Println(string(body))
 	if res.StatusCode == 200 {
 		var res CallResponse
 		err := json.Unmarshal(body, &res)
