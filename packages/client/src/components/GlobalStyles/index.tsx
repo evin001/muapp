@@ -2,8 +2,8 @@ import React from 'react'
 
 import { css, Global } from '@emotion/react'
 
-import BaseFont from '../../assets/fonts/OfficinaSansBookC-regular.ttf'
-import LogoFont from '../../assets/fonts/Moonbright-regular.ttf'
+import BaseFont from '~/assets/fonts/OfficinaSansBookC-regular.ttf'
+import LogoFont from '~/assets/fonts/Moonbright-regular.ttf'
 
 const FontFace = (url: string, style: string, weight: number, family: string) =>
   css(`

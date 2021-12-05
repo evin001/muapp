@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Block } from '@stage-ui/core'
 
-import Bg from '../../assets/images/auth-bg.svg'
+import Bg from '~/assets/images/auth-bg.svg'
 
 const background = () => (
   <Block
