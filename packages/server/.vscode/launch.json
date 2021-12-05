@@ -1,0 +1,18 @@
+{
+  "configurations": [    
+    {
+      "name": "Server",
+      "type": "go",
+      "request": "launch",
+      "mode": "debug",
+      "program": "server.go"
+    },
+    {
+      "name": "Generate GQL",
+      "type": "go",
+      "request": "launch",
+      "mode": "debug",
+      "program": "${workspaceFolder}/scripts/generate.go"
+    }
+  ]
+}

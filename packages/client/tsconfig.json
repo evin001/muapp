@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "jsxImportSource": "@emotion/react",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "module": "commonjs",
+    "target": "ES2019",
+    "jsx": "react-jsx",
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "checkJs": false,
+    "noEmit": true,
+    "strict": true,
+    "resolveJsonModule": true,    
+    "experimentalDecorators": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["src/*"]
+    }
+  },
+  "include":[ 
+    "./src/**/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
