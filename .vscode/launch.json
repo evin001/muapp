@@ -1,6 +1,5 @@
 {
-  "configurations": [        
-
+  "configurations": [
     {
       "name": "Client (8080)",
       "type": "node",
@@ -22,6 +21,12 @@
       "request": "launch",
       "mode": "debug",
       "program": "${workspaceFolder}/packages/server/cmd/generate.go"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Start All",
+      "configurations": ["Client (8080)", "Server"]
     }
   ]
 }
