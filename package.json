@@ -1,0 +1,8 @@
+{
+  "name": "muapp",
+  "version": "0.0.0",
+  "scripts": {
+    "client:dev": "cd packages/client && npm run dev",
+    "server:dev": "cd packages/server && go run server.go"
+  }
+}

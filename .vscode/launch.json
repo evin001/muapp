@@ -4,9 +4,9 @@
       "name": "Client (8080)",
       "type": "node",
       "request": "launch",
-      "cwd": "${workspaceRoot}/packages/client",
+      "cwd": "${workspaceRoot}",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run-script", "dev"]
+      "runtimeArgs": ["run-script", "client:dev"]
     },
     {
       "name": "Server",
