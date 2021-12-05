@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
-
+import { useNavigate } from 'react-router-dom'
 import { Flexbox, Grid, TextField, Button, Text } from '@stage-ui/core'
 
 import CompanyLogo from '~/components/CompanyLogo'
 
 const Login = () => {
+  const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
@@ -65,6 +66,7 @@ const Login = () => {
           label="Регистрация"
           css={{ fontWeight: 600 }}
           textColor={(c) => c.palette.orange}
+          onClick={() => navigate('/register')}
         />
       </Grid>
     </Flexbox>

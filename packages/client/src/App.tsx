@@ -1,5 +1,5 @@
 import React from 'react'
-
+import { BrowserRouter } from 'react-router-dom'
 import { Viewport, Block } from '@stage-ui/core'
 
 import Auth from './pages/Auth'
@@ -9,7 +9,7 @@ import theme from './theme'
 
 const App = () => {
   return (
-    <>
+    <BrowserRouter>
       <GlobalStyles />
       <Viewport theme={theme}>
         <Background />
@@ -23,7 +23,7 @@ const App = () => {
           <Auth />
         </Block>
       </Viewport>
-    </>
+    </BrowserRouter>
   )
 }
 
