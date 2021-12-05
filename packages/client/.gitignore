@@ -9,12 +9,4 @@ yarn.lock
 
 #/.pnp.*
 
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-
-/.idea
-
 /node_modules
