@@ -12,7 +12,7 @@
       "type": "go",
       "request": "launch",
       "mode": "debug",
-      "program": "${workspaceFolder}/scripts/generate.go"
+      "program": "${workspaceFolder}/cmd/generate.go"
     }
   ]
 }

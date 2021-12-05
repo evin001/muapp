@@ -21,7 +21,7 @@
       "type": "go",
       "request": "launch",
       "mode": "debug",
-      "program": "${workspaceFolder}/packages/server/scripts/generate.go"
+      "program": "${workspaceFolder}/packages/server/cmd/generate.go"
     }
   ]
 }
