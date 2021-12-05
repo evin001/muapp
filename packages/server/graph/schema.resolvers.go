@@ -8,10 +8,16 @@ import (
 	"fmt"
 
 	"muapp.ru/graph/generated"
+	"muapp.ru/internal/pkg"
 )
 
 func (r *mutationResolver) CallPassword(ctx context.Context, phone string) (*bool, error) {
-	panic(fmt.Errorf("not implemented"))
+	res, err := pkg.MakeCall(phone, pkg.GenerateCode())
+	if err != nil {
+		return nil, err
+	}
+	fmt.Printf("%+v", res)
+	return nil, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.
