@@ -43,7 +43,7 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	Mutation struct {
-		CallPassword func(childComplexity int, number string) int
+		CallPassword func(childComplexity int, phoneNumber string) int
 	}
 
 	Query struct {
@@ -51,7 +51,7 @@ type ComplexityRoot struct {
 }
 
 type MutationResolver interface {
-	CallPassword(ctx context.Context, number string) (*bool, error)
+	CallPassword(ctx context.Context, phoneNumber string) (*bool, error)
 }
 
 type executableSchema struct {
@@ -79,7 +79,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CallPassword(childComplexity, args["number"].(string)), true
+		return e.complexity.Mutation.CallPassword(childComplexity, args["phoneNumber"].(string)), true
 
 	}
 	return 0, false
@@ -153,7 +153,7 @@ directive @binding(constraint: String!) on INPUT_FIELD_DEFINITION | ARGUMENT_DEF
 
 type Mutation {
   callPassword(
-    number: String! @binding(constraint: "required,e164")
+    phoneNumber: String! @binding(constraint: "required,e164")
   ): Boolean
 }
 `, BuiltIn: false},
@@ -183,8 +183,8 @@ func (ec *executionContext) field_Mutation_callPassword_args(ctx context.Context
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["number"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("number"))
+	if tmp, ok := rawArgs["phoneNumber"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("phoneNumber"))
 		directive0 := func(ctx context.Context) (interface{}, error) { return ec.unmarshalNString2string(ctx, tmp) }
 		directive1 := func(ctx context.Context) (interface{}, error) {
 			constraint, err := ec.unmarshalNString2string(ctx, "required,e164")
@@ -207,7 +207,7 @@ func (ec *executionContext) field_Mutation_callPassword_args(ctx context.Context
 			return nil, graphql.ErrorOnPath(ctx, fmt.Errorf(`unexpected type %T from directive, should be string`, tmp))
 		}
 	}
-	args["number"] = arg0
+	args["phoneNumber"] = arg0
 	return args, nil
 }
 
@@ -289,7 +289,7 @@ func (ec *executionContext) _Mutation_callPassword(ctx context.Context, field gr
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CallPassword(rctx, args["number"].(string))
+		return ec.resolvers.Mutation().CallPassword(rctx, args["phoneNumber"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)

@@ -11,8 +11,8 @@ import (
 	"muapp.ru/internal/pkg/utils/call"
 )
 
-func (r *mutationResolver) CallPassword(ctx context.Context, number string) (*bool, error) {
-	res, err := call.MakeCall(number, call.GenerateCode())
+func (r *mutationResolver) CallPassword(ctx context.Context, phoneNumber string) (*bool, error) {
+	res, err := call.MakeCall(phoneNumber, call.GenerateCode())
 	if err != nil {
 		return nil, gqlerror.Errorf(err.Error())
 	}

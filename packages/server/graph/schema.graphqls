@@ -6,6 +6,6 @@ directive @binding(constraint: String!) on INPUT_FIELD_DEFINITION | ARGUMENT_DEF
 
 type Mutation {
   callPassword(
-    number: String! @binding(constraint: "required,e164")
+    phoneNumber: String! @binding(constraint: "required,e164")
   ): Boolean
 }
