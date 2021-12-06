@@ -11,12 +11,16 @@ const Register = () => {
   const [emailError, setEmailError] = useState('')
   const [phoneNumber, setPhoneNumber] = useState('')
   const [phoneNumberError, setPhoneNumberError] = useState('')
+  const [password, setPassword] = useState('')
+  const [passwordError, setPasswordError] = useState('')
 
   const handleChangeTextField = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.name === 'email') {
       setEmail(e.target.value)
     } else if (e.target.name === 'phone') {
       setPhoneNumber(e.target.value)
+    } else if (e.target.name === 'password') {
+      setPassword(e.target.value)
     }
   }
 
@@ -74,6 +78,17 @@ const Register = () => {
             outline: 'none',
             transition: 'border 0.125s',
           }}
+        />
+        <TextField
+          value={password}
+          name="password"
+          onChange={handleChangeTextField}
+          placeholder="Пароль"
+          decoration="underline"
+          color="surface"
+          type="password"
+          css={{ borderBottomColor: 'white' }}
+          autoComplete="off"
         />
         <Button
           w="100%"

@@ -8,12 +8,12 @@ import (
 	"github.com/99designs/gqlgen/graphql/playground"
 	"muapp.ru/graph"
 	"muapp.ru/graph/generated"
-	"muapp.ru/internal/pkg"
 	"muapp.ru/internal/pkg/directives"
+	"muapp.ru/internal/pkg/utils"
 )
 
 func main() {
-	port := pkg.GetEnv("SERVER_PORT")
+	port := utils.GetEnv("SERVER_PORT")
 
 	cfg := generated.Config{Resolvers: &graph.Resolver{}}
 	cfg.Directives.Binding = directives.Binding

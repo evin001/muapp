@@ -8,7 +8,7 @@ import (
 
 	"github.com/vektah/gqlparser/v2/gqlerror"
 	"muapp.ru/graph/generated"
-	"muapp.ru/internal/pkg/call"
+	"muapp.ru/internal/pkg/utils/call"
 )
 
 func (r *mutationResolver) CallPassword(ctx context.Context, number string) (*bool, error) {

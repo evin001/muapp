@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"time"
 
-	"muapp.ru/internal/pkg"
+	"muapp.ru/internal/pkg/utils"
 )
 
 type CallRequest struct {
@@ -43,7 +43,7 @@ func MakeCall(number string, code string) (*CallResponse, error) {
 
 	req, err := http.NewRequest("POST", CALL_API_URL, bytes.NewBuffer(query))
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", pkg.GetEnv("CALL_API_KEY"))
+	req.Header.Set("Authorization", utils.GetEnv("CALL_API_KEY"))
 
 	client := &http.Client{}
 	res, err := client.Do(req)
