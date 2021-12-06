@@ -6,16 +6,17 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
-	"muapp.ru/graph"
+
 	"muapp.ru/graph/generated"
-	"muapp.ru/internal/pkg/directives"
-	"muapp.ru/internal/pkg/utils"
+	"muapp.ru/graph/resolvers"
+	"muapp.ru/internal/directives"
+	"muapp.ru/internal/utils"
 )
 
 func main() {
 	port := utils.GetEnv("SERVER_PORT")
 
-	cfg := generated.Config{Resolvers: &graph.Resolver{}}
+	cfg := generated.Config{Resolvers: &resolvers.Resolver{}}
 	cfg.Directives.Binding = directives.Binding
 
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(cfg))

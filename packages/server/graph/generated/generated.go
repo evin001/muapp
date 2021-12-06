@@ -51,7 +51,7 @@ type ComplexityRoot struct {
 }
 
 type MutationResolver interface {
-	CallPassword(ctx context.Context, phoneNumber string) (*bool, error)
+	CallPassword(ctx context.Context, phoneNumber string) (bool, error)
 }
 
 type executableSchema struct {
@@ -152,9 +152,7 @@ var sources = []*ast.Source{
 directive @binding(constraint: String!) on INPUT_FIELD_DEFINITION | ARGUMENT_DEFINITION
 
 type Mutation {
-  callPassword(
-    phoneNumber: String! @binding(constraint: "required,e164")
-  ): Boolean
+  callPassword(phoneNumber: String! @binding(constraint: "required,e164")): Boolean!
 }
 `, BuiltIn: false},
 }
@@ -296,11 +294,14 @@ func (ec *executionContext) _Mutation_callPassword(ctx context.Context, field gr
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(bool)
 	fc.Result = res
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -1521,6 +1522,9 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			out.Values[i] = graphql.MarshalString("Mutation")
 		case "callPassword":
 			out.Values[i] = ec._Mutation_callPassword(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}

@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"time"
 
-	"muapp.ru/internal/pkg/utils"
+	"muapp.ru/internal/utils"
 )
 
 type CallRequest struct {
