@@ -12,10 +12,10 @@ var db = utils.DB
 
 type CallService struct{}
 
-func (s CallService) CreateLog(phoneNumber string, code string) (bool, error) {
+func (s CallService) CreateLog(phoneNumber string, code string, response string) error {
 	deleySec, err := strconv.Atoi(utils.GetEnv("CALL_DELAY_SEC"))
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	cteatedAt := time.Now().Local()
@@ -23,35 +23,28 @@ func (s CallService) CreateLog(phoneNumber string, code string) (bool, error) {
 
 	query := "INSERT INTO call_log (phone_number, code, created_at, active_before, response) VALUES ($1, $2, $3, $4, $5)"
 	_, err = db.Exec(context.Background(), query,
-		phoneNumber, code, cteatedAt.Format(time.RFC3339), activeBefore.Format(time.RFC3339), "{}")
+		phoneNumber, code, cteatedAt.Format(time.RFC3339), activeBefore.Format(time.RFC3339), response)
 	if err != nil {
-		return false, err
+		return err
 	}
 
-	return true, nil
+	return nil
 }
 
-func (s CallService) CheckAvailability(phoneNumber string) (*CallModel, error) {
-	model := new(CallModel)
+func (s CallService) CheckAvailability(phoneNumber string) (*time.Time, error) {
+	var beforeTime time.Time
 
 	query := `
-		SELECT id, phone_number, code, created_at, active_before, response
+		SELECT active_before
 		FROM call_log WHERE phone_number = $1
 		ORDER BY created_at DESC
 	`
-	err := db.QueryRow(context.Background(), query, phoneNumber).Scan(
-		&model.ID,
-		&model.PhoneNumber,
-		&model.Code,
-		&model.CreatedAt,
-		&model.ActiveBefore,
-		&model.Response,
-	)
+	err := db.QueryRow(context.Background(), query, phoneNumber).Scan(&beforeTime)
 	if err != nil {
 		return nil, err
 	}
-	if model.ActiveBefore.After(time.Now()) {
-		return model, nil
+	if beforeTime.After(time.Now()) {
+		return &beforeTime, nil
 	}
 
 	return nil, nil

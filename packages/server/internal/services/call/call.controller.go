@@ -1,6 +1,10 @@
 package call
 
 import (
+	"encoding/json"
+	"fmt"
+	"time"
+
 	"muapp.ru/graph/models"
 	"muapp.ru/internal/utils/call"
 )
@@ -11,29 +15,36 @@ func (c CallController) CallPassword(phoneNumber string) (*models.Call, error) {
 	code := call.GenerateCode()
 	srv := new(CallService)
 
-	model, err := srv.CheckAvailability(phoneNumber)
+	beforeTime, err := srv.CheckAvailability(phoneNumber)
 	if err != nil {
 		return nil, err
 	}
 
-	if model != nil {
+	if beforeTime != nil {
 		return &models.Call{
 			Success: false,
 			Type:    models.CallTypeRepeat.String(),
-			Time:    0, // TODO Calc
+			Time:    int(beforeTime.Sub(time.Now()).Seconds()),
 		}, nil
 	}
 
-	_, err = srv.CreateLog(phoneNumber, code)
+	res, err := call.MakeCall(phoneNumber, code)
+	if err != nil {
+		return nil, err
+	}
+	if res.Result == "error" {
+		return nil, fmt.Errorf("Can't make call")
+	}
 
-	// res, err := call.MakeCall(phoneNumber, code)
+	response, err := json.Marshal(&res)
 	if err != nil {
 		return nil, err
 	}
 
-	// if res.Result == "error" {
-	// 	return nil, nil
-	// }
+	err = srv.CreateLog(phoneNumber, code, string(response))
+	if err != nil {
+		return nil, err
+	}
 
 	return &models.Call{
 		Success: true,
