@@ -8,14 +8,15 @@ import (
 
 	"github.com/vektah/gqlparser/v2/gqlerror"
 	"muapp.ru/graph/generated"
-	"muapp.ru/internal/controllers"
+	"muapp.ru/graph/models"
+	"muapp.ru/internal/services/call"
 )
 
-func (r *mutationResolver) CallPassword(ctx context.Context, phoneNumber string) (bool, error) {
-	ctrl := new(controllers.CallController)
+func (r *mutationResolver) CallPassword(ctx context.Context, phoneNumber string) (*models.Call, error) {
+	ctrl := new(call.CallController)
 	res, err := ctrl.CallPassword(phoneNumber)
 	if err != nil {
-		return false, gqlerror.Errorf(err.Error())
+		return nil, gqlerror.Errorf(err.Error())
 	}
 	return res, nil
 }

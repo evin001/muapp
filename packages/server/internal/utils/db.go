@@ -13,8 +13,8 @@ var DB *pgxpool.Pool
 const MAX_CONNS = 5
 
 func init() {
-	conn := fmt.Sprintf("user=%s password=%s port=%s dbname=%s sslmode=disable",
-		GetEnv("DB_USER"), GetEnv("DB_PASSWORD"), GetEnv("DB_PORT"), GetEnv("DB_NAME"))
+	conn := fmt.Sprintf("user=%s password=%s port=%s host=%s dbname=%s sslmode=disable",
+		GetEnv("DB_USER"), GetEnv("DB_PASSWORD"), GetEnv("DB_PORT"), GetEnv("DB_HOST"), GetEnv("DB_NAME"))
 	config, err := pgxpool.ParseConfig(conn)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "Can't parse config:", err)

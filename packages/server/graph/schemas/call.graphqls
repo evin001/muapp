@@ -1,0 +1,10 @@
+type Call {
+  time: Int!
+  success: Boolean!
+  type: String!
+}
+
+enum CallType {
+  New
+  Repeat
+}
