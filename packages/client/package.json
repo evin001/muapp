@@ -3,11 +3,14 @@
   "packageManager": "yarn@3.1.1",
   "scripts": {
     "dev": "webpack-dev-server --config config/webpack.config.js --mode development",
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "gqlgen": "graphql-codegen --config codegen.yml"
   },
   "dependencies": {
     "@stage-ui/core": "*",
     "@stage-ui/icons": "*",
+    "graphql": "16.1.0",
+    "graphql-request": "^3.7.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-phone-input-2": "2.14.0",
@@ -27,6 +30,10 @@
     "@babel/preset-typescript": "7.7.4",
     "@babel/register": "7.16.0",
     "@emotion/babel-preset-css-prop": "11.2.0",
+    "@graphql-codegen/cli": "2.3.0",
+    "@graphql-codegen/typescript": "2.4.1",
+    "@graphql-codegen/typescript-operations": "2.2.1",
+    "@graphql-codegen/typescript-react-apollo": "3.2.2",
     "@types/react": "17.0.37",
     "@types/react-dom": "17.0.11",
     "@types/react-router": "5.1.17",
