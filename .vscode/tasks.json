@@ -1,0 +1,13 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "gqlgen",
+			"path": "packages/client/",
+			"problemMatcher": [],
+			"label": "gqlgen",
+			"detail": "graphql-codegen --config codegen.yml"					
+		}
+	]
+}
