@@ -30,7 +30,11 @@ func (c UserController) Create(email, phone, password string, role models.Role) 
 		return nil, err
 	}
 
-	// TODO Auth token
+	token, err := utils.GenToken(user)
+	if err != nil {
+		return nil, err
+	}
+	user.AuthToken = token
 
 	return user, nil
 }

@@ -5,6 +5,7 @@ go 1.17
 require (
 	github.com/99designs/gqlgen v0.14.0
 	github.com/go-playground/validator/v10 v10.9.0
+	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/jackc/pgx/v4 v4.14.1
 	github.com/spf13/viper v1.9.0
 	github.com/vektah/gqlparser/v2 v2.2.0
