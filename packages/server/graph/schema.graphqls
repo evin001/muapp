@@ -6,4 +6,11 @@ directive @binding(constraint: String!) on INPUT_FIELD_DEFINITION | ARGUMENT_DEF
 
 type Mutation {
   callPassword(phone: String! @binding(constraint: "required,e164")): Call!
+
+  "User mutations"
+  userSignUp(
+    email: String!, @binding(constraint: "required,email")
+    phone: String!, @binding(constraint: "required,e164")
+    password: String!, @binding(constraint: "required,gte=6")
+  ): User!
 }
