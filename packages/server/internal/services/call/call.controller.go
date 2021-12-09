@@ -11,11 +11,11 @@ import (
 
 type CallController struct{}
 
-func (c CallController) CallPassword(phoneNumber string) (*models.Call, error) {
+func (c CallController) CallPassword(phone string) (*models.Call, error) {
 	code := call.GenerateCode()
 	srv := new(CallService)
 
-	beforeTime, err := srv.CheckAvailability(phoneNumber)
+	beforeTime, err := srv.CheckAvailability(phone)
 	if err != nil {
 		return nil, err
 	}
@@ -28,7 +28,7 @@ func (c CallController) CallPassword(phoneNumber string) (*models.Call, error) {
 		}, nil
 	}
 
-	res, err := call.MakeCall(phoneNumber, code)
+	res, err := call.MakeCall(phone, code)
 	if err != nil {
 		return nil, err
 	}
@@ -41,7 +41,7 @@ func (c CallController) CallPassword(phoneNumber string) (*models.Call, error) {
 		return nil, err
 	}
 
-	err = srv.CreateLog(phoneNumber, code, string(response))
+	err = srv.CreateLog(phone, code, string(response))
 	if err != nil {
 		return nil, err
 	}

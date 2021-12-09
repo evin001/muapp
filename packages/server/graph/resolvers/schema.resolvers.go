@@ -6,10 +6,8 @@ package resolvers
 import (
 	"context"
 
-	"github.com/vektah/gqlparser/v2/gqlerror"
 	"muapp.ru/graph/generated"
 	"muapp.ru/graph/models"
-	"muapp.ru/internal/services/call"
 )
 
 func (r *mutationResolver) CallPassword(ctx context.Context, phone string) (*models.Call, error) {

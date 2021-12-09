@@ -5,5 +5,5 @@
 directive @binding(constraint: String!) on INPUT_FIELD_DEFINITION | ARGUMENT_DEFINITION
 
 type Mutation {
-  callPassword(phoneNumber: String! @binding(constraint: "required,e164")): Call!
+  callPassword(phone: String! @binding(constraint: "required,e164")): Call!
 }

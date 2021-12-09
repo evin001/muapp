@@ -31,5 +31,5 @@ export type Mutation = {
 
 
 export type MutationCallPasswordArgs = {
-  phoneNumber: Scalars['String'];
+  phone: Scalars['String'];
 };

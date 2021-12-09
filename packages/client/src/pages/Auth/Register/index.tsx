@@ -9,8 +9,8 @@ const Register = () => {
   const { color, assets, radius } = useTheme()
   const [email, setEmail] = useState('')
   const [emailError, setEmailError] = useState('')
-  const [phoneNumber, setPhoneNumber] = useState('')
-  const [phoneNumberError, setPhoneNumberError] = useState('')
+  const [phone, setPhone] = useState('')
+  const [phoneError, setPhoneError] = useState('')
   const [password, setPassword] = useState('')
   const [passwordError, setPasswordError] = useState('')
 
@@ -18,13 +18,13 @@ const Register = () => {
     if (e.target.name === 'email') {
       setEmail(e.target.value)
     } else if (e.target.name === 'phone') {
-      setPhoneNumber(e.target.value)
+      setPhone(e.target.value)
     } else if (e.target.name === 'password') {
       setPassword(e.target.value)
     }
   }
 
-  const handleChangePhoneNumber = () => {}
+  const handleChangePhone = () => {}
 
   return (
     <Flexbox column h="100%" justifyContent="center">
@@ -57,9 +57,9 @@ const Register = () => {
         />
         <PhoneInput
           country="ru"
-          value={phoneNumber}
+          value={phone}
           placeholder="+7 (999) 999-99-99"
-          onChange={handleChangePhoneNumber}
+          onChange={handleChangePhone}
           specialLabel=""
           inputStyle={{
             background: 'transparent',

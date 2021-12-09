@@ -14,8 +14,8 @@ import (
 )
 
 type CallRequest struct {
-	PhoneNumber string `json:"number"`
-	FlashCall   `json:"flashcall"`
+	Phone     string `json:"number"`
+	FlashCall `json:"flashcall"`
 }
 
 type FlashCall struct {
@@ -34,8 +34,8 @@ type Call struct{}
 
 const CALL_API_URL = "https://voice.mobilgroup.ru/api/voice-password/send/"
 
-func MakeCall(phoneNumber string, code string) (*CallResponse, error) {
-	call := &CallRequest{PhoneNumber: phoneNumber, FlashCall: FlashCall{Code: code}}
+func MakeCall(phone string, code string) (*CallResponse, error) {
+	call := &CallRequest{Phone: phone, FlashCall: FlashCall{Code: code}}
 	query, err := json.Marshal(&call)
 	if err != nil {
 		return nil, fmt.Errorf("%s", err)

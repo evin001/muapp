@@ -4,7 +4,7 @@ import "time"
 
 type CallModel struct {
 	ID           int
-	PhoneNumber  string
+	Phone        string
 	Code         string
 	CreatedAt    time.Time
 	ActiveBefore time.Time
