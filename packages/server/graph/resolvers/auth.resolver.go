@@ -5,12 +5,12 @@ package resolvers
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/vektah/gqlparser/v2/gqlerror"
 	"muapp.ru/graph/generated"
 	"muapp.ru/graph/models"
 	"muapp.ru/internal/services/call"
+	"muapp.ru/internal/services/user"
 )
 
 func (r *mutationResolver) CallPassword(ctx context.Context, phone string) (*models.Call, error) {
@@ -23,7 +23,12 @@ func (r *mutationResolver) CallPassword(ctx context.Context, phone string) (*mod
 }
 
 func (r *mutationResolver) UserSignUp(ctx context.Context, email string, phone string, password string) (*models.User, error) {
-	panic(fmt.Errorf("not implemented"))
+	ctrl := new(user.UserController)
+	user, err := ctrl.Create(email, phone, password, models.RoleMaster)
+	if err != nil {
+		return nil, gqlerror.Errorf(err.Error())
+	}
+	return user, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.
