@@ -1,8 +1,13 @@
 {
   "name": "muapp",
   "version": "0.0.0",
+  "private": true,
+  "workspaces": [
+    "packages/client",
+    "packages/server"
+  ],
   "scripts": {
     "client:dev": "cd packages/client && npm run dev",
     "server:dev": "cd packages/server && go run server.go"
-  }
+  }  
 }

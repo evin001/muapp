@@ -5,7 +5,8 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
     sourceType: 'module',
-    project: ['./tsconfig.json'],
+    project: './tsconfig.json',
+    tsconfigRootDir: __dirname, 
   },
   env: {
     node: true,
@@ -18,7 +19,7 @@ module.exports = {
     'prettier',
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
-    'plugin:prettier/recommended',
+    'plugin:prettier/recommended',  
   ],
   plugins: [
     '@typescript-eslint',
@@ -26,7 +27,7 @@ module.exports = {
     'prettier',
     'no-function-declare-after-return',
     'no-for-of-loops',
-    'unused-imports'
+    'unused-imports',    
   ],
   rules: {
     "class-methods-use-this": "off",
@@ -59,8 +60,8 @@ module.exports = {
     'no-param-reassign': 'error',
     'no-underscore-dangle': 'error',
     "no-restricted-syntax": 'error',
-    'react/function-component-definition': 'off',
-
+    'react/function-component-definition': 'off',    
+    
     /* REACT RULES */
     'react/no-children-prop': 'error',
     'react/jsx-boolean-value': 'warn',
@@ -90,13 +91,11 @@ module.exports = {
       ],
       "pathGroupsExcludedImportTypes": ["react"]
     }],
+    'import/extensions': ['error', { 'ts': 'never' }],
   },
   settings: {
-    'import/resolver': {
-      webpack: {
-        config: path.resolve(__dirname, 'config/webpack.config.js'),
-        extensions: ['.ts', '.tsx'],
-      },
+    'import/parsers': {
+      '@typescript-eslint/parser': ['.ts', '.tsx']
     },
   },
 }

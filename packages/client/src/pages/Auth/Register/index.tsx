@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { Flexbox, Grid, TextField, Button, Text, useTheme } from '@stage-ui/core'
 import PhoneInput from 'react-phone-input-2'
 
+import UserActions from '~/data/user'
 import CompanyLogo from '~/components/CompanyLogo'
 
 const Register = () => {
@@ -17,14 +18,16 @@ const Register = () => {
   const handleChangeTextField = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.name === 'email') {
       setEmail(e.target.value)
-    } else if (e.target.name === 'phone') {
-      setPhone(e.target.value)
     } else if (e.target.name === 'password') {
       setPassword(e.target.value)
     }
   }
 
-  const handleChangePhone = () => {}
+  const handleChangePhone = (value: string) => setPhone(value)
+
+  const handleClickRegister = () => {
+    UserActions.register(email, `+${phone}`, password)
+  }
 
   return (
     <Flexbox column h="100%" justifyContent="center">
@@ -95,6 +98,8 @@ const Register = () => {
           label="Зарегистрироваться"
           css={{ fontWeight: 600 }}
           textColor={(c) => c.palette.orange}
+          onClick={handleClickRegister}
+          disabled={!(email && phone && password)}
         />
       </Grid>
     </Flexbox>

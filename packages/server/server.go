@@ -6,6 +6,7 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/rs/cors"
 
 	"muapp.ru/graph/generated"
 	"muapp.ru/graph/resolvers"
@@ -19,10 +20,18 @@ func main() {
 	cfg := generated.Config{Resolvers: &resolvers.Resolver{}}
 	cfg.Directives.Binding = directives.Binding
 
+	c := cors.New(cors.Options{
+		AllowedMethods:   []string{"POST"},
+		AllowedHeaders:   []string{"Authorization", "Content-Type"},
+		AllowedOrigins:   []string{"http://127.0.0.1:8080"},
+		AllowCredentials: true,
+		Debug:            true,
+	})
+
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(cfg))
 
 	http.Handle("/", playground.Handler("GraphQL playground", "/graphql"))
-	http.Handle("/graphql", srv)
+	http.Handle("/graphql", c.Handler(srv))
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
