@@ -13,7 +13,7 @@ type Logger struct {
 }
 
 func NewLogger() (*Logger, error) {
-	file, err := os.OpenFile("pgx.log", os.O_WRONLY|os.O_CREATE, 0755)
+	file, err := os.OpenFile("pgx.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0755)
 	if err != nil {
 		return nil, err
 	}
