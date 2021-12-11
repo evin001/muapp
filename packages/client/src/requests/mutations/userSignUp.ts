@@ -13,6 +13,7 @@ export default gql`
   mutation ($email: String!, $phone: String!, $password: String!) {
     userSignUp(email: $email, phone: $phone, password: $password) {
       authToken
+      refreshToken
       email
       emailVerified
       firstName

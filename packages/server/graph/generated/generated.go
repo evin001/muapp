@@ -51,6 +51,7 @@ type ComplexityRoot struct {
 
 	Mutation struct {
 		CallPassword func(childComplexity int, phone string) int
+		UserSignIn   func(childComplexity int, email string, password string) int
 		UserSignUp   func(childComplexity int, email string, phone string, password string) int
 	}
 
@@ -74,6 +75,7 @@ type ComplexityRoot struct {
 type MutationResolver interface {
 	CallPassword(ctx context.Context, phone string) (*models.Call, error)
 	UserSignUp(ctx context.Context, email string, phone string, password string) (*models.User, error)
+	UserSignIn(ctx context.Context, email string, password string) (*models.User, error)
 }
 
 type executableSchema struct {
@@ -123,6 +125,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.CallPassword(childComplexity, args["phone"].(string)), true
+
+	case "Mutation.userSignIn":
+		if e.complexity.Mutation.UserSignIn == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_userSignIn_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UserSignIn(childComplexity, args["email"].(string), args["password"].(string)), true
 
 	case "Mutation.userSignUp":
 		if e.complexity.Mutation.UserSignUp == nil {
@@ -285,6 +299,11 @@ type Mutation {
     phone: String!, @binding(constraint: "required,e164")
     password: String!, @binding(constraint: "required,gte=6")
   ): User!
+
+  userSignIn(
+    email: String!, @binding(constraint: "required,email")
+    password: String!, @binding(constraint: "required,gte=6")
+  ): User!
 }
 `, BuiltIn: false},
 	{Name: "graph/schemas/call.graphqls", Input: `type Call {
@@ -365,6 +384,64 @@ func (ec *executionContext) field_Mutation_callPassword_args(ctx context.Context
 		}
 	}
 	args["phone"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_userSignIn_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["email"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("email"))
+		directive0 := func(ctx context.Context) (interface{}, error) { return ec.unmarshalNString2string(ctx, tmp) }
+		directive1 := func(ctx context.Context) (interface{}, error) {
+			constraint, err := ec.unmarshalNString2string(ctx, "required,email")
+			if err != nil {
+				return nil, err
+			}
+			if ec.directives.Binding == nil {
+				return nil, errors.New("directive binding is not implemented")
+			}
+			return ec.directives.Binding(ctx, rawArgs, directive0, constraint)
+		}
+
+		tmp, err = directive1(ctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if data, ok := tmp.(string); ok {
+			arg0 = data
+		} else {
+			return nil, graphql.ErrorOnPath(ctx, fmt.Errorf(`unexpected type %T from directive, should be string`, tmp))
+		}
+	}
+	args["email"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["password"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("password"))
+		directive0 := func(ctx context.Context) (interface{}, error) { return ec.unmarshalNString2string(ctx, tmp) }
+		directive1 := func(ctx context.Context) (interface{}, error) {
+			constraint, err := ec.unmarshalNString2string(ctx, "required,gte=6")
+			if err != nil {
+				return nil, err
+			}
+			if ec.directives.Binding == nil {
+				return nil, errors.New("directive binding is not implemented")
+			}
+			return ec.directives.Binding(ctx, rawArgs, directive0, constraint)
+		}
+
+		tmp, err = directive1(ctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if data, ok := tmp.(string); ok {
+			arg1 = data
+		} else {
+			return nil, graphql.ErrorOnPath(ctx, fmt.Errorf(`unexpected type %T from directive, should be string`, tmp))
+		}
+	}
+	args["password"] = arg1
 	return args, nil
 }
 
@@ -678,6 +755,48 @@ func (ec *executionContext) _Mutation_userSignUp(ctx context.Context, field grap
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Mutation().UserSignUp(rctx, args["email"].(string), args["phone"].(string), args["password"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*models.User)
+	fc.Result = res
+	return ec.marshalNUser2ᚖmuappᚗruᚋgraphᚋmodelsᚐUser(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_userSignIn(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_userSignIn_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UserSignIn(rctx, args["email"].(string), args["password"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2298,6 +2417,11 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			}
 		case "userSignUp":
 			out.Values[i] = ec._Mutation_userSignUp(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "userSignIn":
+			out.Values[i] = ec._Mutation_userSignIn(ctx, field)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}

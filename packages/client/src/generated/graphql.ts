@@ -27,6 +27,7 @@ export enum CallType {
 export type Mutation = {
   __typename?: 'Mutation';
   callPassword: Call;
+  userSignIn: User;
   /** User mutations */
   userSignUp: User;
 };
@@ -34,6 +35,12 @@ export type Mutation = {
 
 export type MutationCallPasswordArgs = {
   phone: Scalars['String'];
+};
+
+
+export type MutationUserSignInArgs = {
+  email: Scalars['String'];
+  password: Scalars['String'];
 };
 
 

@@ -13,4 +13,9 @@ type Mutation {
     phone: String!, @binding(constraint: "required,e164")
     password: String!, @binding(constraint: "required,gte=6")
   ): User!
+
+  userSignIn(
+    email: String!, @binding(constraint: "required,email")
+    password: String!, @binding(constraint: "required,gte=6")
+  ): User!
 }

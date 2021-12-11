@@ -4,6 +4,11 @@ export const messages = [
     'Пользователь с таким адресом электронной почты или номером телефона уже существует',
   ],
   ['Network request failed', 'Сетевой запрос не выполнен'],
+  ['User not found', 'Пользователь не найден'],
+  [
+    'Wrong password please try again',
+    'Неправильный пароль, пожалуйста, попробуйте еще раз',
+  ],
 ]
 
 export const translate = (message: string) => {

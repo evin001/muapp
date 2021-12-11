@@ -45,3 +45,20 @@ func VerifyToken(tokenString string) (*jwt.StandardClaims, error) {
 
 	return nil, err
 }
+
+func GenTokens(user *models.User) error {
+	accessToken, err := GenToken(user, AccsessTokenKey)
+	if err != nil {
+		return err
+	}
+
+	refreshToken, err := GenToken(user, RefreshTokenKey)
+	if err != nil {
+		return err
+	}
+
+	user.AuthToken = accessToken
+	user.RefreshToken = refreshToken
+
+	return nil
+}

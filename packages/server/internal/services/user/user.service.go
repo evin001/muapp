@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 	"time"
 
@@ -15,7 +16,31 @@ var db = utils.DB
 
 type UserService struct{}
 
-func (s UserService) Create(email, phone, password string, role models.Role) (*models.User, error) {
+func (s UserService) GetUser(email string) (*models.User, string, error) {
+	var u = new(models.User)
+	var pwd string
+	var id int
+
+	query := `
+		SELECT email, phone, role, email_verified, phone_verified, first_name, last_name, password, id
+		FROM users
+		WHERE email = $1
+	`
+	err := db.QueryRow(context.Background(), query, email).Scan(&u.Email, &u.Phone, &u.Role,
+		&u.EmailVerified, &u.PhoneVerified, &u.FirstName, &u.LastName, &pwd, &id)
+	if err != nil {
+		return nil, "", err
+	}
+	if err == pgx.ErrNoRows {
+		return nil, "", fmt.Errorf("User not found")
+	}
+
+	u.ID = strconv.Itoa(id)
+
+	return u, pwd, nil
+}
+
+func (s UserService) CreateUser(email, phone, password string, role models.Role) (*models.User, error) {
 	var id int = 1
 
 	query := `
@@ -61,9 +86,22 @@ func (s UserService) VerifyExistence(email, phone string) (bool, error) {
 }
 
 func (s UserService) CreateSession(userID, refreshToken string, expires int64) error {
+	if err := s.ClearSession(userID); err != nil {
+		return err
+	}
+
 	expiresStr := time.Unix(expires, 0).Format(time.RFC3339)
 	query := "INSERT INTO sessions (user_id, refresh_token, expires_in) VALUES ($1, $2, $3)"
 	_, err := db.Exec(context.Background(), query, userID, refreshToken, expiresStr)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s UserService) ClearSession(userID string) error {
+	query := "DELETE FROM sessions WHERE user_id = $1"
+	_, err := db.Exec(context.Background(), query, userID)
 	if err != nil {
 		return err
 	}

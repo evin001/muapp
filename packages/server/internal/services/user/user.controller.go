@@ -9,7 +9,7 @@ import (
 
 type UserController struct{}
 
-func (c UserController) Create(email, phone, password string, role models.Role) (*models.User, error) {
+func (c UserController) CreateUser(email, phone, password string, role models.Role) (*models.User, error) {
 	srv := new(UserService)
 
 	exist, err := srv.VerifyExistence(email, phone)
@@ -25,29 +25,52 @@ func (c UserController) Create(email, phone, password string, role models.Role) 
 		return nil, err
 	}
 
-	user, err := srv.Create(email, phone, hash, role)
+	user, err := srv.CreateUser(email, phone, hash, role)
 	if err != nil {
 		return nil, err
 	}
 
-	accessToken, err := utils.GenToken(user, utils.AccsessTokenKey)
-	if err != nil {
-		return nil, err
-	}
-	user.AuthToken = accessToken
-
-	refreshToken, err := utils.GenToken(user, utils.RefreshTokenKey)
-	if err != nil {
-		return nil, err
-	}
-	user.RefreshToken = refreshToken
-
-	rtClaims, err := utils.VerifyToken(refreshToken)
+	err = utils.GenTokens(user)
 	if err != nil {
 		return nil, err
 	}
 
-	err = srv.CreateSession(user.ID, refreshToken, rtClaims.ExpiresAt)
+	rtClaims, err := utils.VerifyToken(user.RefreshToken)
+	if err != nil {
+		return nil, err
+	}
+
+	err = srv.CreateSession(user.ID, user.RefreshToken, rtClaims.ExpiresAt)
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
+
+func (c UserController) SignIn(email, password string) (*models.User, error) {
+	srv := new(UserService)
+
+	user, hash, err := srv.GetUser(email)
+	if err != nil {
+		return nil, err
+	}
+
+	if ok := utils.CheckPasswordHash(password, hash); !ok {
+		return nil, fmt.Errorf("Wrong password please try again")
+	}
+
+	err = utils.GenTokens(user)
+	if err != nil {
+		return nil, err
+	}
+
+	rtClaims, err := utils.VerifyToken(user.RefreshToken)
+	if err != nil {
+		return nil, err
+	}
+
+	err = srv.CreateSession(user.ID, user.RefreshToken, rtClaims.ExpiresAt)
 	if err != nil {
 		return nil, err
 	}

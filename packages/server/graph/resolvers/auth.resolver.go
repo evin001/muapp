@@ -24,7 +24,16 @@ func (r *mutationResolver) CallPassword(ctx context.Context, phone string) (*mod
 
 func (r *mutationResolver) UserSignUp(ctx context.Context, email string, phone string, password string) (*models.User, error) {
 	ctrl := new(user.UserController)
-	user, err := ctrl.Create(email, phone, password, models.RoleMaster)
+	user, err := ctrl.CreateUser(email, phone, password, models.RoleMaster)
+	if err != nil {
+		return nil, gqlerror.Errorf(err.Error())
+	}
+	return user, nil
+}
+
+func (r *mutationResolver) UserSignIn(ctx context.Context, email string, password string) (*models.User, error) {
+	ctrl := new(user.UserController)
+	user, err := ctrl.SignIn(email, password)
 	if err != nil {
 		return nil, gqlerror.Errorf(err.Error())
 	}
