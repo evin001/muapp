@@ -24,6 +24,7 @@ type User struct {
 	PhoneVerified bool    `json:"phoneVerified"`
 	Role          Role    `json:"role"`
 	AuthToken     string  `json:"authToken"`
+	RefreshToken  string  `json:"refreshToken"`
 }
 
 type CallType string

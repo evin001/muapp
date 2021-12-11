@@ -58,5 +58,6 @@ export type User = {
   lastName?: Maybe<Scalars['String']>;
   phone: Scalars['String'];
   phoneVerified: Scalars['Boolean'];
+  refreshToken: Scalars['String'];
   role: Role;
 };

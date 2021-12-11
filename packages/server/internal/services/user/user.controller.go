@@ -30,11 +30,27 @@ func (c UserController) Create(email, phone, password string, role models.Role) 
 		return nil, err
 	}
 
-	token, err := utils.GenToken(user)
+	accessToken, err := utils.GenToken(user, utils.AccsessTokenKey)
 	if err != nil {
 		return nil, err
 	}
-	user.AuthToken = token
+	user.AuthToken = accessToken
+
+	refreshToken, err := utils.GenToken(user, utils.RefreshTokenKey)
+	if err != nil {
+		return nil, err
+	}
+	user.RefreshToken = refreshToken
+
+	rtClaims, err := utils.VerifyToken(refreshToken)
+	if err != nil {
+		return nil, err
+	}
+
+	err = srv.CreateSession(user.ID, refreshToken, rtClaims.ExpiresAt)
+	if err != nil {
+		return nil, err
+	}
 
 	return user, nil
 }

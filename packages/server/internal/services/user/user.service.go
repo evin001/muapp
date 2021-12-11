@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"strconv"
+	"time"
 
 	"github.com/jackc/pgx/v4"
 
@@ -57,4 +58,14 @@ func (s UserService) VerifyExistence(email, phone string) (bool, error) {
 	}
 
 	return id != nil, nil
+}
+
+func (s UserService) CreateSession(userID, refreshToken string, expires int64) error {
+	expiresStr := time.Unix(expires, 0).Format(time.RFC3339)
+	query := "INSERT INTO sessions (user_id, refresh_token, expires_in) VALUES ($1, $2, $3)"
+	_, err := db.Exec(context.Background(), query, userID, refreshToken, expiresStr)
+	if err != nil {
+		return err
+	}
+	return nil
 }

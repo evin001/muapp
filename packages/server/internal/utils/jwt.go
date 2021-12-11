@@ -3,21 +3,27 @@ package utils
 import (
 	"fmt"
 	"strconv"
+	"time"
 
 	"github.com/golang-jwt/jwt"
 
 	"muapp.ru/graph/models"
 )
 
-func GenToken(user *models.User) (string, error) {
-	exp, err := strconv.ParseInt(GetEnv("JWT_EXPIRES"), 10, 64)
+const (
+	AccsessTokenKey = "JWT_ACCESS_TOKEN"
+	RefreshTokenKey = "JWT_REFRESH_TOKEN"
+)
+
+func GenToken(user *models.User, tokenKey string) (string, error) {
+	exp, err := strconv.ParseInt(GetEnv(tokenKey), 10, 64)
 	if err != nil {
 		return "", nil
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
 		Id:        user.ID,
-		ExpiresAt: exp,
+		ExpiresAt: time.Now().Add(time.Minute * time.Duration(exp)).Unix(),
 		Issuer:    string(user.Role),
 	})
 
@@ -33,8 +39,8 @@ func VerifyToken(tokenString string) (*jwt.StandardClaims, error) {
 		return []byte(GetEnv("JWT_SECRET")), nil
 	})
 
-	if claims, ok := token.Claims.(jwt.StandardClaims); ok && token.Valid {
-		return &claims, nil
+	if claims, ok := token.Claims.(*jwt.StandardClaims); ok && token.Valid {
+		return claims, nil
 	}
 
 	return nil, err

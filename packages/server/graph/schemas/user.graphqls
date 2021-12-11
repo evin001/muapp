@@ -8,6 +8,7 @@ type User {
   phoneVerified: Boolean!
   role: Role!
   authToken: String!
+  refreshToken: String!
 }
 
 enum Role {

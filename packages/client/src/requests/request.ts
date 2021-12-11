@@ -11,10 +11,15 @@ export default createGQLClient<Requests>(
   getEndpoint(),
   () =>
     new Promise((resolve) => {
-      resolve({
-        authorization: `Bearer ${
-          (localStorage.getItem('user') as unknown as User).authToken || ''
-        }`,
-      })
+      const headers = []
+
+      const storageUser = localStorage.getItem('user')
+      const user = storageUser ? (JSON.parse(storageUser) as User) : null
+
+      if (user?.authToken) {
+        headers.push(['authorization', `Bearer ${user?.authToken}`])
+      }
+
+      resolve(Object.fromEntries(headers) as HeadersInit)
     }),
 )
