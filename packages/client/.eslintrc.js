@@ -91,7 +91,11 @@ module.exports = {
       ],
       "pathGroupsExcludedImportTypes": ["react"]
     }],
-    'import/extensions': ['error', { 'ts': 'never' }],
+    'import/extensions': ['error', {
+       ts: 'never',
+       svg: 'always',
+       ttf: 'always',       
+    }],
   },
   settings: {
     'import/parsers': {

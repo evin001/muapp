@@ -1,9 +1,9 @@
-declare module '*.svg' {
-  const content: string
-  export default content
+declare global {
+  type LoadingState = 'idle' | 'resolved' | 'rejected' | 'pending'
+
+  type RequestError = {
+    message: string
+  }
 }
 
-declare module '*.ttf' {
-  const content: string
-  export default content
-}
+export default global
