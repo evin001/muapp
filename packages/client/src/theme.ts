@@ -17,6 +17,7 @@ const theme = light.replace({
   main: {
     color: {
       primary: [255, 228, 137],
+      error: [173, 20, 87],
       palette: {
         orange: [168, 124, 51],
       },

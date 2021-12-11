@@ -2,6 +2,8 @@ import { combineReducers, configureStore, bindActionCreators } from '@reduxjs/to
 
 import user from './user/slice'
 
+export type RootState = ReturnType<typeof combineReducer>
+
 const combineReducer = combineReducers({
   user: user.reducer,
 })

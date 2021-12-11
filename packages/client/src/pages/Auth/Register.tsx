@@ -2,13 +2,20 @@ import React, { useState } from 'react'
 
 import AuthPage from '.'
 
-import { TextField, Button, useTheme } from '@stage-ui/core'
+import { TextField, Button, Spinner, Flexbox, Text, useTheme } from '@stage-ui/core'
 import PhoneInput from 'react-phone-input-2'
 
+import useSelector from '~/hooks/useSelector'
 import UserActions from '~/data/user'
+import { PASSWORD_MIN_LEN, PHONE_FORMAT, EMAIL_FORMAT } from '~/utils/auth'
 
 const Register = () => {
   const { color } = useTheme()
+  const { fetchError, loading } = useSelector(({ user }) => ({
+    fetchError: user.error,
+    loading: user.fetch === 'pending',
+  }))
+
   const [email, setEmail] = useState('')
   const [emailError, setEmailError] = useState('')
   const [phone, setPhone] = useState('')
@@ -26,10 +33,30 @@ const Register = () => {
 
   const handleChangePhone = (value: string) => setPhone(value)
 
-  const validate = () => {}
+  const validate = () => {
+    if (emailError) setEmailError('')
+    if (phoneError) setPasswordError('')
+    if (passwordError) setPasswordError('')
+
+    if (!EMAIL_FORMAT.test(email)) {
+      setEmailError('Пожалуйста, укажите корректный адрес электронной почты')
+      return false
+    }
+    if (!PHONE_FORMAT.test(`+${phone}`)) {
+      setPhoneError('Пожалуйста, укажите корректный номер телефона')
+      return false
+    }
+    if (password.length < PASSWORD_MIN_LEN) {
+      setPasswordError(`Пароль не может быть короче ${PASSWORD_MIN_LEN} символов`)
+      return false
+    }
+    return true
+  }
 
   const handleClickRegister = () => {
-    UserActions.register(email, `+${phone}`, password)
+    if (validate()) {
+      UserActions.register(email, `+${phone}`, password)
+    }
   }
 
   return (
@@ -89,8 +116,14 @@ const Register = () => {
         css={{ fontWeight: 600 }}
         textColor={(c) => c.palette.orange}
         onClick={handleClickRegister}
-        disabled={!(email && phone && password)}
+        disabled={!(email && phone && password) || loading}
+        leftChild={loading ? <Spinner /> : undefined}
       />
+      <Flexbox h="1rem" justifyContent="center">
+        <Text align="center" color="error">
+          {emailError || passwordError || phoneError || fetchError}
+        </Text>
+      </Flexbox>
     </AuthPage>
   )
 }

@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 import { GraphQLClient, ClientError } from 'graphql-request'
 
+import { translate } from './errors'
+
 export type GQLRequest<A, R> = {
   args: A
   resp: R
@@ -10,7 +12,7 @@ export type ClientRequests = Record<string, GQLRequest<any, any>>
 
 class GQLError extends Error {
   constructor(obj: { message: string }) {
-    super(obj.message)
+    super(translate(obj.message))
     this.name = 'GQLError'
   }
 }
@@ -41,7 +43,9 @@ const createClient = <CR extends ClientRequests>(
       return response[name]
     } catch (e) {
       const error = <ClientError>e
-      throw new GQLError({ message: error.message })
+      throw new GQLError({
+        message: error?.response?.errors?.[0].message || error.message,
+      })
     }
   }
 

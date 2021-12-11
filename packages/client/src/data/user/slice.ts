@@ -22,6 +22,7 @@ const userSlice = createSlice({
     userFetch(state) {
       state.fetch = 'pending'
       state.data = null
+      state.error = null
     },
     userResolvle(state, { payload }: PayloadAction<User>) {
       state.fetch = 'resolved'
