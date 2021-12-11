@@ -23,7 +23,7 @@ func main() {
 	c := cors.New(cors.Options{
 		AllowedMethods:   []string{"POST"},
 		AllowedHeaders:   []string{"Authorization", "Content-Type"},
-		AllowedOrigins:   []string{"http://127.0.0.1:8080"},
+		AllowedOrigins:   []string{utils.GetEnv("HOST")},
 		AllowCredentials: true,
 		Debug:            false,
 	})

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"strconv"
 
 	"github.com/jackc/pgx/v4/pgxpool"
 )
@@ -22,6 +23,15 @@ func init() {
 	}
 
 	config.MaxConns = MAX_CONNS
+
+	useLog, _ := strconv.ParseBool(GetEnv("USE_LOG"))
+	if useLog {
+		l, err := NewLogger()
+		if err != nil {
+			fmt.Errorf(err.Error())
+		}
+		config.ConnConfig.Logger = l
+	}
 
 	DB, err = pgxpool.ConnectConfig(context.Background(), config)
 	if err != nil {
