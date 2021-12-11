@@ -25,7 +25,7 @@ func main() {
 		AllowedHeaders:   []string{"Authorization", "Content-Type"},
 		AllowedOrigins:   []string{"http://127.0.0.1:8080"},
 		AllowCredentials: true,
-		Debug:            true,
+		Debug:            false,
 	})
 
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(cfg))

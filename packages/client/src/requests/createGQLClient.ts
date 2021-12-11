@@ -33,12 +33,14 @@ const createClient = <CR extends ClientRequests>(
         requests[name],
         variables,
       )
+
       if (typeof response[name] === undefined) {
         throw new GQLError({
           code: -2,
           message: `Response for ${name.toString()} has no data`,
         })
       }
+
       return response[name]
     } catch (e) {
       const error = <ClientError>e
