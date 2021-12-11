@@ -1,16 +1,35 @@
 import React from 'react'
 
-import { Route, Routes, Navigate } from 'react-router-dom'
+import { Flexbox, Text, Grid } from '@stage-ui/core'
 
-import Login from './Login'
-import Register from './Register'
+import CompanyLogo from '~/components/CompanyLogo'
 
-const Auth = () => (
-  <Routes>
-    <Route path="/auth" element={<Login />} />
-    <Route path="/register" element={<Register />} />
-    <Route path="/" element={<Navigate replace to="/auth" />} />
-  </Routes>
+type AuthPageProps = {
+  title: string
+  subtitle: string
+}
+
+const AuthPage: React.FC<AuthPageProps> = ({ title, subtitle, children }) => (
+  <Flexbox column h="100%" justifyContent="center">
+    <Flexbox column pb="1.75rem">
+      <CompanyLogo />
+      <Text mb="s" size="2rem" color="surface" align="center">
+        {title}
+      </Text>
+      <Text
+        px="1.25rem"
+        color="surface"
+        size="1.25rem"
+        lineHeight="1.25rem"
+        align="center"
+      >
+        {subtitle}
+      </Text>
+    </Flexbox>
+    <Grid p="2rem" gap="1rem">
+      {children}
+    </Grid>
+  </Flexbox>
 )
 
-export default Auth
+export default AuthPage

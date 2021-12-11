@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import { Viewport, Block } from '@stage-ui/core'
 
-import Auth from './pages/Auth'
+import AuthRoutes from './pages/Auth/Routes'
 import Background from './components/Backgorund'
 import GlobalStyles from './components/GlobalStyles'
 import theme from './theme'
@@ -24,7 +24,7 @@ const App = () => {
               height: '100vh',
             }}
           >
-            <Auth />
+            <AuthRoutes />
           </Block>
         </Viewport>
       </BrowserRouter>
