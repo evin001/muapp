@@ -28,11 +28,12 @@ func (s UserService) GetUser(email string) (*models.User, string, error) {
 	`
 	err := db.QueryRow(context.Background(), query, email).Scan(&u.Email, &u.Phone, &u.Role,
 		&u.EmailVerified, &u.PhoneVerified, &u.FirstName, &u.LastName, &pwd, &id)
-	if err != nil {
-		return nil, "", err
-	}
+
 	if err == pgx.ErrNoRows {
 		return nil, "", fmt.Errorf("User not found")
+	}
+	if err != nil {
+		return nil, "", err
 	}
 
 	u.ID = strconv.Itoa(id)
@@ -114,11 +115,11 @@ func (s UserService) VerifyExistenceSession(refreshToken string) (bool, error) {
 	query := "SELECT id FROM sessions WHERE refresh_token = $1"
 	err := db.QueryRow(context.Background(), query, refreshToken).Scan(&id)
 
-	if err != nil {
-		return false, err
-	}
 	if err == pgx.ErrNoRows {
 		return false, nil
+	}
+	if err != nil {
+		return false, err
 	}
 
 	return id != nil, nil

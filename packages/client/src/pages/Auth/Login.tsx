@@ -78,6 +78,8 @@ const Login = () => {
         css={{ fontWeight: 600 }}
         textColor={(c) => c.palette.orange}
         onClick={handleClickAuth}
+        disabled={!(email && password) || loading}
+        leftChild={loading ? <Spinner /> : undefined}
       />
       <Button
         w="100%"
@@ -85,8 +87,6 @@ const Login = () => {
         css={{ fontWeight: 600 }}
         textColor={(c) => c.palette.orange}
         onClick={() => navigate('/register')}
-        disabled={!(email && password) || loading}
-        leftChild={loading ? <Spinner /> : undefined}
       />
       <AuthError>{emailError || passwordError || fetchError}</AuthError>
     </AuthPage>
