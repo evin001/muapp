@@ -327,6 +327,7 @@ type Mutation {
   callPassword(phone: String! @binding(constraint: "required,e164")): Call!
 
   "User"
+
   userSignUp(
     email: String!, @binding(constraint: "required,email")
     phone: String!, @binding(constraint: "required,e164")

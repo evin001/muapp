@@ -111,7 +111,7 @@ func (s UserService) ClearSession(userID string) error {
 func (s UserService) VerifyExistenceSession(refreshToken string) (bool, error) {
 	var id *int
 
-	query := "SELECCT id FROM sessions WHERE refresh_token = $1"
+	query := "SELECT id FROM sessions WHERE refresh_token = $1"
 	err := db.QueryRow(context.Background(), query, refreshToken).Scan(&id)
 
 	if err != nil {
