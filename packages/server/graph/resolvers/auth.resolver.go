@@ -40,6 +40,15 @@ func (r *mutationResolver) UserSignIn(ctx context.Context, email string, passwor
 	return user, nil
 }
 
+func (r *mutationResolver) UserRefreshToken(ctx context.Context, refreshToken string) (*models.Tokens, error) {
+	ctrl := new(user.UserController)
+	tokens, err := ctrl.RefreshToken(refreshToken)
+	if err != nil {
+		return nil, gqlerror.Errorf(err.Error())
+	}
+	return tokens, nil
+}
+
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 

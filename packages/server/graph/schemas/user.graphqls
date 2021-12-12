@@ -1,3 +1,8 @@
+enum Role {
+  master
+  client
+}
+
 type User {
   id: String!
   firstName: String
@@ -11,7 +16,7 @@ type User {
   refreshToken: String!
 }
 
-enum Role {
-  master
-  client
+type Tokens {
+  authToken: String!
+  refreshToken: String!
 }

@@ -69,7 +69,7 @@ func (s UserService) CreateUser(email, phone, password string, role models.Role)
 	}, nil
 }
 
-func (s UserService) VerifyExistence(email, phone string) (bool, error) {
+func (s UserService) VerifyExistenceUser(email, phone string) (bool, error) {
 	var id *int
 
 	query := "SELECT id FROM users WHERE email = $1 OR phone = $2"
@@ -106,4 +106,20 @@ func (s UserService) ClearSession(userID string) error {
 		return err
 	}
 	return nil
+}
+
+func (s UserService) VerifyExistenceSession(refreshToken string) (bool, error) {
+	var id *int
+
+	query := "SELECCT id FROM sessions WHERE refresh_token = $1"
+	err := db.QueryRow(context.Background(), query, refreshToken).Scan(&id)
+
+	if err != nil {
+		return false, err
+	}
+	if err == pgx.ErrNoRows {
+		return false, nil
+	}
+
+	return id != nil, nil
 }

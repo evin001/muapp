@@ -7,7 +7,8 @@ directive @binding(constraint: String!) on INPUT_FIELD_DEFINITION | ARGUMENT_DEF
 type Mutation {
   callPassword(phone: String! @binding(constraint: "required,e164")): Call!
 
-  "User mutations"
+  "User"
+
   userSignUp(
     email: String!, @binding(constraint: "required,email")
     phone: String!, @binding(constraint: "required,e164")
@@ -18,4 +19,8 @@ type Mutation {
     email: String!, @binding(constraint: "required,email")
     password: String!, @binding(constraint: "required,gte=6")
   ): User!
+
+  userRefreshToken(    
+    refreshToken: String! @binding(constraint: "required")
+  ): Tokens!
 }

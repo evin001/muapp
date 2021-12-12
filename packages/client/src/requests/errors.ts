@@ -9,7 +9,10 @@ export const messages = [
     'Wrong password please try again',
     'Неправильный пароль, пожалуйста, попробуйте еще раз',
   ],
+  ['Refresh token does not exist', 'Сессия истекла, пожалуйста, авторизуйтесь заново'],
 ]
+
+// REFRESH_TOKEN_EXPIRED
 
 export const translate = (message: string) => {
   const trans = messages.find(([a]) => a === message)?.[1]

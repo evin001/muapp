@@ -2,12 +2,14 @@ import React, { useState } from 'react'
 
 import AuthPage from '.'
 
-import { TextField, Button, Spinner, Flexbox, Text, useTheme } from '@stage-ui/core'
+import { TextField, Button, Spinner, useTheme } from '@stage-ui/core'
 import PhoneInput from 'react-phone-input-2'
+
+import AuthError from './AuthError'
 
 import useSelector from '~/hooks/useSelector'
 import UserActions from '~/data/user'
-import { PASSWORD_MIN_LEN, PHONE_FORMAT, EMAIL_FORMAT } from '~/utils/auth'
+import { verify } from '~/utils/auth'
 
 const Register = () => {
   const { color } = useTheme()
@@ -38,18 +40,15 @@ const Register = () => {
     if (phoneError) setPasswordError('')
     if (passwordError) setPasswordError('')
 
-    if (!EMAIL_FORMAT.test(email)) {
-      setEmailError('Пожалуйста, укажите корректный адрес электронной почты')
-      return false
-    }
-    if (!PHONE_FORMAT.test(`+${phone}`)) {
-      setPhoneError('Пожалуйста, укажите корректный номер телефона')
-      return false
-    }
-    if (password.length < PASSWORD_MIN_LEN) {
-      setPasswordError(`Пароль не может быть короче ${PASSWORD_MIN_LEN} символов`)
-      return false
-    }
+    const emailVerified = verify(email, 'email')
+    if (!emailVerified.ok) setEmailError(emailVerified.error)
+
+    const phoneVerified = verify(phone, 'phone')
+    if (!phoneVerified.ok) setPhoneError(phoneVerified.error)
+
+    const passwordVerified = verify(password, 'password')
+    if (!passwordVerified.ok) setPasswordError(passwordVerified.error)
+
     return true
   }
 
@@ -119,11 +118,7 @@ const Register = () => {
         disabled={!(email && phone && password) || loading}
         leftChild={loading ? <Spinner /> : undefined}
       />
-      <Flexbox h="1rem" justifyContent="center">
-        <Text align="center" color="error">
-          {emailError || passwordError || phoneError || fetchError}
-        </Text>
-      </Flexbox>
+      <AuthError>{emailError || passwordError || phoneError || fetchError}</AuthError>
     </AuthPage>
   )
 }

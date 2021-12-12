@@ -14,6 +14,11 @@ type Call struct {
 	Type    string `json:"type"`
 }
 
+type Tokens struct {
+	AuthToken    string `json:"authToken"`
+	RefreshToken string `json:"refreshToken"`
+}
+
 type User struct {
 	ID            string  `json:"id"`
 	FirstName     *string `json:"firstName"`

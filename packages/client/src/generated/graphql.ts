@@ -27,14 +27,20 @@ export enum CallType {
 export type Mutation = {
   __typename?: 'Mutation';
   callPassword: Call;
+  userRefreshToken: Tokens;
   userSignIn: User;
-  /** User mutations */
+  /** User */
   userSignUp: User;
 };
 
 
 export type MutationCallPasswordArgs = {
   phone: Scalars['String'];
+};
+
+
+export type MutationUserRefreshTokenArgs = {
+  refreshToken: Scalars['String'];
 };
 
 
@@ -54,6 +60,12 @@ export enum Role {
   Client = 'client',
   Master = 'master'
 }
+
+export type Tokens = {
+  __typename?: 'Tokens';
+  authToken: Scalars['String'];
+  refreshToken: Scalars['String'];
+};
 
 export type User = {
   __typename?: 'User';
