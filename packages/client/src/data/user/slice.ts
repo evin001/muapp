@@ -24,7 +24,7 @@ const userSlice = createSlice({
       state.data = null
       state.error = null
     },
-    userResolvle(state, { payload }: PayloadAction<User>) {
+    userResolve(state, { payload }: PayloadAction<User>) {
       state.fetch = 'resolved'
       state.data = payload
     },

@@ -2,7 +2,7 @@ import requests, { Requests } from '.'
 
 import createGQLClient from './createGQLClient'
 
-import { User } from '~/generated/graphql'
+import { UserStorage } from '~/utils/auth'
 
 const getEndpoint = () => `http://${window.location.hostname}:4000`
 
@@ -12,9 +12,7 @@ export default createGQLClient<Requests>(
   () =>
     new Promise((resolve) => {
       const headers = []
-
-      const storageUser = localStorage.getItem('user')
-      const user = storageUser ? (JSON.parse(storageUser) as User) : null
+      const user = UserStorage.get()
 
       if (user?.authToken) {
         headers.push(['authorization', `Bearer ${user?.authToken}`])

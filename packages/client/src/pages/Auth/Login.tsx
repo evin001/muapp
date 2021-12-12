@@ -7,8 +7,9 @@ import { TextField, Button, Spinner } from '@stage-ui/core'
 
 import AuthError from './AuthError'
 
-import { verify } from '~/utils/auth'
 import useSelector from '~/hooks/useSelector'
+import UserActions from '~/data/user'
+import { verify } from '~/utils/auth'
 
 const Login = () => {
   const navigate = useNavigate()
@@ -45,7 +46,7 @@ const Login = () => {
 
   const handleClickAuth = () => {
     if (validate()) {
-      // TODO Send auth request
+      UserActions.auth(email, password)
     }
   }
 
