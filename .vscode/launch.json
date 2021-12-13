@@ -1,7 +1,7 @@
 {
   "configurations": [
     {
-      "name": "Client (8080)",
+      "name": "Client",
       "type": "node",
       "request": "launch",
       "cwd": "${workspaceRoot}",

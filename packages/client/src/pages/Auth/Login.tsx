@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
-import AuthPage from '.'
+import { useHeaders } from '.'
 
 import { useNavigate } from 'react-router-dom'
 import { TextField, Button, Spinner } from '@stage-ui/core'
@@ -11,7 +11,7 @@ import useSelector from '~/hooks/useSelector'
 import UserActions from '~/data/user'
 import { verify } from '~/utils/auth'
 
-const Login = () => {
+export const Login = () => {
   const navigate = useNavigate()
   const { fetchError, loading } = useSelector(({ user }) => ({
     fetchError: user.error,
@@ -22,6 +22,15 @@ const Login = () => {
   const [emailError, setEmailError] = useState('')
   const [password, setPassword] = useState('')
   const [passwordError, setPasswordError] = useState('')
+
+  const setHeaders = useHeaders()
+
+  useEffect(() => {
+    setHeaders({
+      title: 'Вход',
+      subtitle: 'Войдите, чтобы использовать все возможности системы',
+    })
+  }, [])
 
   const handleChangeTextField = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.name === 'email') {
@@ -51,7 +60,7 @@ const Login = () => {
   }
 
   return (
-    <AuthPage title="Вход" subtitle="Войдите, чтобы использовать все возможности системы">
+    <>
       <TextField
         value={email}
         name="email"
@@ -86,11 +95,9 @@ const Login = () => {
         label="Регистрация"
         css={{ fontWeight: 600 }}
         textColor={(c) => c.palette.orange}
-        onClick={() => navigate('/register')}
+        onClick={() => navigate('../register')}
       />
       <AuthError>{emailError || passwordError || fetchError}</AuthError>
-    </AuthPage>
+    </>
   )
 }
-
-export default Login

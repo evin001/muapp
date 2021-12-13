@@ -12,7 +12,7 @@ const CompanyLogo = () => {
       lineHeight="6.25rem"
       textAlign="center"
       css={{ fontFamily: 'Moonbright' }}
-      onClick={() => navigate('/')}
+      onClick={() => navigate('/auth')}
     >
       MuApp
     </Text>

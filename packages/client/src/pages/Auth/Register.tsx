@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
-import AuthPage from '.'
+import { useHeaders } from '.'
 
 import { TextField, Button, Spinner, useTheme } from '@stage-ui/core'
 import PhoneInput from 'react-phone-input-2'
@@ -11,7 +11,7 @@ import useSelector from '~/hooks/useSelector'
 import UserActions from '~/data/user'
 import { verify } from '~/utils/auth'
 
-const Register = () => {
+export const Register = () => {
   const { color } = useTheme()
   const { fetchError, loading } = useSelector(({ user }) => ({
     fetchError: user.error,
@@ -24,6 +24,15 @@ const Register = () => {
   const [phoneError, setPhoneError] = useState('')
   const [password, setPassword] = useState('')
   const [passwordError, setPasswordError] = useState('')
+
+  const setHeaders = useHeaders()
+
+  useEffect(() => {
+    setHeaders({
+      title: 'Регистрация',
+      subtitle: 'Создайте аккаунт, чтобы клиенты могли записаться к вам',
+    })
+  }, [])
 
   const handleChangeTextField = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.name === 'email') {
@@ -59,10 +68,7 @@ const Register = () => {
   }
 
   return (
-    <AuthPage
-      title="Регистрация"
-      subtitle="Создайте аккаунт, чтобы клиенты могли записаться к вам"
-    >
+    <>
       <TextField
         value={email}
         name="email"
@@ -119,8 +125,6 @@ const Register = () => {
         leftChild={loading ? <Spinner /> : undefined}
       />
       <AuthError>{emailError || passwordError || phoneError || fetchError}</AuthError>
-    </AuthPage>
+    </>
   )
 }
-
-export default Register

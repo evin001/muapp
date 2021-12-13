@@ -1,15 +1,19 @@
 import React, { useEffect } from 'react'
 
-import { BrowserRouter } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { Provider } from 'react-redux'
-import { Viewport, Block } from '@stage-ui/core'
+import { Viewport } from '@stage-ui/core'
 
-import AuthRoutes from './pages/Auth/Routes'
-import Background from './components/Backgorund'
+import { MainView } from './pages/MainView'
+// import { MasterRoutes } from './pages/Master/Routes'
 import GlobalStyles from './components/GlobalStyles'
 import theme from './theme'
 import store from './data/store'
 import UserActions from './data/user'
+
+import { Auth } from './pages/Auth'
+import { Login } from './pages/Auth/Login'
+import { Register } from './pages/Auth/Register'
 
 const App = () => {
   useEffect(() => {
@@ -18,21 +22,22 @@ const App = () => {
 
   return (
     <Provider store={store}>
-      <BrowserRouter>
-        <GlobalStyles />
-        <Viewport theme={theme}>
-          <Background />
-          <Block
-            css={{
-              maxWidth: '30rem',
-              margin: '0 auto',
-              height: '100vh',
-            }}
-          >
-            <AuthRoutes />
-          </Block>
-        </Viewport>
-      </BrowserRouter>
+      <GlobalStyles />
+      <Viewport theme={theme}>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<MainView />}>
+              {/* <Route path="master" element={<MasterRoutes />} /> */}
+              <Route path="auth" element={<Auth />}>
+                <Route path="register" element={<Register />} />
+                <Route path="login" element={<Login />} />
+                <Route path="" element={<Navigate replace to="login" />} />
+              </Route>
+              <Route path="*" element={<Navigate replace to="auth" />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </Viewport>
     </Provider>
   )
 }

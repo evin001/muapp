@@ -76,7 +76,7 @@ module.exports = {
     'react-hooks/exhaustive-deps': 'off',
 
 
-    /* GLOBAL */
+    /* GLOBAL */    
     'no-for-of-loops/no-for-of-loops': 'warn',
     "no-function-declare-after-return/no-function-declare-after-return": 'error',
     "import/order": ["error", {
