@@ -1,19 +1,26 @@
 import React from 'react'
 
 import { Block } from '@stage-ui/core'
+import { useLocation } from 'react-router-dom'
 
 import Bg from '~/assets/images/auth-bg.svg'
 
-const background = () => (
-  <Block
-    w="100%"
-    h="100vh"
-    position="fixed"
-    css={{
-      background: `url(${Bg})`,
-      backgroundSize: 'cover',
-    }}
-  />
-)
+export const Background = () => {
+  const { pathname } = useLocation()
 
-export default background
+  if (!pathname.startsWith('/auth') && pathname !== '/') {
+    return null
+  }
+
+  return (
+    <Block
+      w="100%"
+      h="100vh"
+      position="fixed"
+      css={{
+        background: `url(${Bg})`,
+        backgroundSize: 'cover',
+      }}
+    />
+  )
+}

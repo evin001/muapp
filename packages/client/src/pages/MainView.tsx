@@ -5,7 +5,7 @@ import { useLocation, useNavigate, Outlet } from 'react-router-dom'
 import { Block } from '@stage-ui/core'
 
 import useSelector from '~/hooks/useSelector'
-import Background from '~/components/Backgorund'
+import { Background } from '~/components/Backgorund'
 import { Role } from '~/generated/graphql'
 
 export const MainView = () => {

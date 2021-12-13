@@ -118,6 +118,7 @@ export const Register = () => {
       <Button
         w="100%"
         label="Зарегистрироваться"
+        color="secondary"
         css={{ fontWeight: 600 }}
         textColor={(c) => c.palette.orange}
         onClick={handleClickRegister}

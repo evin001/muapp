@@ -84,6 +84,7 @@ export const Login = () => {
       <Button
         w="100%"
         label="Вход"
+        color="secondary"
         css={{ fontWeight: 600 }}
         textColor={(c) => c.palette.orange}
         onClick={handleClickAuth}
@@ -93,6 +94,7 @@ export const Login = () => {
       <Button
         w="100%"
         label="Регистрация"
+        color="secondary"
         css={{ fontWeight: 600 }}
         textColor={(c) => c.palette.orange}
         onClick={() => navigate('../register')}
