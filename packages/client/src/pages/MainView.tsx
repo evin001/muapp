@@ -6,6 +6,7 @@ import { Block } from '@stage-ui/core'
 
 import useSelector from '~/hooks/useSelector'
 import Background from '~/components/Backgorund'
+import { Role } from '~/generated/graphql'
 
 export const MainView = () => {
   const role = useSelector(({ user }) => user.data?.role)
@@ -13,8 +14,14 @@ export const MainView = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (!role && !pathname.startsWith('/auth')) {
-      navigate('auth')
+    switch (role) {
+      case Role.Master: {
+        if (pathname.startsWith('/auth')) navigate('master')
+        break
+      }
+      default: {
+        if (!pathname.startsWith('/auth')) navigate('auth')
+      }
     }
   }, [pathname, role])
 
