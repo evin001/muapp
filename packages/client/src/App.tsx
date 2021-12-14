@@ -11,9 +11,7 @@ import store from './data/store'
 import UserActions from './data/user'
 
 import { Master } from './pages/Master'
-import { Services } from './pages/Master/Services'
-import { Schedule } from './pages/Master/Schedule'
-import { Profile } from './pages/Master/Profile'
+import { MasterMainView } from './pages/Master/MainView'
 
 import { Auth } from './pages/Auth'
 import { Login } from './pages/Auth/Login'
@@ -32,9 +30,7 @@ const App = () => {
           <Routes>
             <Route path="/" element={<MainView />}>
               <Route path="master" element={<Master />}>
-                <Route path="services" element={<Services />} />
-                <Route path="schedule" element={<Schedule />} />
-                <Route path="profile" element={<Profile />} />
+                <Route path=":id" element={<MasterMainView />} />
                 <Route path="" element={<Navigate replace to="services" />} />
               </Route>
               <Route path="auth" element={<Auth />}>
