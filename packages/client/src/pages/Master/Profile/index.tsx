@@ -1,5 +1,10 @@
 import React from 'react'
 
-import { Flexbox } from '@stage-ui/core'
+import { Page } from '~/components/Page'
+import { useTitle } from '~/hooks/useTitle'
 
-export const Profile = () => <Flexbox>Profile</Flexbox>
+export const Profile = () => {
+  useTitle('Профиль')
+
+  return <Page title="Профиль">Profile</Page>
+}

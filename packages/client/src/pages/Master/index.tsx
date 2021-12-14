@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 
-import { Block, Flexbox, Menu, useTheme } from '@stage-ui/core'
+import { Flexbox, Menu, useTheme } from '@stage-ui/core'
 import { Person, List, Calendar } from '@stage-ui/icons'
 import { Outlet, useNavigate, useOutletContext } from 'react-router-dom'
 
-export type MasterContext = { active: string }
-export type MasterOutletContext = (ctx: MasterContext) => void
+export type MasterContext = { setMenu: MasterMenuContext }
+export type MasterMenuContext = (ctx: string) => void
 
 const menuItems = [
   { Icon: List, link: 'services' },
@@ -16,13 +16,12 @@ const menuItems = [
 export const Master = () => {
   const { assets } = useTheme()
   const navigate = useNavigate()
-  const [context, setContext] = useState<MasterContext>({ active: '' })
+
+  const [menu, setMenu] = useState('')
 
   return (
     <Flexbox h="100%" column>
-      <Block w="100%" flex={1}>
-        <Outlet context={setContext} />
-      </Block>
+      <Outlet context={{ setMenu }} />
       <Menu
         h="3.5rem"
         display="flex"
@@ -50,9 +49,9 @@ export const Master = () => {
               },
             }}
             onClick={() => navigate(link)}
-            active={context.active === link}
+            active={menu === link}
           >
-            <Icon size="xl" color={context.active === link ? 'primary' : 'light'} />
+            <Icon size="xl" color={menu === link ? 'primary' : 'light'} />
           </Menu.Item>
         ))}
       </Menu>
@@ -61,5 +60,5 @@ export const Master = () => {
 }
 
 export function useMasterContext() {
-  return useOutletContext<MasterOutletContext>()
+  return useOutletContext<MasterContext>()
 }

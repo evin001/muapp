@@ -18,7 +18,7 @@ export const MainView = () => {
   useEffect(() => {
     switch (role) {
       case Role.Master: {
-        if (pathname.startsWith('/auth')) navigate('master')
+        if (pathname.startsWith('/auth') || pathname === '/') navigate('master')
         break
       }
       default: {

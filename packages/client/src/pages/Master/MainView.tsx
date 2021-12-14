@@ -9,11 +9,11 @@ import { Services } from './Services'
 import { Schedule } from './Schedule'
 
 export const MasterMainView = () => {
-  const setContext = useMasterContext()
+  const { setMenu } = useMasterContext()
   const { id } = useParams<{ id: string }>()
 
   useEffect(() => {
-    if (id) setContext({ active: id })
+    setMenu(id || '')
   }, [id])
 
   return (
