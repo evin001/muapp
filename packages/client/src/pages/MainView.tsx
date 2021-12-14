@@ -8,10 +8,12 @@ import useSelector from '~/hooks/useSelector'
 import { Background } from '~/components/Backgorund'
 import { Role } from '~/generated/graphql'
 
+import { UserStorage } from '~/utils/auth'
+
 export const MainView = () => {
-  const role = useSelector(({ user }) => user.data?.role)
-  const { pathname } = useLocation()
   const navigate = useNavigate()
+  const { pathname } = useLocation()
+  const role = useSelector(({ user }) => user.data?.role || UserStorage.get()?.role)
 
   useEffect(() => {
     switch (role) {
