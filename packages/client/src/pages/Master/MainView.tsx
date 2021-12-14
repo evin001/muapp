@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 
-import { useMasterContext } from '.'
+import { useMasterContext, MasterLink } from '.'
 
 import { useParams } from 'react-router-dom'
 
@@ -10,7 +10,7 @@ import { Schedule } from './Schedule'
 
 export const MasterMainView = () => {
   const { setMenu } = useMasterContext()
-  const { id } = useParams<{ id: string }>()
+  const { id } = useParams<{ id: MasterLink }>()
 
   useEffect(() => {
     setMenu(id || '')

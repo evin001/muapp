@@ -11,7 +11,7 @@ export const Page: React.FC<PageProps> = ({
   children,
   ...flexboxTypes
 }) => (
-  <Flexbox w="100%" flex={1} column {...flexboxTypes}>
+  <Flexbox px="m" flex={1} column {...flexboxTypes}>
     <Header
       size="1.75rem"
       my="1.125rem"

@@ -5,19 +5,28 @@ import { Person, List, Calendar } from '@stage-ui/icons'
 import { Outlet, useNavigate, useOutletContext } from 'react-router-dom'
 
 export type MasterContext = { setMenu: MasterMenuContext }
-export type MasterMenuContext = (ctx: string) => void
+export type MasterMenuContext = (ctx: MasterLink) => void
+export type MasterLink =
+  | typeof LINK_SERVICES
+  | typeof LINK_SCHEDULE
+  | typeof LINK_PROFILE
+  | ''
+
+export const LINK_SERVICES = 'services'
+export const LINK_SCHEDULE = 'schedule'
+export const LINK_PROFILE = 'profile'
 
 const menuItems = [
-  { Icon: List, link: 'services' },
-  { Icon: Calendar, link: 'schedule' },
-  { Icon: Person, link: 'profile' },
+  { Icon: List, link: LINK_SERVICES },
+  { Icon: Calendar, link: LINK_SCHEDULE },
+  { Icon: Person, link: LINK_PROFILE },
 ]
 
 export const Master = () => {
   const { assets } = useTheme()
   const navigate = useNavigate()
 
-  const [menu, setMenu] = useState('')
+  const [menu, setMenu] = useState<MasterLink>('')
 
   return (
     <Flexbox h="100%" column>
