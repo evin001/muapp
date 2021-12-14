@@ -11,6 +11,7 @@ import store from './data/store'
 import UserActions from './data/user'
 
 import { Master } from './pages/Master'
+import { MasterEditService } from './pages/Master/Services/Edit'
 import { MasterMainView } from './pages/Master/MainView'
 
 import { Auth } from './pages/Auth'
@@ -31,6 +32,8 @@ const App = () => {
             <Route path="/" element={<MainView />}>
               <Route path="master" element={<Master />}>
                 <Route path=":id" element={<MasterMainView />} />
+                <Route path="services/edit" element={<MasterEditService />} />
+                <Route path="services/edit/:id" element={<MasterEditService />} />
                 <Route path="" element={<Navigate replace to="services" />} />
               </Route>
               <Route path="auth" element={<Auth />}>
