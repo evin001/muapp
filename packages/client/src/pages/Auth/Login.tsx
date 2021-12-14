@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { useHeaders } from '.'
+import { useAuthContext } from '.'
 
 import { useNavigate } from 'react-router-dom'
 import { TextField, Button, Spinner } from '@stage-ui/core'
@@ -23,10 +23,10 @@ export const Login = () => {
   const [password, setPassword] = useState('')
   const [passwordError, setPasswordError] = useState('')
 
-  const setHeaders = useHeaders()
+  const setContext = useAuthContext()
 
   useEffect(() => {
-    setHeaders({
+    setContext({
       title: 'Вход',
       subtitle: 'Войдите, чтобы использовать все возможности системы',
     })

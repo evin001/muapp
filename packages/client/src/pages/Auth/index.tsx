@@ -5,22 +5,18 @@ import { Flexbox, Text, Grid } from '@stage-ui/core'
 
 import CompanyLogo from '~/components/CompanyLogo'
 
-export type AuthHeaders = { title: string; subtitle: string }
-export type HeaderContext = React.Dispatch<React.SetStateAction<AuthHeaders>>
-
-export function useHeaders() {
-  return useOutletContext<HeaderContext>() as HeaderContext
-}
+export type AuthContext = { title: string; subtitle: string }
+export type AuthOutletContext = (ctx: AuthContext) => void
 
 export const Auth = () => {
-  const [headers, setHeaders] = useState<AuthHeaders>({ title: '', subtitle: '' })
+  const [context, setContext] = useState<AuthContext>({ title: '', subtitle: '' })
 
   return (
     <Flexbox column h="100%" justifyContent="center">
       <Flexbox column pb="1.75rem">
         <CompanyLogo />
         <Text mb="s" size="2rem" color="surface" align="center">
-          {headers.title}
+          {context.title}
         </Text>
         <Text
           px="1.25rem"
@@ -29,12 +25,16 @@ export const Auth = () => {
           lineHeight="1.25rem"
           align="center"
         >
-          {headers.subtitle}
+          {context.subtitle}
         </Text>
       </Flexbox>
       <Grid p="2rem" gap="1rem">
-        <Outlet context={setHeaders} />
+        <Outlet context={setContext} />
       </Grid>
     </Flexbox>
   )
+}
+
+export function useAuthContext() {
+  return useOutletContext<AuthOutletContext>()
 }

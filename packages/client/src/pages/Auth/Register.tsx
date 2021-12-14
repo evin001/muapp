@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { useHeaders } from '.'
+import { useAuthContext } from '.'
 
 import { TextField, Button, Spinner, useTheme } from '@stage-ui/core'
 import PhoneInput from 'react-phone-input-2'
@@ -25,10 +25,10 @@ export const Register = () => {
   const [password, setPassword] = useState('')
   const [passwordError, setPasswordError] = useState('')
 
-  const setHeaders = useHeaders()
+  const setContext = useAuthContext()
 
   useEffect(() => {
-    setHeaders({
+    setContext({
       title: 'Регистрация',
       subtitle: 'Создайте аккаунт, чтобы клиенты могли записаться к вам',
     })
