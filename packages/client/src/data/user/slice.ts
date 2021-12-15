@@ -2,6 +2,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 import { User } from '~/generated/graphql'
+import { UserStorage } from '~/utils/auth'
 
 export interface UserState {
   data: User | null
@@ -10,7 +11,7 @@ export interface UserState {
 }
 
 export const initialState: UserState = {
-  data: null,
+  data: UserStorage.get() || null,
   fetch: 'idle',
   error: null,
 }
@@ -31,6 +32,11 @@ const userSlice = createSlice({
     userReject(state, { payload }: PayloadAction<string>) {
       state.error = payload
       state.fetch = 'rejected'
+    },
+    userReset(state) {
+      state.data = null
+      state.error = null
+      state.fetch = 'idle'
     },
   },
 })

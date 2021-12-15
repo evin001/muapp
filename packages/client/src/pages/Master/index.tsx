@@ -1,8 +1,12 @@
 import React, { useState } from 'react'
 
 import { Flexbox, Menu, useTheme } from '@stage-ui/core'
-import { Person, List, Calendar } from '@stage-ui/icons'
+import MenuItemTypes from '@stage-ui/core/control/Menu/MenuItem/types'
+import { OverridesProp } from '@stage-ui/system/props/overrides'
+import { Person, List, Calendar, LogOut } from '@stage-ui/icons'
 import { Outlet, useNavigate, useOutletContext } from 'react-router-dom'
+
+import { UserActions } from '~/data/user'
 
 export type MasterContext = { setMenu: MasterMenuContext }
 export type MasterMenuContext = (ctx: MasterLink) => void
@@ -28,6 +32,14 @@ export const Master = () => {
 
   const [menu, setMenu] = useState<MasterLink>('')
 
+  const menuOverrides: OverridesProp<MenuItemTypes.Classes> = {
+    container: {
+      display: 'flex',
+      alignItems: 'center',
+      textAlign: 'center',
+    },
+  }
+
   return (
     <Flexbox h="100%" column>
       <Outlet context={{ setMenu }} />
@@ -50,19 +62,20 @@ export const Master = () => {
             as="a"
             flex={1}
             href={`master/${link}`}
-            overrides={{
-              container: {
-                display: 'flex',
-                alignItems: 'center',
-                textAlign: 'center',
-              },
-            }}
+            overrides={menuOverrides}
             onClick={() => navigate(link)}
             active={menu === link}
           >
             <Icon size="xl" color={menu === link ? 'primary' : 'light'} />
           </Menu.Item>
         ))}
+        <Menu.Item
+          flex={1}
+          overrides={menuOverrides}
+          onClick={() => UserActions.logOut()}
+        >
+          <LogOut size="xl" color="light" />
+        </Menu.Item>
       </Menu>
     </Flexbox>
   )

@@ -10,8 +10,11 @@ import AuthError from './AuthError'
 import useSelector from '~/hooks/useSelector'
 import UserActions from '~/data/user'
 import { verify } from '~/utils/auth'
+import { useTitle } from '~/hooks/useTitle'
 
 export const Login = () => {
+  useTitle('Вход')
+
   const navigate = useNavigate()
   const { fetchError, loading } = useSelector(({ user }) => ({
     fetchError: user.error,

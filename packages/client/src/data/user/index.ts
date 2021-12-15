@@ -3,7 +3,7 @@ import { UserStore } from '../store'
 import request from '~/requests/request'
 import { UserStorage } from '~/utils/auth'
 
-const UserActions = {
+export const UserActions = {
   async register(email: string, phone: string, password: string) {
     try {
       UserStore.userFetch()
@@ -52,6 +52,11 @@ const UserActions = {
     if (user) {
       UserStore.userResolve(user)
     }
+  },
+
+  logOut() {
+    UserStore.userReset()
+    UserStorage.reset()
   },
 }
 

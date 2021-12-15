@@ -33,4 +33,7 @@ export const UserStorage = {
   set: (data: User) => {
     localStorage.setItem('user', JSON.stringify(data))
   },
+  reset: () => {
+    localStorage.removeItem('user')
+  },
 }
