@@ -2,6 +2,4 @@ import { useSelector as useReduxSelector, TypedUseSelectorHook } from 'react-red
 
 import { RootState } from '~/data/store'
 
-const useSelector: TypedUseSelectorHook<RootState> = useReduxSelector
-
-export default useSelector
+export const useSelector: TypedUseSelectorHook<RootState> = useReduxSelector

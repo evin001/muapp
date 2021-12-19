@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react'
 
 import { useParams, useNavigate } from 'react-router-dom'
-import { Button } from '@stage-ui/core'
-import { ArrowLeft } from '@stage-ui/icons'
+import { Grid, Button, TextField, Text, Link } from '@stage-ui/core'
+import { ArrowLeft, Plus, Save } from '@stage-ui/icons'
 
 import { useMasterContext } from '..'
 
@@ -30,7 +30,19 @@ export const MasterEditService = () => {
         </Button>
       }
     >
-      edit page
+      <Grid gap="1rem">
+        <TextField label="Услуга" rightChild={<Link>Выбрать</Link>} />
+        <Grid templateColumns="1fr 1fr" gap="1rem">
+          <TextField label="Длительность" rightChild={<Text>мин</Text>} />
+          <TextField label="Стоимость" rightChild={<Text>₽</Text>} />
+        </Grid>
+        <Button
+          mt="m"
+          textColor="surface"
+          label={id ? 'Сохранить' : 'Добавить'}
+          leftChild={id ? <Save /> : <Plus />}
+        />
+      </Grid>
     </Page>
   )
 }

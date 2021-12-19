@@ -5,10 +5,10 @@ import { useAuthContext } from '.'
 import { useNavigate } from 'react-router-dom'
 import { TextField, Button, Spinner } from '@stage-ui/core'
 
-import AuthError from './AuthError'
+import { AuthError } from './AuthError'
 
-import useSelector from '~/hooks/useSelector'
-import UserActions from '~/data/user'
+import { useSelector } from '~/hooks/useSelector'
+import { UserActions } from '~/data/user'
 import { verify } from '~/utils/auth'
 import { useTitle } from '~/hooks/useTitle'
 

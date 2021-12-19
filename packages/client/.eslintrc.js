@@ -77,6 +77,7 @@ module.exports = {
     'react/jsx-props-no-spreading': 'warn',
 
     /* GLOBAL */    
+    'jsx-a11y/anchor-is-valid': 'off',
     'no-for-of-loops/no-for-of-loops': 'warn',
     "no-function-declare-after-return/no-function-declare-after-return": 'error',
     "import/order": ["error", {
