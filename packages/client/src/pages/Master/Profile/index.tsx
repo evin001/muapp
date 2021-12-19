@@ -79,13 +79,12 @@ export const Profile = () => {
         <Block h="1rem" />
         <Grid gap="1rem" templateColumns="auto auto" justifyContent="center">
           <Button
-            w="10rem"
             label="Сменить пароль"
             decoration="outline"
             onClick={handleClickChangePassword}
           />
           <Button
-            w="10rem"
+            w="8rem"
             label="Сохранить"
             textColor="surface"
             onClick={handleClickSave}
