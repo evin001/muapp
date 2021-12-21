@@ -39,11 +39,19 @@ func VerifyToken(tokenString string) (*jwt.StandardClaims, error) {
 		return []byte(GetEnv("JWT_SECRET")), nil
 	})
 
-	if claims, ok := token.Claims.(*jwt.StandardClaims); ok && token.Valid {
-		return claims, nil
+	if token.Valid {
+		if claims, ok := token.Claims.(*jwt.StandardClaims); ok && token.Valid {
+			return claims, nil
+		}
+	} else if ve, ok := err.(*jwt.ValidationError); ok {
+		if ve.Errors&jwt.ValidationErrorMalformed != 0 {
+			return nil, fmt.Errorf("That's not even a token")
+		} else if ve.Errors&(jwt.ValidationErrorExpired|jwt.ValidationErrorNotValidYet) != 0 {
+			return nil, fmt.Errorf("Token is expired")
+		}
 	}
-	fmt.Printf("%s", err)
-	return nil, err
+
+	return nil, fmt.Errorf("Couldn't handle this token")
 }
 
 func GenTokens(user *models.User) error {
