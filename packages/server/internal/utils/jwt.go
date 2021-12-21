@@ -42,7 +42,7 @@ func VerifyToken(tokenString string) (*jwt.StandardClaims, error) {
 	if claims, ok := token.Claims.(*jwt.StandardClaims); ok && token.Valid {
 		return claims, nil
 	}
-
+	fmt.Printf("%s", err)
 	return nil, err
 }
 

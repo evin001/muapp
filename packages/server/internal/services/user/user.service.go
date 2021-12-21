@@ -42,7 +42,7 @@ func (s UserService) GetUser(email string) (*models.User, string, error) {
 }
 
 func (s UserService) CreateUser(email, phone, password string, role models.Role) (*models.User, error) {
-	var id int = 1
+	var id int
 
 	query := `
 		INSERT INTO users (email, phone, password, role, email_verified, phone_verified)

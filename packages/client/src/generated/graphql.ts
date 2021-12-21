@@ -24,9 +24,19 @@ export enum CallType {
   Repeat = 'Repeat'
 }
 
+export type Category = {
+  __typename?: 'Category';
+  id: Scalars['Int'];
+  name: Scalars['String'];
+  parentId?: Maybe<Scalars['Int']>;
+  userId: Scalars['Int'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   callPassword: Call;
+  /** Categories */
+  categoryCreate: Category;
   userRefreshToken: Tokens;
   userSignIn: User;
   /** User */
@@ -36,6 +46,12 @@ export type Mutation = {
 
 export type MutationCallPasswordArgs = {
   phone: Scalars['String'];
+};
+
+
+export type MutationCategoryCreateArgs = {
+  name: Scalars['String'];
+  parentId?: InputMaybe<Scalars['Int']>;
 };
 
 

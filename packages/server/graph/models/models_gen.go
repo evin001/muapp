@@ -14,6 +14,13 @@ type Call struct {
 	Type    string `json:"type"`
 }
 
+type Category struct {
+	ID       int    `json:"id"`
+	Name     string `json:"name"`
+	UserID   int    `json:"userId"`
+	ParentID *int   `json:"parentId"`
+}
+
 type Tokens struct {
 	AuthToken    string `json:"authToken"`
 	RefreshToken string `json:"refreshToken"`

@@ -11,6 +11,7 @@ import (
 	"muapp.ru/graph/generated"
 	"muapp.ru/graph/resolvers"
 	"muapp.ru/internal/directives"
+	"muapp.ru/internal/middlewares"
 	"muapp.ru/internal/utils"
 )
 
@@ -18,7 +19,9 @@ func main() {
 	port := utils.GetEnv("SERVER_PORT")
 
 	cfg := generated.Config{Resolvers: &resolvers.Resolver{}}
+
 	cfg.Directives.Binding = directives.Binding
+	cfg.Directives.HasRole = directives.HasRole
 
 	c := cors.New(cors.Options{
 		AllowedMethods:   []string{"POST"},
@@ -31,7 +34,7 @@ func main() {
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(cfg))
 
 	http.Handle("/", playground.Handler("GraphQL playground", "/graphql"))
-	http.Handle("/graphql", c.Handler(srv))
+	http.Handle("/graphql", middlewares.AuthHandler(c.Handler(srv)))
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))

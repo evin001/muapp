@@ -27,7 +27,7 @@
   "compounds": [
     {
       "name": "Start All",
-      "configurations": ["Client (8080)", "Server"]
+      "configurations": ["Client", "Server"]
     }
   ]
 }

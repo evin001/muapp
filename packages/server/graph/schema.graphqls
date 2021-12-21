@@ -3,6 +3,7 @@
 # https://gqlgen.com/getting-started/
 
 directive @binding(constraint: String!) on INPUT_FIELD_DEFINITION | ARGUMENT_DEFINITION
+directive @hasRole(role: [Role]!) on FIELD_DEFINITION
 
 type Mutation {
   callPassword(phone: String! @binding(constraint: "required,e164")): Call!
@@ -23,4 +24,10 @@ type Mutation {
   userRefreshToken(    
     refreshToken: String! @binding(constraint: "required")
   ): Tokens!
+
+  "Categories"
+  categoryCreate(
+    name: String!, @binding(constraint: "required,lte=255")
+    parentId: Int
+  ): Category! @hasRole(role: [master])
 }
