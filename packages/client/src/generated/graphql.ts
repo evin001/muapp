@@ -35,11 +35,9 @@ export type Category = {
 export type Mutation = {
   __typename?: 'Mutation';
   callPassword: Call;
-  /** Categories */
   categoryCreate: Category;
   userRefreshToken: Tokens;
   userSignIn: User;
-  /** User */
   userSignUp: User;
 };
 
@@ -70,6 +68,11 @@ export type MutationUserSignUpArgs = {
   email: Scalars['String'];
   password: Scalars['String'];
   phone: Scalars['String'];
+};
+
+export type Query = {
+  __typename?: 'Query';
+  categories: Array<Maybe<Category>>;
 };
 
 export enum Role {

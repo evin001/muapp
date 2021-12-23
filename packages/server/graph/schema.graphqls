@@ -5,10 +5,12 @@
 directive @binding(constraint: String!) on INPUT_FIELD_DEFINITION | ARGUMENT_DEFINITION
 directive @hasRole(role: [Role]!) on FIELD_DEFINITION
 
+type Query {
+  categories: [Category]!
+}
+
 type Mutation {
   callPassword(phone: String! @binding(constraint: "required,e164")): Call!
-
-  "User"
 
   userSignUp(
     email: String!, @binding(constraint: "required,email")
@@ -25,7 +27,6 @@ type Mutation {
     refreshToken: String! @binding(constraint: "required")
   ): Tokens!
 
-  "Categories"
   categoryCreate(
     name: String!, @binding(constraint: "required,lte=255")
     parentId: Int

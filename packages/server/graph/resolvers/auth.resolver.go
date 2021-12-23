@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/vektah/gqlparser/v2/gqlerror"
-	"muapp.ru/graph/generated"
 	"muapp.ru/graph/models"
 	"muapp.ru/internal/services/call"
 	"muapp.ru/internal/services/user"
@@ -45,8 +44,3 @@ func (r *mutationResolver) UserRefreshToken(ctx context.Context, refreshToken st
 	}
 	return tokens, nil
 }
-
-// Mutation returns generated.MutationResolver implementation.
-func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
-
-type mutationResolver struct{ *Resolver }

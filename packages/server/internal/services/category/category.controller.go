@@ -10,6 +10,15 @@ import (
 
 type CategoryController struct{}
 
+func (c CategoryController) GetAll() ([]*models.Category, error) {
+	srv := new(CategoryService)
+	categories, err := srv.GetAll()
+	if err != nil {
+		return nil, err
+	}
+	return categories, nil
+}
+
 func (c CategoryController) CreateCategory(ctx context.Context, name string, parentID *int) (*models.Category, error) {
 	srv := new(CategoryService)
 
