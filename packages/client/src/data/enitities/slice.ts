@@ -4,6 +4,8 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { Category } from '~/generated/graphql'
 
 export interface EntitiesState {
+  mutationPending: boolean
+  error: string
   categories: {
     data: Category[]
     fetch: LoadingState
@@ -12,6 +14,8 @@ export interface EntitiesState {
 }
 
 export const initialState: EntitiesState = {
+  mutationPending: false,
+  error: '',
   categories: {
     data: [],
     fetch: 'idle',
@@ -29,15 +33,20 @@ const entitiesSlice = createSlice({
     },
     categoriesResolve(state, { payload }: PayloadAction<Category[]>) {
       state.categories.fetch = 'resolved'
-      state.categories.data = state.categories.data.concat(...payload)
+      state.categories.data = payload
     },
     categoriesReject(state, { payload }: PayloadAction<string>) {
       state.categories.fetch = 'rejected'
       state.categories.error = payload
     },
-    categoriesClear(state) {
-      state.categories.fetch = 'idle'
-      state.categories.error = ''
+
+    mutationFetch(state, { payload }: PayloadAction<boolean>) {
+      state.error = ''
+      state.mutationPending = payload
+    },
+    mutationReject(state, { payload }: PayloadAction<string>) {
+      state.error = payload
+      state.mutationPending = false
     },
   },
 })

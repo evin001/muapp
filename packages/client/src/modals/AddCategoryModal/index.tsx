@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 
 import { TextField, Button, Flexbox, Spinner } from '@stage-ui/core'
 import { Plus } from '@stage-ui/icons'
@@ -12,26 +12,14 @@ type AddCategoryModalProps = {
 }
 
 export const AddCategoryModal = ({ onClose }: AddCategoryModalProps) => {
-  const [clear, setClear] = useState(false)
   const [categoryName, setCategoryName] = useState('')
-  const { fetch, error } = useSelector(({ entities }) => ({
-    fetch: entities.categories.fetch,
+  const { mutationPending, error } = useSelector(({ entities }) => ({
+    mutationPending: entities.mutationPending,
     error: entities.categories.error,
   }))
 
-  useEffect(() => {
-    // EnititiesActions.categoriesClear()
-    setClear(true)
-  }, [])
-
-  useEffect(() => {
-    if (fetch === 'resolved' && clear) {
-      onClose()
-    }
-  }, [fetch])
-
   const handleForm = () => {
-    EnititiesActions.categoryCreate(categoryName)
+    EnititiesActions.categoryCreate({ name: categoryName, callback: onClose })
   }
   const handleChangeCategoryName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCategoryName(e.target.value.trim())
@@ -51,7 +39,7 @@ export const AddCategoryModal = ({ onClose }: AddCategoryModalProps) => {
         <Button
           label="Добавить"
           textColor="surface"
-          leftChild={fetch === 'pending' ? <Spinner /> : <Plus />}
+          leftChild={mutationPending ? <Spinner /> : <Plus />}
           disabled={!categoryName}
           onClick={handleForm}
         />

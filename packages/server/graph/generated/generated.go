@@ -388,7 +388,7 @@ directive @binding(constraint: String!) on INPUT_FIELD_DEFINITION | ARGUMENT_DEF
 directive @hasRole(role: [Role]!) on FIELD_DEFINITION
 
 type Query {
-  categories: [Category]!
+  categories: [Category!]!
 }
 
 type Mutation {
@@ -1298,7 +1298,7 @@ func (ec *executionContext) _Query_categories(ctx context.Context, field graphql
 	}
 	res := resTmp.([]*models.Category)
 	fc.Result = res
-	return ec.marshalNCategory2ᚕᚖmuappᚗruᚋgraphᚋmodelsᚐCategory(ctx, field.Selections, res)
+	return ec.marshalNCategory2ᚕᚖmuappᚗruᚋgraphᚋmodelsᚐCategoryᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -3468,7 +3468,7 @@ func (ec *executionContext) marshalNCategory2muappᚗruᚋgraphᚋmodelsᚐCateg
 	return ec._Category(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNCategory2ᚕᚖmuappᚗruᚋgraphᚋmodelsᚐCategory(ctx context.Context, sel ast.SelectionSet, v []*models.Category) graphql.Marshaler {
+func (ec *executionContext) marshalNCategory2ᚕᚖmuappᚗruᚋgraphᚋmodelsᚐCategoryᚄ(ctx context.Context, sel ast.SelectionSet, v []*models.Category) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -3492,7 +3492,7 @@ func (ec *executionContext) marshalNCategory2ᚕᚖmuappᚗruᚋgraphᚋmodels�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOCategory2ᚖmuappᚗruᚋgraphᚋmodelsᚐCategory(ctx, sel, v[i])
+			ret[i] = ec.marshalNCategory2ᚖmuappᚗruᚋgraphᚋmodelsᚐCategory(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -3502,6 +3502,12 @@ func (ec *executionContext) marshalNCategory2ᚕᚖmuappᚗruᚋgraphᚋmodels�
 
 	}
 	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
 
 	return ret
 }
@@ -3922,13 +3928,6 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 		return graphql.Null
 	}
 	return graphql.MarshalBoolean(*v)
-}
-
-func (ec *executionContext) marshalOCategory2ᚖmuappᚗruᚋgraphᚋmodelsᚐCategory(ctx context.Context, sel ast.SelectionSet, v *models.Category) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._Category(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOInt2ᚖint(ctx context.Context, v interface{}) (*int, error) {

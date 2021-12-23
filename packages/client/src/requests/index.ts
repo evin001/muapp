@@ -5,11 +5,17 @@ import userRefreshToken, {
 } from './mutations/userRefreshToken'
 import categoryCreate, { CategoryCreateMutationType } from './mutations/categoryCreate'
 
+import categories, { CategoriesQueryType } from './queries/categories'
+
 type Mutations = {
   userSignUp: UserSignUpMutationType
   userSignIn: UserSignInMutationType
   userRefreshToken: UserRefreshTokenMutationType
   categoryCreate: CategoryCreateMutationType
+}
+
+type Queries = {
+  categories: CategoriesQueryType
 }
 
 const mutations = {
@@ -19,8 +25,13 @@ const mutations = {
   categoryCreate,
 }
 
-export type Requests = Mutations
+const queries = {
+  categories,
+}
+
+export type Requests = Mutations & Queries
 
 export default {
   ...mutations,
+  ...queries,
 }

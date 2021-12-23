@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 
 import { useParams, useNavigate } from 'react-router-dom'
-import { Grid, Button, TextField, Text, Link, dialog } from '@stage-ui/core'
+import { Grid, Button, TextField, Text, Link, Select, dialog } from '@stage-ui/core'
 import { ArrowLeft, Plus, Save } from '@stage-ui/icons'
 
 import { useMasterContext } from '..'
@@ -11,10 +11,14 @@ import { useTitle } from '~/hooks/useTitle'
 import { AddCategoryModal } from '~/modals/AddCategoryModal'
 import { AddServiceModal } from '~/modals/AddServiceModal'
 import { EnititiesActions } from '~/data/enitities'
+import { useSelector } from '~/hooks/useSelector'
 
 export const MasterEditService = () => {
   const navigate = useNavigate()
   const { setMenu } = useMasterContext()
+  const { categories } = useSelector((state) => ({
+    categories: state.entities.categories.data,
+  }))
   const { id } = useParams<{ id: string }>()
   const title = id ? 'Редактирование услуги' : 'Добавление услуги'
 
@@ -22,9 +26,21 @@ export const MasterEditService = () => {
 
   useEffect(() => {
     setMenu('services')
+    EnititiesActions.categoriesFetch()
   }, [])
 
-  const handleClickAddCategory = () => {
+  const categoryOptions = useMemo(
+    () =>
+      categories.map((category) => ({
+        text: category.name,
+        value: category.id,
+      })),
+    [categories.length],
+  )
+  console.log({ categories, categoryOptions })
+  const handleClickAddCategory = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation()
+
     dialog({
       title: 'Новая категория',
       render: (close) => <AddCategoryModal onClose={close} />,
@@ -48,9 +64,14 @@ export const MasterEditService = () => {
       }
     >
       <Grid gap="1rem">
-        <TextField
-          label="Категория"
-          rightChild={<Link onClick={handleClickAddCategory}>Добавить</Link>}
+        <Select
+          placeholder="Категория"
+          options={categoryOptions}
+          rightChild={
+            <Link mr="s" onClick={handleClickAddCategory}>
+              Добавить
+            </Link>
+          }
         />
         <TextField
           label="Услуга"

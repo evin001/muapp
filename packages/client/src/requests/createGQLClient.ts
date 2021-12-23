@@ -26,7 +26,7 @@ const createClient = <CR extends ClientRequests>(
 ) => {
   const request = async <N extends keyof CR>(
     name: N,
-    variables: CR[N]['args'],
+    variables?: CR[N]['args'],
   ): Promise<CR[N]['resp']> => {
     try {
       const headers = (await getHeaders?.()) || undefined

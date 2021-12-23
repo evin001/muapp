@@ -6,7 +6,7 @@ directive @binding(constraint: String!) on INPUT_FIELD_DEFINITION | ARGUMENT_DEF
 directive @hasRole(role: [Role]!) on FIELD_DEFINITION
 
 type Query {
-  categories: [Category]!
+  categories: [Category!]!
 }
 
 type Mutation {

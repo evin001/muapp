@@ -72,7 +72,7 @@ export type MutationUserSignUpArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  categories: Array<Maybe<Category>>;
+  categories: Array<Category>;
 };
 
 export enum Role {
