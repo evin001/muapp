@@ -13,4 +13,8 @@ export const EnititiesActions = {
       EntitiesStore.categoriesReject(error.message)
     }
   },
+
+  categoriesClear() {
+    EntitiesStore.categoriesClear()
+  },
 }

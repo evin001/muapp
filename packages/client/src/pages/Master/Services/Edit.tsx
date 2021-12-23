@@ -10,6 +10,7 @@ import { Page } from '~/components/Page'
 import { useTitle } from '~/hooks/useTitle'
 import { AddCategoryModal } from '~/modals/AddCategoryModal'
 import { AddServiceModal } from '~/modals/AddServiceModal'
+import { EnititiesActions } from '~/data/enitities'
 
 export const MasterEditService = () => {
   const navigate = useNavigate()

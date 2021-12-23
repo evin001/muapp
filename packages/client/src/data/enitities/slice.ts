@@ -35,6 +35,10 @@ const entitiesSlice = createSlice({
       state.categories.fetch = 'rejected'
       state.categories.error = payload
     },
+    categoriesClear(state) {
+      state.categories.fetch = 'idle'
+      state.categories.error = ''
+    },
   },
 })
 
