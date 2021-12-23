@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect } from 'react'
 
 import { useParams, useNavigate } from 'react-router-dom'
 import { Grid, Button, TextField, Text, Link, Select, dialog } from '@stage-ui/core'
@@ -11,14 +11,11 @@ import { useTitle } from '~/hooks/useTitle'
 import { AddCategoryModal } from '~/modals/AddCategoryModal'
 import { AddServiceModal } from '~/modals/AddServiceModal'
 import { EnititiesActions } from '~/data/enitities'
-import { useSelector } from '~/hooks/useSelector'
+import { useCategoryOptions } from '~/hooks/useCategoryOptions'
 
 export const MasterEditService = () => {
   const navigate = useNavigate()
   const { setMenu } = useMasterContext()
-  const { categories } = useSelector((state) => ({
-    categories: state.entities.categories.data,
-  }))
   const { id } = useParams<{ id: string }>()
   const title = id ? 'Редактирование услуги' : 'Добавление услуги'
 
@@ -29,15 +26,9 @@ export const MasterEditService = () => {
     EnititiesActions.categoriesFetch()
   }, [])
 
-  const categoryOptions = useMemo(
-    () =>
-      categories.map((category) => ({
-        text: category.name,
-        value: category.id,
-      })),
-    [categories.length],
-  )
-  console.log({ categories, categoryOptions })
+  const categoryOptions = useCategoryOptions()
+  const serviceOptions = []
+
   const handleClickAddCategory = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation()
 
@@ -47,7 +38,9 @@ export const MasterEditService = () => {
     })
   }
 
-  const handleClickAddService = () => {
+  const handleClickAddService = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation()
+
     dialog({
       title: 'Новая услуга',
       render: (close) => <AddServiceModal onClose={close} />,
@@ -65,7 +58,9 @@ export const MasterEditService = () => {
     >
       <Grid gap="1rem">
         <Select
-          placeholder="Категория"
+          clearable
+          label="Категория"
+          placeholder="Выберите категорию"
           options={categoryOptions}
           rightChild={
             <Link mr="s" onClick={handleClickAddCategory}>
@@ -73,9 +68,15 @@ export const MasterEditService = () => {
             </Link>
           }
         />
-        <TextField
+        <Select
           label="Услуга"
-          rightChild={<Link onClick={handleClickAddService}>Добавить</Link>}
+          placeholder="Выберите услугу"
+          options={serviceOptions}
+          rightChild={
+            <Link mr="s" onClick={handleClickAddService}>
+              Добавить
+            </Link>
+          }
         />
         <Grid templateColumns="1fr 1fr" gap="1rem">
           <TextField label="Длительность" rightChild={<Text>мин</Text>} />

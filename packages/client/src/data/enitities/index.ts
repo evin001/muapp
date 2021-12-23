@@ -29,7 +29,7 @@ export const EnititiesActions = {
     callback?: () => void
   }) {
     try {
-      EntitiesStore.mutationFetch(true)
+      EntitiesStore.mutationPending(true)
       await request('categoryCreate', { name, parentId })
       await EnititiesActions.categoriesFetch()
       callback?.()
@@ -37,7 +37,7 @@ export const EnititiesActions = {
       const error = <RequestError>e
       EntitiesStore.mutationReject(error.message)
     } finally {
-      EntitiesStore.mutationFetch(false)
+      EntitiesStore.mutationPending(false)
     }
   },
 }

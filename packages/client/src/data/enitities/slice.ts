@@ -40,7 +40,7 @@ const entitiesSlice = createSlice({
       state.categories.error = payload
     },
 
-    mutationFetch(state, { payload }: PayloadAction<boolean>) {
+    mutationPending(state, { payload }: PayloadAction<boolean>) {
       state.error = ''
       state.mutationPending = payload
     },
