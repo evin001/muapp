@@ -10,7 +10,7 @@ export type CategoryCreateMutationType = GQLRequest<
 >
 
 export default gql`
-  mutation ($name: String!, parentId: Int) {
+  mutation ($name: String!, $parentId: Int) {
     categoryCreate(name: $name, parentId: $parentId) {
       id
       name

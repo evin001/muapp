@@ -3,6 +3,8 @@ import { GraphQLClient, ClientError } from 'graphql-request'
 
 import { translate } from './errors'
 
+import UserActions from '~/data/user'
+
 export type GQLRequest<A, R> = {
   args: A
   resp: R
@@ -43,9 +45,14 @@ const createClient = <CR extends ClientRequests>(
       return response[name]
     } catch (e) {
       const error = <ClientError>e
-      throw new GQLError({
-        message: error?.response?.errors?.[0].message || error.message,
-      })
+      const message = error?.response?.errors?.[0].message || error.message // Token is expired
+
+      if (message === 'Token is expired') {
+        await UserActions.refreshToken()
+        return request(name, variables)
+      }
+
+      throw new GQLError({ message })
     }
   }
 
