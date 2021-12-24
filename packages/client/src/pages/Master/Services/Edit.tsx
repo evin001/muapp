@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 
 import { useParams, useNavigate } from 'react-router-dom'
 import { Grid, Button, TextField, Text, Link, Select, dialog } from '@stage-ui/core'
@@ -18,6 +18,7 @@ import {
 import { useSelector } from '~/hooks/useSelector'
 
 export const MasterEditService = () => {
+  const [category, setCategory] = useState<number | null>(null)
   const navigate = useNavigate()
   const { setMenu } = useMasterContext()
   const { id } = useParams<{ id: string }>()
@@ -38,8 +39,11 @@ export const MasterEditService = () => {
     [categories.length],
   )
   const serviceOptions = useMemo(
-    () => services.map((s) => ({ text: s.name, value: s.id })),
-    [services.length],
+    () =>
+      services
+        .filter((s) => s.parentId === category)
+        .map((s) => ({ text: s.name, value: s.id })),
+    [services.length, category],
   )
 
   const handleClickAddCategory = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -80,6 +84,9 @@ export const MasterEditService = () => {
               Добавить
             </Link>
           }
+          onChange={(_, option) => {
+            setCategory((option?.value as number) || null)
+          }}
         />
         <Select
           label="Услуга"

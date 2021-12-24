@@ -59,7 +59,7 @@ func (s CategoryService) CreateCategory(name string, userID int, parentID *int) 
 func (s CategoryService) UpdateType(id int, categoryType models.CategoryType) error {
 	var ct models.CategoryType
 
-	query := "SELECT category_tye FROM categories WHERE id = $1"
+	query := "SELECT type FROM categories WHERE id = $1"
 	err := db.QueryRow(context.Background(), query, id).Scan(&ct)
 	if err != nil {
 		return err
@@ -68,7 +68,7 @@ func (s CategoryService) UpdateType(id int, categoryType models.CategoryType) er
 		return nil
 	}
 
-	query = "UPDATE categories SET category_type = $1 WHERE id = $2"
+	query = "UPDATE categories SET type = $1 WHERE id = $2"
 	_, err = db.Exec(context.Background(), query, categoryType, id)
 	if err != nil {
 		return err
