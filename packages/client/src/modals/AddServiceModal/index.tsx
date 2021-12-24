@@ -46,7 +46,7 @@ export const AddServiceModal = ({ onClose }: AddServiceModalProps) => {
   }
 
   return (
-    <Flexbox column w="16rem">
+    <Flexbox column w="16rem" css={{ maxWidth: '100%' }}>
       <Grid gap="1rem">
         <Select
           clearable
@@ -62,7 +62,7 @@ export const AddServiceModal = ({ onClose }: AddServiceModalProps) => {
           onChange={handleChangeServiceName}
         />
       </Grid>
-      <HintError>{error}</HintError>
+      <HintError error={error} />
       <Flexbox justifyContent="flex-end" mt="m">
         <Button label="Отменить" onClick={onClose} decoration="plain" />
         <Flexbox w="1rem" />

@@ -7,18 +7,21 @@
     "gqlgen": "graphql-codegen --config codegen.yml"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "^1.7.0",
-    "@stage-ui/core": "*",
-    "@stage-ui/icons": "*",
+    "@hookform/resolvers": "2.8.5",
+    "@reduxjs/toolkit": "1.7.0",
+    "@stage-ui/core": "0.2.6",
+    "@stage-ui/icons": "0.2.6",
     "graphql": "16.1.0",
     "graphql-request": "3.7.0",
+    "joi": "17.5.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-hook-form": "^7.22.2",
     "react-phone-input-2": "2.14.0",
     "react-redux": "7.2.6",
     "react-router": "6.1.1",
-    "react-router-dom": "6.1.1"
+    "react-router-dom": "6.1.1",
+    "yup": "0.32.11"
   },
   "devDependencies": {
     "@babel/cli": "7.7.5",
@@ -42,6 +45,7 @@
     "@types/react-redux": "7",
     "@types/react-router": "5.1.17",
     "@types/react-router-dom": "5.3.2",
+    "@types/yup": "^0",
     "@typescript-eslint/eslint-plugin": "5.4.0",
     "@typescript-eslint/parser": "5.4.0",
     "babel-loader": "8.0.6",

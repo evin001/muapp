@@ -27,13 +27,13 @@ export const AddCategoryModal = ({ onClose }: AddCategoryModalProps) => {
   }
 
   return (
-    <Flexbox column w="16rem">
+    <Flexbox column w="16rem" css={{ maxWidth: '100%' }}>
       <TextField
         label="Категория"
         value={categoryName}
         onChange={handleChangeCategoryName}
       />
-      <HintError>{error}</HintError>
+      <HintError error={error} />
       <Flexbox justifyContent="flex-end" mt="m">
         <Button label="Отменить" onClick={onClose} decoration="plain" />
         <Flexbox w="1rem" />
