@@ -46,16 +46,22 @@ export const AddServiceModal = ({ onClose }: AddServiceModalProps) => {
   }
 
   return (
-    <Grid w="16rem" gap="1rem">
-      <Select
-        clearable
-        label="Категория"
-        placeholder="Выберите категорию"
-        options={categoryOptions}
-        values={categoryOptions.filter((c) => c.value === category)}
-        onChange={handleChangeCagegory}
-      />
-      <TextField label="Услуга" value={serviceName} onChange={handleChangeServiceName} />
+    <Flexbox column w="16rem">
+      <Grid gap="1rem">
+        <Select
+          clearable
+          label="Категория"
+          placeholder="Выберите категорию"
+          options={categoryOptions}
+          values={categoryOptions.filter((c) => c.value === category)}
+          onChange={handleChangeCagegory}
+        />
+        <TextField
+          label="Услуга"
+          value={serviceName}
+          onChange={handleChangeServiceName}
+        />
+      </Grid>
       <HintError>{error}</HintError>
       <Flexbox justifyContent="flex-end" mt="m">
         <Button label="Отменить" onClick={onClose} decoration="plain" />
@@ -68,6 +74,6 @@ export const AddServiceModal = ({ onClose }: AddServiceModalProps) => {
           onClick={handleClickSave}
         />
       </Flexbox>
-    </Grid>
+    </Flexbox>
   )
 }

@@ -13,6 +13,7 @@ export default gql`
       name
       userId
       parentId
+      type
     }
   }
 `
