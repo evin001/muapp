@@ -29,8 +29,15 @@ export type Category = {
   id: Scalars['Int'];
   name: Scalars['String'];
   parentId?: Maybe<Scalars['Int']>;
+  type: CategoryType;
   userId: Scalars['Int'];
 };
+
+export enum CategoryType {
+  Child = 'child',
+  Free = 'free',
+  Parent = 'parent'
+}
 
 export type Mutation = {
   __typename?: 'Mutation';

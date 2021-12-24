@@ -35,8 +35,14 @@ func (s CategoryService) GetAll() ([]*models.Category, error) {
 func (s CategoryService) CreateCategory(name string, userID int, parentID *int) (*models.Category, error) {
 	var id int
 
-	query := "INSERT INTO categories (name, user_id, parent_id) VALUES ($1, $2, $3) RETURNING id"
-	err := db.QueryRow(context.Background(), query, name, userID, parentID).Scan(&id)
+	categoryType := models.CategoryTypeFree
+	if parentID != nil {
+		categoryType = models.CategoryTypeChild
+		s.UpdateType(*parentID, models.CategoryTypeParent)
+	}
+
+	query := "INSERT INTO categories (name, user_id, parent_id, type) VALUES ($1, $2, $3, $4) RETURNING id"
+	err := db.QueryRow(context.Background(), query, name, userID, parentID, categoryType).Scan(&id)
 	if err != nil {
 		return nil, err
 	}
@@ -46,5 +52,26 @@ func (s CategoryService) CreateCategory(name string, userID int, parentID *int) 
 		Name:     name,
 		ParentID: parentID,
 		UserID:   userID,
+		Type:     categoryType,
 	}, nil
+}
+
+func (s CategoryService) UpdateType(id int, categoryType models.CategoryType) error {
+	var ct models.CategoryType
+
+	query := "SELECT category_tye FROM categories WHERE id = $1"
+	err := db.QueryRow(context.Background(), query, id).Scan(&ct)
+	if err != nil {
+		return err
+	}
+	if ct == categoryType {
+		return nil
+	}
+
+	query = "UPDATE categories SET category_type = $1 WHERE id = $2"
+	_, err = db.Exec(context.Background(), query, categoryType, id)
+	if err != nil {
+		return err
+	}
+	return nil
 }

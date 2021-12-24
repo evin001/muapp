@@ -56,6 +56,7 @@ type ComplexityRoot struct {
 		ID       func(childComplexity int) int
 		Name     func(childComplexity int) int
 		ParentID func(childComplexity int) int
+		Type     func(childComplexity int) int
 		UserID   func(childComplexity int) int
 	}
 
@@ -157,6 +158,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Category.ParentID(childComplexity), true
+
+	case "Category.type":
+		if e.complexity.Category.Type == nil {
+			break
+		}
+
+		return e.complexity.Category.Type(childComplexity), true
 
 	case "Category.userId":
 		if e.complexity.Category.UserID == nil {
@@ -430,6 +438,13 @@ enum CallType {
   name: String!
   userId: Int!
   parentId: Int
+  type: CategoryType!
+}
+
+enum CategoryType {
+  free
+  parent
+  child
 }`, BuiltIn: false},
 	{Name: "graph/schemas/user.graphqls", Input: `enum Role {
   master
@@ -1030,6 +1045,41 @@ func (ec *executionContext) _Category_parentId(ctx context.Context, field graphq
 	res := resTmp.(*int)
 	fc.Result = res
 	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Category_type(ctx context.Context, field graphql.CollectedField, obj *models.Category) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Category",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Type, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(models.CategoryType)
+	fc.Result = res
+	return ec.marshalNCategoryType2muappᚗruᚋgraphᚋmodelsᚐCategoryType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_callPassword(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2981,6 +3031,11 @@ func (ec *executionContext) _Category(ctx context.Context, sel ast.SelectionSet,
 			}
 		case "parentId":
 			out.Values[i] = ec._Category_parentId(ctx, field, obj)
+		case "type":
+			out.Values[i] = ec._Category_type(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -3520,6 +3575,16 @@ func (ec *executionContext) marshalNCategory2ᚖmuappᚗruᚋgraphᚋmodelsᚐCa
 		return graphql.Null
 	}
 	return ec._Category(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNCategoryType2muappᚗruᚋgraphᚋmodelsᚐCategoryType(ctx context.Context, v interface{}) (models.CategoryType, error) {
+	var res models.CategoryType
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNCategoryType2muappᚗruᚋgraphᚋmodelsᚐCategoryType(ctx context.Context, sel ast.SelectionSet, v models.CategoryType) graphql.Marshaler {
+	return v
 }
 
 func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v interface{}) (int, error) {

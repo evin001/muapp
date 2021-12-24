@@ -15,10 +15,11 @@ type Call struct {
 }
 
 type Category struct {
-	ID       int    `json:"id"`
-	Name     string `json:"name"`
-	UserID   int    `json:"userId"`
-	ParentID *int   `json:"parentId"`
+	ID       int          `json:"id"`
+	Name     string       `json:"name"`
+	UserID   int          `json:"userId"`
+	ParentID *int         `json:"parentId"`
+	Type     CategoryType `json:"type"`
 }
 
 type Tokens struct {
@@ -77,6 +78,49 @@ func (e *CallType) UnmarshalGQL(v interface{}) error {
 }
 
 func (e CallType) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+type CategoryType string
+
+const (
+	CategoryTypeFree   CategoryType = "free"
+	CategoryTypeParent CategoryType = "parent"
+	CategoryTypeChild  CategoryType = "child"
+)
+
+var AllCategoryType = []CategoryType{
+	CategoryTypeFree,
+	CategoryTypeParent,
+	CategoryTypeChild,
+}
+
+func (e CategoryType) IsValid() bool {
+	switch e {
+	case CategoryTypeFree, CategoryTypeParent, CategoryTypeChild:
+		return true
+	}
+	return false
+}
+
+func (e CategoryType) String() string {
+	return string(e)
+}
+
+func (e *CategoryType) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = CategoryType(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid CategoryType", str)
+	}
+	return nil
+}
+
+func (e CategoryType) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 

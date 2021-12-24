@@ -83,7 +83,7 @@ func (c UserController) RefreshToken(refreshToken string) (*models.Tokens, error
 		return nil, err
 	}
 	if rtClaims.ExpiresAt < time.Now().Unix() {
-		return nil, fmt.Errorf("REFRESH_TOKEN_EXPIRED") // TODO gql error
+		return nil, fmt.Errorf("Refresh token is expired")
 	}
 
 	srv := new(UserService)

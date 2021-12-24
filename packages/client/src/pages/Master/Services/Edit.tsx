@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 
 import { useParams, useNavigate } from 'react-router-dom'
 import { Grid, Button, TextField, Text, Link, Select, dialog } from '@stage-ui/core'
@@ -11,7 +11,11 @@ import { useTitle } from '~/hooks/useTitle'
 import { AddCategoryModal } from '~/modals/AddCategoryModal'
 import { AddServiceModal } from '~/modals/AddServiceModal'
 import { EnititiesActions } from '~/data/enitities'
-import { useCategoryOptions } from '~/hooks/useCategoryOptions'
+import {
+  selectCategoriesWithParent,
+  selectCategoriesWithFreeChild,
+} from '~/data/enitities/select'
+import { useSelector } from '~/hooks/useSelector'
 
 export const MasterEditService = () => {
   const navigate = useNavigate()
@@ -26,8 +30,17 @@ export const MasterEditService = () => {
     EnititiesActions.categoriesFetch()
   }, [])
 
-  const categoryOptions = useCategoryOptions()
-  const serviceOptions = []
+  const categories = useSelector(selectCategoriesWithParent)
+  const services = useSelector(selectCategoriesWithFreeChild)
+
+  const categoryOptions = useMemo(
+    () => categories.map((c) => ({ text: c.name, value: c.id })),
+    [categories.length],
+  )
+  const serviceOptions = useMemo(
+    () => services.map((s) => ({ text: s.name, value: s.id })),
+    [services.length],
+  )
 
   const handleClickAddCategory = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation()

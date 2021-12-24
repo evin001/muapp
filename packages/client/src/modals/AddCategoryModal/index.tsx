@@ -18,9 +18,10 @@ export const AddCategoryModal = ({ onClose }: AddCategoryModalProps) => {
     error: entities.categories.error,
   }))
 
-  const handleForm = () => {
+  const handleClickSave = () => {
     EnititiesActions.categoryCreate({ name: categoryName, callback: onClose })
   }
+
   const handleChangeCategoryName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCategoryName(e.target.value.trim())
   }
@@ -41,7 +42,7 @@ export const AddCategoryModal = ({ onClose }: AddCategoryModalProps) => {
           textColor="surface"
           leftChild={mutationPending ? <Spinner /> : <Plus />}
           disabled={!categoryName}
-          onClick={handleForm}
+          onClick={handleClickSave}
         />
       </Flexbox>
     </Flexbox>

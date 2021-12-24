@@ -3,4 +3,11 @@ type Category {
   name: String!
   userId: Int!
   parentId: Int
+  type: CategoryType!
+}
+
+enum CategoryType {
+  free
+  parent
+  child
 }

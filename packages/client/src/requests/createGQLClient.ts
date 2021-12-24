@@ -51,6 +51,10 @@ const createClient = <CR extends ClientRequests>(
         await UserActions.refreshToken()
         return request(name, variables)
       }
+      if (message === 'Refresh token is expired') {
+        UserActions.logOut()
+        return
+      }
 
       throw new GQLError({ message })
     }
