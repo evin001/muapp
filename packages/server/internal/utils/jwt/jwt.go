@@ -1,6 +1,7 @@
-package utils
+package jwt
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 	"time"
@@ -8,6 +9,7 @@ import (
 	"github.com/golang-jwt/jwt"
 
 	"muapp.ru/graph/models"
+	"muapp.ru/internal/utils"
 	"muapp.ru/internal/utils/errors"
 )
 
@@ -17,7 +19,7 @@ const (
 )
 
 func GenToken(user *models.User, tokenKey string) (string, error) {
-	exp, err := strconv.ParseInt(GetEnv(tokenKey), 10, 64)
+	exp, err := strconv.ParseInt(utils.GetEnv(tokenKey), 10, 64)
 	if err != nil {
 		return "", nil
 	}
@@ -28,7 +30,7 @@ func GenToken(user *models.User, tokenKey string) (string, error) {
 		Issuer:    string(user.Role),
 	})
 
-	key := []byte(GetEnv("JWT_SECRET"))
+	key := []byte(utils.GetEnv("JWT_SECRET"))
 	return token.SignedString(key)
 }
 
@@ -37,7 +39,7 @@ func VerifyToken(tokenString string) (*jwt.StandardClaims, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}
-		return []byte(GetEnv("JWT_SECRET")), nil
+		return []byte(utils.GetEnv("JWT_SECRET")), nil
 	})
 
 	if token.Valid {
@@ -70,4 +72,8 @@ func GenTokens(user *models.User) error {
 	user.RefreshToken = refreshToken
 
 	return nil
+}
+
+func CtxToken(ctx context.Context) *jwt.StandardClaims {
+	return ctx.Value("token").(*jwt.StandardClaims)
 }

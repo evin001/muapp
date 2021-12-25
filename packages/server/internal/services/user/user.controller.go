@@ -6,6 +6,7 @@ import (
 	"muapp.ru/graph/models"
 	"muapp.ru/internal/utils"
 	"muapp.ru/internal/utils/errors"
+	"muapp.ru/internal/utils/jwt"
 )
 
 type UserController struct{}
@@ -31,12 +32,12 @@ func (c UserController) CreateUser(email, phone, password string, role models.Ro
 		return nil, err
 	}
 
-	err = utils.GenTokens(user)
+	err = jwt.GenTokens(user)
 	if err != nil {
 		return nil, err
 	}
 
-	rtClaims, err := utils.VerifyToken(user.RefreshToken)
+	rtClaims, err := jwt.VerifyToken(user.RefreshToken)
 	if err != nil {
 		return nil, err
 	}
@@ -61,11 +62,11 @@ func (c UserController) SignIn(email, password string) (*models.User, error) {
 		return nil, errors.UserWrongCredentials
 	}
 
-	if err := utils.GenTokens(user); err != nil {
+	if err := jwt.GenTokens(user); err != nil {
 		return nil, err
 	}
 
-	rtClaims, err := utils.VerifyToken(user.RefreshToken)
+	rtClaims, err := jwt.VerifyToken(user.RefreshToken)
 	if err != nil {
 		return nil, err
 	}
@@ -78,7 +79,7 @@ func (c UserController) SignIn(email, password string) (*models.User, error) {
 }
 
 func (c UserController) RefreshToken(refreshToken string) (*models.Tokens, error) {
-	rtClaims, err := utils.VerifyToken(refreshToken)
+	rtClaims, err := jwt.VerifyToken(refreshToken)
 	if err != nil {
 		return nil, err
 	}
@@ -100,12 +101,12 @@ func (c UserController) RefreshToken(refreshToken string) (*models.Tokens, error
 		ID:   rtClaims.Id,
 		Role: models.Role(rtClaims.Issuer),
 	}
-	err = utils.GenTokens(&user)
+	err = jwt.GenTokens(&user)
 	if err != nil {
 		return nil, err
 	}
 
-	rtClaimsNew, err := utils.VerifyToken(refreshToken)
+	rtClaimsNew, err := jwt.VerifyToken(refreshToken)
 	if err != nil {
 		return nil, err
 	}

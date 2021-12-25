@@ -31,9 +31,8 @@ type Mutation {
   ): Category! @hasRole(role: [master])
 
   serviceCreate(
-    categoryId: Int!, @binding(constraint: "required")
-    userId: Int!, @binding(constraint: "required")
+    categoryId: Int!, @binding(constraint: "required")    
     duration: Int!, @binding(constraint: "required")
     price: Int! @binding(constraint: "required")
-  ): Service!
+  ): Service! @hasRole(role: [master])
 }

@@ -65,7 +65,6 @@ export type MutationServiceCreateArgs = {
   categoryId: Scalars['Int'];
   duration: Scalars['Int'];
   price: Scalars['Int'];
-  userId: Scalars['Int'];
 };
 
 

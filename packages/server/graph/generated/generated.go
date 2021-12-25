@@ -64,7 +64,7 @@ type ComplexityRoot struct {
 	Mutation struct {
 		CallPassword     func(childComplexity int, phone string) int
 		CategoryCreate   func(childComplexity int, name string, parentID *int) int
-		ServiceCreate    func(childComplexity int, categoryID int, userID int, duration int, price int) int
+		ServiceCreate    func(childComplexity int, categoryID int, duration int, price int) int
 		UserRefreshToken func(childComplexity int, refreshToken string) int
 		UserSignIn       func(childComplexity int, email string, password string) int
 		UserSignUp       func(childComplexity int, email string, phone string, password string) int
@@ -107,7 +107,7 @@ type MutationResolver interface {
 	UserSignIn(ctx context.Context, email string, password string) (*models.User, error)
 	UserRefreshToken(ctx context.Context, refreshToken string) (*models.Tokens, error)
 	CategoryCreate(ctx context.Context, name string, parentID *int) (*models.Category, error)
-	ServiceCreate(ctx context.Context, categoryID int, userID int, duration int, price int) (*models.Service, error)
+	ServiceCreate(ctx context.Context, categoryID int, duration int, price int) (*models.Service, error)
 }
 type QueryResolver interface {
 	Categories(ctx context.Context) ([]*models.Category, error)
@@ -221,7 +221,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.ServiceCreate(childComplexity, args["categoryId"].(int), args["userId"].(int), args["duration"].(int), args["price"].(int)), true
+		return e.complexity.Mutation.ServiceCreate(childComplexity, args["categoryId"].(int), args["duration"].(int), args["price"].(int)), true
 
 	case "Mutation.userRefreshToken":
 		if e.complexity.Mutation.UserRefreshToken == nil {
@@ -482,11 +482,10 @@ type Mutation {
   ): Category! @hasRole(role: [master])
 
   serviceCreate(
-    categoryId: Int!, @binding(constraint: "required")
-    userId: Int!, @binding(constraint: "required")
+    categoryId: Int!, @binding(constraint: "required")    
     duration: Int!, @binding(constraint: "required")
     price: Int! @binding(constraint: "required")
-  ): Service!
+  ): Service! @hasRole(role: [master])
 }
 `, BuiltIn: false},
 	{Name: "graph/schemas/call.graphqls", Input: `type Call {
@@ -681,8 +680,8 @@ func (ec *executionContext) field_Mutation_serviceCreate_args(ctx context.Contex
 	}
 	args["categoryId"] = arg0
 	var arg1 int
-	if tmp, ok := rawArgs["userId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
+	if tmp, ok := rawArgs["duration"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("duration"))
 		directive0 := func(ctx context.Context) (interface{}, error) { return ec.unmarshalNInt2int(ctx, tmp) }
 		directive1 := func(ctx context.Context) (interface{}, error) {
 			constraint, err := ec.unmarshalNString2string(ctx, "required")
@@ -705,10 +704,10 @@ func (ec *executionContext) field_Mutation_serviceCreate_args(ctx context.Contex
 			return nil, graphql.ErrorOnPath(ctx, fmt.Errorf(`unexpected type %T from directive, should be int`, tmp))
 		}
 	}
-	args["userId"] = arg1
+	args["duration"] = arg1
 	var arg2 int
-	if tmp, ok := rawArgs["duration"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("duration"))
+	if tmp, ok := rawArgs["price"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("price"))
 		directive0 := func(ctx context.Context) (interface{}, error) { return ec.unmarshalNInt2int(ctx, tmp) }
 		directive1 := func(ctx context.Context) (interface{}, error) {
 			constraint, err := ec.unmarshalNString2string(ctx, "required")
@@ -731,33 +730,7 @@ func (ec *executionContext) field_Mutation_serviceCreate_args(ctx context.Contex
 			return nil, graphql.ErrorOnPath(ctx, fmt.Errorf(`unexpected type %T from directive, should be int`, tmp))
 		}
 	}
-	args["duration"] = arg2
-	var arg3 int
-	if tmp, ok := rawArgs["price"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("price"))
-		directive0 := func(ctx context.Context) (interface{}, error) { return ec.unmarshalNInt2int(ctx, tmp) }
-		directive1 := func(ctx context.Context) (interface{}, error) {
-			constraint, err := ec.unmarshalNString2string(ctx, "required")
-			if err != nil {
-				return nil, err
-			}
-			if ec.directives.Binding == nil {
-				return nil, errors.New("directive binding is not implemented")
-			}
-			return ec.directives.Binding(ctx, rawArgs, directive0, constraint)
-		}
-
-		tmp, err = directive1(ctx)
-		if err != nil {
-			return nil, graphql.ErrorOnPath(ctx, err)
-		}
-		if data, ok := tmp.(int); ok {
-			arg3 = data
-		} else {
-			return nil, graphql.ErrorOnPath(ctx, fmt.Errorf(`unexpected type %T from directive, should be int`, tmp))
-		}
-	}
-	args["price"] = arg3
+	args["price"] = arg2
 	return args, nil
 }
 
@@ -1523,8 +1496,32 @@ func (ec *executionContext) _Mutation_serviceCreate(ctx context.Context, field g
 	}
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().ServiceCreate(rctx, args["categoryId"].(int), args["userId"].(int), args["duration"].(int), args["price"].(int))
+		directive0 := func(rctx context.Context) (interface{}, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Mutation().ServiceCreate(rctx, args["categoryId"].(int), args["duration"].(int), args["price"].(int))
+		}
+		directive1 := func(ctx context.Context) (interface{}, error) {
+			role, err := ec.unmarshalNRole2ᚕᚖmuappᚗruᚋgraphᚋmodelsᚐRole(ctx, []interface{}{"master"})
+			if err != nil {
+				return nil, err
+			}
+			if ec.directives.HasRole == nil {
+				return nil, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*models.Service); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *muapp.ru/graph/models.Service`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)

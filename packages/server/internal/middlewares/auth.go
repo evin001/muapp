@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"muapp.ru/internal/utils"
+	"muapp.ru/internal/utils/jwt"
 )
 
 func AuthHandler(next http.Handler) http.Handler {
@@ -16,7 +16,7 @@ func AuthHandler(next http.Handler) http.Handler {
 				next.ServeHTTP(w, r)
 			} else {
 				var ctx context.Context
-				if token, err := utils.VerifyToken(tokenString); err != nil {
+				if token, err := jwt.VerifyToken(tokenString); err != nil {
 					ctx = context.WithValue(r.Context(), "token-error", err)
 				} else {
 					ctx = context.WithValue(r.Context(), "token", token)
