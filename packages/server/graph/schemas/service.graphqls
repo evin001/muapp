@@ -1,0 +1,7 @@
+type Service {
+  id: Int!
+  duration: Int!
+  price: Int!
+  category: Category!
+  userId: Int!
+}

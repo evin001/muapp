@@ -1,11 +1,11 @@
 package user
 
 import (
-	"fmt"
 	"time"
 
 	"muapp.ru/graph/models"
 	"muapp.ru/internal/utils"
+	"muapp.ru/internal/utils/errors"
 )
 
 type UserController struct{}
@@ -18,7 +18,7 @@ func (c UserController) CreateUser(email, phone, password string, role models.Ro
 		return nil, err
 	}
 	if exist {
-		return nil, fmt.Errorf("A user with this email address or phone number already exists")
+		return nil, errors.UserAlreadyExists
 	}
 
 	hash, err := utils.HashPassword(password)
@@ -58,7 +58,7 @@ func (c UserController) SignIn(email, password string) (*models.User, error) {
 	}
 
 	if ok := utils.CheckPasswordHash(password, hash); !ok {
-		return nil, fmt.Errorf("Wrong password please try again")
+		return nil, errors.UserWrongCredentials
 	}
 
 	if err := utils.GenTokens(user); err != nil {
@@ -83,7 +83,7 @@ func (c UserController) RefreshToken(refreshToken string) (*models.Tokens, error
 		return nil, err
 	}
 	if rtClaims.ExpiresAt < time.Now().Unix() {
-		return nil, fmt.Errorf("Refresh token is expired")
+		return nil, errors.UserRefreshTokenExpired
 	}
 
 	srv := new(UserService)
@@ -93,7 +93,7 @@ func (c UserController) RefreshToken(refreshToken string) (*models.Tokens, error
 		return nil, err
 	}
 	if !exist {
-		return nil, fmt.Errorf("Refresh token does not exist")
+		return nil, errors.UserRefreshTokenNotExist
 	}
 
 	user := models.User{

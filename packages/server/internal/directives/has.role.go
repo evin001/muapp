@@ -8,6 +8,7 @@ import (
 	"github.com/golang-jwt/jwt"
 
 	"muapp.ru/graph/models"
+	"muapp.ru/internal/utils/errors"
 )
 
 func HasRole(ctx context.Context, obj interface{}, next graphql.Resolver, role []*models.Role) (res interface{}, err error) {
@@ -24,7 +25,7 @@ func HasRole(ctx context.Context, obj interface{}, next graphql.Resolver, role [
 			}
 		}
 		if !access {
-			return nil, fmt.Errorf("Access denied")
+			return nil, errors.UserAccessDenied
 		}
 	}
 

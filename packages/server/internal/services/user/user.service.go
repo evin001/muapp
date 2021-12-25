@@ -2,14 +2,12 @@ package user
 
 import (
 	"context"
-	"fmt"
 	"strconv"
 	"time"
 
-	"github.com/jackc/pgx/v4"
-
 	"muapp.ru/graph/models"
 	"muapp.ru/internal/utils"
+	"muapp.ru/internal/utils/errors"
 )
 
 var db = utils.DB
@@ -29,8 +27,8 @@ func (s UserService) GetUser(email string) (*models.User, string, error) {
 	err := db.QueryRow(context.Background(), query, email).Scan(&u.Email, &u.Phone, &u.Role,
 		&u.EmailVerified, &u.PhoneVerified, &u.FirstName, &u.LastName, &pwd, &id)
 
-	if err == pgx.ErrNoRows {
-		return nil, "", fmt.Errorf("User not found")
+	if errors.IsEmptyRows(err) {
+		return nil, "", errors.UserNotFound
 	}
 	if err != nil {
 		return nil, "", err
@@ -76,7 +74,7 @@ func (s UserService) VerifyExistenceUser(email, phone string) (bool, error) {
 	query := "SELECT id FROM users WHERE email = $1 OR phone = $2"
 	err := db.QueryRow(context.Background(), query, email, phone).Scan(&id)
 
-	if err == pgx.ErrNoRows {
+	if errors.IsEmptyRows(err) {
 		return false, nil
 	}
 	if err != nil {
@@ -115,7 +113,7 @@ func (s UserService) VerifyExistenceSession(refreshToken string) (bool, error) {
 	query := "SELECT id FROM sessions WHERE refresh_token = $1"
 	err := db.QueryRow(context.Background(), query, refreshToken).Scan(&id)
 
-	if err == pgx.ErrNoRows {
+	if errors.IsEmptyRows(err) {
 		return false, nil
 	}
 	if err != nil {

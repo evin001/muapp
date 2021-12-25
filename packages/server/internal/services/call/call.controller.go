@@ -2,11 +2,11 @@ package call
 
 import (
 	"encoding/json"
-	"fmt"
 	"time"
 
 	"muapp.ru/graph/models"
 	"muapp.ru/internal/utils/call"
+	"muapp.ru/internal/utils/errors"
 )
 
 type CallController struct{}
@@ -33,7 +33,7 @@ func (c CallController) CallPassword(phone string) (*models.Call, error) {
 		return nil, err
 	}
 	if res.Result == "error" {
-		return nil, fmt.Errorf("Can't make call")
+		return nil, errors.CallWrong
 	}
 
 	response, err := json.Marshal(&res)

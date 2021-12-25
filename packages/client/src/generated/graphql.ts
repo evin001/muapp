@@ -43,6 +43,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   callPassword: Call;
   categoryCreate: Category;
+  serviceCreate: Service;
   userRefreshToken: Tokens;
   userSignIn: User;
   userSignUp: User;
@@ -57,6 +58,14 @@ export type MutationCallPasswordArgs = {
 export type MutationCategoryCreateArgs = {
   name: Scalars['String'];
   parentId?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type MutationServiceCreateArgs = {
+  categoryId: Scalars['Int'];
+  duration: Scalars['Int'];
+  price: Scalars['Int'];
+  userId: Scalars['Int'];
 };
 
 
@@ -86,6 +95,15 @@ export enum Role {
   Client = 'client',
   Master = 'master'
 }
+
+export type Service = {
+  __typename?: 'Service';
+  category: Category;
+  duration: Scalars['Int'];
+  id: Scalars['Int'];
+  price: Scalars['Int'];
+  userId: Scalars['Int'];
+};
 
 export type Tokens = {
   __typename?: 'Tokens';

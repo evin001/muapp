@@ -8,6 +8,7 @@ import (
 	"github.com/golang-jwt/jwt"
 
 	"muapp.ru/graph/models"
+	"muapp.ru/internal/utils/errors"
 )
 
 const (
@@ -45,13 +46,13 @@ func VerifyToken(tokenString string) (*jwt.StandardClaims, error) {
 		}
 	} else if ve, ok := err.(*jwt.ValidationError); ok {
 		if ve.Errors&jwt.ValidationErrorMalformed != 0 {
-			return nil, fmt.Errorf("That's not even a token")
+			return nil, errors.UserTokenWrong
 		} else if ve.Errors&(jwt.ValidationErrorExpired|jwt.ValidationErrorNotValidYet) != 0 {
-			return nil, fmt.Errorf("Token is expired")
+			return nil, errors.UserTokenExpired
 		}
 	}
 
-	return nil, fmt.Errorf("Couldn't handle this token")
+	return nil, errors.UserTokenHandler
 }
 
 func GenTokens(user *models.User) error {

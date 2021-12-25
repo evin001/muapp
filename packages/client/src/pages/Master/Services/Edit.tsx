@@ -21,7 +21,7 @@ import {
 import { useSelector } from '~/hooks/useSelector'
 import { HintError } from '~/components/HintError'
 
-type FormType = {
+type EditFormType = {
   category: number
   service: number
   duration: number
@@ -44,7 +44,7 @@ const schema = yup.object({
 
 export const MasterEditService = () => {
   const navigate = useNavigate()
-  const [category, setCategory] = useState<FormType['category']>()
+  const [category, setCategory] = useState<EditFormType['category']>()
   const { setMenu } = useMasterContext()
   const { id } = useParams<{ id: string }>()
   const title = id ? 'Редактирование услуги' : 'Добавление услуги'
@@ -61,11 +61,8 @@ export const MasterEditService = () => {
     control,
     watch,
     formState: { isValid },
-  } = useForm<FormType>({
-    defaultValues: {
-      duration: 0,
-      price: 0,
-    },
+  } = useForm<EditFormType>({
+    defaultValues: { duration: 0, price: 0 },
     mode: 'onChange',
     resolver: yupResolver(schema),
   })
@@ -90,7 +87,7 @@ export const MasterEditService = () => {
     return () => subscription.unsubscribe()
   }, [watch])
 
-  const handleSubmitForm = (data: FormType) => {
+  const handleSubmitForm = (data: EditFormType) => {
     console.log(data)
   }
 
