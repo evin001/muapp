@@ -18,6 +18,10 @@ var (
 	UserTokenHandler         = GenError("Couldn't handle this token")
 
 	CallWrong = GenError("Can't make call")
+
+	ServiceNotFound = GenError("Service not found")
+
+	CategoryNotFound = GenError("Category not found")
 )
 
 func GenError(err string) error {

@@ -8,6 +8,7 @@ import categoryCreate, { CategoryCreateMutationType } from './mutations/category
 import categories, { CategoriesQueryType } from './queries/categories'
 
 import serviceCreate, { ServiceCreateMutationType } from './mutations/serviceCreate'
+import service, { ServiceQueryType } from './queries/service'
 
 type Mutations = {
   // User
@@ -22,6 +23,7 @@ type Mutations = {
 
 type Queries = {
   categories: CategoriesQueryType
+  service: ServiceQueryType
 }
 
 const mutations = {
@@ -36,6 +38,7 @@ const mutations = {
 
 const queries = {
   categories,
+  service,
 }
 
 export type Requests = Mutations & Queries

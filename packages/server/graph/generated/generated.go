@@ -497,9 +497,9 @@ type Mutation {
   ): Category! @hasRole(role: [master])
 
   serviceCreate(
-    categoryId: Int!, @binding(constraint: "required")    
-    duration: Int!, @binding(constraint: "required")
-    price: Int! @binding(constraint: "required")
+    categoryId: Int!,
+    duration: Int!, @binding(constraint: "required,gt=0")
+    price: Int! @binding(constraint: "required,gt=0")
   ): Service! @hasRole(role: [master])
 }
 `, BuiltIn: false},
@@ -671,26 +671,9 @@ func (ec *executionContext) field_Mutation_serviceCreate_args(ctx context.Contex
 	var arg0 int
 	if tmp, ok := rawArgs["categoryId"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("categoryId"))
-		directive0 := func(ctx context.Context) (interface{}, error) { return ec.unmarshalNInt2int(ctx, tmp) }
-		directive1 := func(ctx context.Context) (interface{}, error) {
-			constraint, err := ec.unmarshalNString2string(ctx, "required")
-			if err != nil {
-				return nil, err
-			}
-			if ec.directives.Binding == nil {
-				return nil, errors.New("directive binding is not implemented")
-			}
-			return ec.directives.Binding(ctx, rawArgs, directive0, constraint)
-		}
-
-		tmp, err = directive1(ctx)
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
 		if err != nil {
-			return nil, graphql.ErrorOnPath(ctx, err)
-		}
-		if data, ok := tmp.(int); ok {
-			arg0 = data
-		} else {
-			return nil, graphql.ErrorOnPath(ctx, fmt.Errorf(`unexpected type %T from directive, should be int`, tmp))
+			return nil, err
 		}
 	}
 	args["categoryId"] = arg0
@@ -699,7 +682,7 @@ func (ec *executionContext) field_Mutation_serviceCreate_args(ctx context.Contex
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("duration"))
 		directive0 := func(ctx context.Context) (interface{}, error) { return ec.unmarshalNInt2int(ctx, tmp) }
 		directive1 := func(ctx context.Context) (interface{}, error) {
-			constraint, err := ec.unmarshalNString2string(ctx, "required")
+			constraint, err := ec.unmarshalNString2string(ctx, "required,gt=0")
 			if err != nil {
 				return nil, err
 			}
@@ -725,7 +708,7 @@ func (ec *executionContext) field_Mutation_serviceCreate_args(ctx context.Contex
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("price"))
 		directive0 := func(ctx context.Context) (interface{}, error) { return ec.unmarshalNInt2int(ctx, tmp) }
 		directive1 := func(ctx context.Context) (interface{}, error) {
-			constraint, err := ec.unmarshalNString2string(ctx, "required")
+			constraint, err := ec.unmarshalNString2string(ctx, "required,gt=0")
 			if err != nil {
 				return nil, err
 			}

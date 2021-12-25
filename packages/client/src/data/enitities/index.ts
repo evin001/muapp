@@ -40,8 +40,21 @@ export const EnititiesActions = {
   async serviceCreate(input: MutationServiceCreateArgs) {
     try {
       EntitiesStore.mutationPending(true)
-      const res = await request('serviceCreate', input)
-      console.log(res)
+      const service = await request('serviceCreate', input)
+      return service
+    } catch (e) {
+      const error = <RequestError>e
+      EntitiesStore.mutationReject(error.message)
+    } finally {
+      EntitiesStore.mutationPending(false)
+    }
+  },
+
+  async service(id: number) {
+    try {
+      EntitiesStore.mutationPending(true)
+      const service = await request('service', { id })
+      return service
     } catch (e) {
       const error = <RequestError>e
       EntitiesStore.mutationReject(error.message)

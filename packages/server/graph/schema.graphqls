@@ -22,9 +22,7 @@ type Mutation {
     email: String!, @binding(constraint: "required,email")
     password: String!, @binding(constraint: "required,gte=6")
   ): User!
-  userRefreshToken(    
-    refreshToken: String! @binding(constraint: "required")
-  ): Tokens!
+  userRefreshToken(refreshToken: String!): Tokens!
 
   categoryCreate(
     name: String!, @binding(constraint: "required,lte=255")
@@ -32,8 +30,8 @@ type Mutation {
   ): Category! @hasRole(role: [master])
 
   serviceCreate(
-    categoryId: Int!, @binding(constraint: "required")    
-    duration: Int!, @binding(constraint: "required")
-    price: Int! @binding(constraint: "required")
+    categoryId: Int!,
+    duration: Int!, @binding(constraint: "required,gt=0")
+    price: Int! @binding(constraint: "required,gt=0")
   ): Service! @hasRole(role: [master])
 }

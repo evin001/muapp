@@ -5,6 +5,7 @@ import (
 
 	"muapp.ru/graph/models"
 	"muapp.ru/internal/utils"
+	"muapp.ru/internal/utils/errors"
 )
 
 var db = utils.DB
@@ -13,12 +14,18 @@ type CategoryService struct{}
 
 func (s CategoryService) GetbyID(id int) (*models.Category, error) {
 	c := new(models.Category)
+
 	query := "SELECT id, name, parent_id, user_id, type FROM categories WHERE id = $1"
 	err := db.QueryRow(context.Background(), query, id).Scan(&c.ID, &c.Name, &c.ParentID, &c.UserID, &c.Type)
+
+	if errors.IsEmptyRows(err) {
+		return nil, errors.CategoryNotFound
+	}
 	if err != nil {
 		return nil, err
 	}
-	return nil, nil
+
+	return c, nil
 }
 
 func (s CategoryService) GetAll() ([]*models.Category, error) {

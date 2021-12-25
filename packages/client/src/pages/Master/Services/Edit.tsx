@@ -89,6 +89,16 @@ export const MasterEditService = () => {
     return () => subscription.unsubscribe()
   }, [watch])
 
+  const fetchService = async () => {
+    if (id) {
+      await EnititiesActions.service(parseInt(id, 10))
+    }
+  }
+
+  useEffect(() => {
+    fetchService()
+  }, [id])
+
   const handleSubmitForm = (data: EditFormType) => {
     EnititiesActions.serviceCreate({
       categoryId: data.service,

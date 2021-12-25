@@ -5,6 +5,7 @@ import (
 
 	"muapp.ru/graph/models"
 	"muapp.ru/internal/utils"
+	"muapp.ru/internal/utils/errors"
 )
 
 var db = utils.DB
@@ -15,6 +16,9 @@ func (s ServiceService) GetByID(id int) (*models.Service, error) {
 	ms := new(models.Service)
 	query := "SELECT id, duration, price, category_id, user_id FROM services WHERE id = $1"
 	err := db.QueryRow(context.Background(), query, id).Scan(&ms.ID, &ms.Duration, &ms.Price, &ms.CategoryID, &ms.UserID)
+	if errors.IsEmptyRows(err) {
+		return nil, errors.ServiceNotFound
+	}
 	if err != nil {
 		return nil, err
 	}
