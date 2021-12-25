@@ -11,12 +11,23 @@ var db = utils.DB
 
 type ServiceService struct{}
 
-func (s ServiceService) CreateService(duration, price, categoryID, userID int) (*models.Service, error) {
+func (s ServiceService) CreateService(categoryID, duration, price, userID int) (*models.Service, error) {
 	var id int
+
+	p := utils.MoneyToDBFormat(price)
+
 	query := "INSERT INTO services (duration, price, category_id, user_id) VALUES ($1, $2, $3, $4) RETURNING id"
-	err := db.QueryRow(context.Background(), query, duration, utils.MoneyToDBFormat(price), categoryID, userID).Scan(&id)
+	err := db.QueryRow(context.Background(), query, duration, p, categoryID, userID).Scan(&id)
+
 	if err != nil {
 		return nil, err
 	}
-	return nil, nil
+
+	return &models.Service{
+		ID:         id,
+		Duration:   duration,
+		Price:      p,
+		CategoryID: categoryID,
+		UserID:     userID,
+	}, nil
 }

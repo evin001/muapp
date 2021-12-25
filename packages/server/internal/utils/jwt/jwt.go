@@ -77,3 +77,9 @@ func GenTokens(user *models.User) error {
 func CtxToken(ctx context.Context) *jwt.StandardClaims {
 	return ctx.Value("token").(*jwt.StandardClaims)
 }
+
+func GetUserID(ctx context.Context) int {
+	token := CtxToken(ctx)
+	userID, _ := strconv.Atoi(token.Id)
+	return userID
+}
