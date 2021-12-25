@@ -50,7 +50,7 @@ export const EnititiesActions = {
     }
   },
 
-  async service(id: number) {
+  async serviceFetch(id: number) {
     try {
       EntitiesStore.mutationPending(true)
       const service = await request('service', { id })

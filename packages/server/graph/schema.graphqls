@@ -34,4 +34,9 @@ type Mutation {
     duration: Int!, @binding(constraint: "required,gt=0")
     price: Int! @binding(constraint: "required,gt=0")
   ): Service! @hasRole(role: [master])
+  serviceUpdate(
+    serviceId: Int!,
+    duration: Int!, @binding(constraint: "required,gt=0")
+    price: Int! @binding(constraint: "required,gt=0")
+  ): Boolean!
 }

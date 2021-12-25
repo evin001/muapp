@@ -9,6 +9,15 @@ import (
 	"muapp.ru/internal/services/service"
 )
 
+func (r *mutationResolver) ServiceUpdate(ctx context.Context, serviceID int, duration int, price int) (bool, error) {
+	ctrl := new(service.ServiceController)
+	res, err := ctrl.UpdateService(serviceID, duration, price)
+	if err != nil {
+		return false, gqlerror.Errorf(err.Error())
+	}
+	return res, nil
+}
+
 func (r *queryResolver) Service(ctx context.Context, id int) (*models.Service, error) {
 	ctrl := new(service.ServiceController)
 	res, err := ctrl.GetByID(id)

@@ -93,7 +93,7 @@ export const MasterEditService = () => {
   const fetchService = async () => {
     if (!id) return
 
-    const service = await EnititiesActions.service(parseInt(id, 10))
+    const service = await EnititiesActions.serviceFetch(+id)
 
     if (!service) return
 
@@ -108,11 +108,13 @@ export const MasterEditService = () => {
   }, [id])
 
   const handleSubmitForm = (data: EditFormType) => {
-    EnititiesActions.serviceCreate({
-      categoryId: data.service,
-      duration: data.duration,
-      price: data.price,
-    })
+    if (!id) {
+      EnititiesActions.serviceCreate({
+        categoryId: data.service,
+        duration: data.duration,
+        price: data.price,
+      })
+    }
   }
 
   const handleClickAddCategory = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -163,6 +165,7 @@ export const MasterEditService = () => {
                   </Link>
                 }
                 hint={<HintError error={error?.message} />}
+                disabled={!!id}
               />
             )}
           />
@@ -185,6 +188,7 @@ export const MasterEditService = () => {
                     Добавить
                   </Link>
                 }
+                disabled={!!id}
               />
             )}
           />

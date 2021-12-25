@@ -10,6 +10,11 @@ import (
 
 type ServiceController struct{}
 
+func (c ServiceController) UpdateService(serviceID, duration, price int) (bool, error) {
+	srv := new(ServiceService)
+	return srv.UpdateService(serviceID, duration, price)
+}
+
 func (c ServiceController) GetByID(id int) (*models.Service, error) {
 	srv := new(ServiceService)
 	return srv.GetByID(id)

@@ -44,6 +44,7 @@ export type Mutation = {
   callPassword: Call;
   categoryCreate: Category;
   serviceCreate: Service;
+  serviceUpdate: Scalars['Boolean'];
   userRefreshToken: Tokens;
   userSignIn: User;
   userSignUp: User;
@@ -65,6 +66,13 @@ export type MutationServiceCreateArgs = {
   categoryId: Scalars['Int'];
   duration: Scalars['Int'];
   price: Scalars['Int'];
+};
+
+
+export type MutationServiceUpdateArgs = {
+  duration: Scalars['Int'];
+  price: Scalars['Int'];
+  serviceId: Scalars['Int'];
 };
 
 

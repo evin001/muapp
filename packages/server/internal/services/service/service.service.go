@@ -12,6 +12,15 @@ var db = utils.DB
 
 type ServiceService struct{}
 
+func (s ServiceService) UpdateService(serviceID, duration, price int) (bool, error) {
+	query := "UPDATE services SET duration = $1, price = $2 WHERE id = $3"
+	res, err := db.Exec(context.Background(), query, duration, price, serviceID)
+	if err != nil {
+		return false, err
+	}
+	return res.RowsAffected() > 0, nil
+}
+
 func (s ServiceService) GetByID(id int) (*models.Service, error) {
 	ms := new(models.Service)
 	query := "SELECT id, duration, price, category_id, user_id FROM services WHERE id = $1"
