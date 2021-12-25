@@ -38,5 +38,5 @@ type Mutation {
     serviceId: Int!,
     duration: Int!, @binding(constraint: "required,gt=0")
     price: Int! @binding(constraint: "required,gt=0")
-  ): Boolean!
+  ): Service! @hasRole(role: [master])
 }

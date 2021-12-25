@@ -13,8 +13,9 @@ var db = utils.DB
 type ServiceService struct{}
 
 func (s ServiceService) UpdateService(serviceID, duration, price int) (bool, error) {
+	p := utils.MoneyToDBFormat(price)
 	query := "UPDATE services SET duration = $1, price = $2 WHERE id = $3"
-	res, err := db.Exec(context.Background(), query, duration, price, serviceID)
+	res, err := db.Exec(context.Background(), query, duration, p, serviceID)
 	if err != nil {
 		return false, err
 	}

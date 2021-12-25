@@ -19,7 +19,8 @@ var (
 
 	CallWrong = GenError("Can't make call")
 
-	ServiceNotFound = GenError("Service not found")
+	ServiceNotFound      = GenError("Service not found")
+	ServiceNotBelongUser = GenError("The service does not belong to the user")
 
 	CategoryNotFound = GenError("Category not found")
 )

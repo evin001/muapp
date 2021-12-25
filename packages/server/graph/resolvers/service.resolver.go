@@ -9,11 +9,11 @@ import (
 	"muapp.ru/internal/services/service"
 )
 
-func (r *mutationResolver) ServiceUpdate(ctx context.Context, serviceID int, duration int, price int) (bool, error) {
+func (r *mutationResolver) ServiceUpdate(ctx context.Context, serviceID int, duration int, price int) (*models.Service, error) {
 	ctrl := new(service.ServiceController)
-	res, err := ctrl.UpdateService(serviceID, duration, price)
+	res, err := ctrl.UpdateService(ctx, serviceID, duration, price)
 	if err != nil {
-		return false, gqlerror.Errorf(err.Error())
+		return nil, gqlerror.Errorf(err.Error())
 	}
 	return res, nil
 }

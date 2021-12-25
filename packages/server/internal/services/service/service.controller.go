@@ -5,14 +5,34 @@ import (
 
 	"muapp.ru/graph/models"
 	"muapp.ru/internal/services/category"
+	"muapp.ru/internal/utils/errors"
 	"muapp.ru/internal/utils/jwt"
 )
 
 type ServiceController struct{}
 
-func (c ServiceController) UpdateService(serviceID, duration, price int) (bool, error) {
+func (c ServiceController) UpdateService(ctx context.Context, serviceID, duration, price int) (*models.Service, error) {
 	srv := new(ServiceService)
-	return srv.UpdateService(serviceID, duration, price)
+
+	s, err := srv.GetByID(serviceID)
+	if err != nil {
+		return nil, err
+	}
+
+	userID := jwt.GetUserID(ctx)
+	if s.UserID != userID {
+		return nil, errors.ServiceNotBelongUser
+	}
+
+	_, err = srv.UpdateService(serviceID, duration, price)
+	if err != nil {
+		return nil, err
+	}
+
+	s.Price = price
+	s.Duration = duration
+
+	return s, nil
 }
 
 func (c ServiceController) GetByID(id int) (*models.Service, error) {
