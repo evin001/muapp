@@ -34,7 +34,7 @@ func main() {
 	})
 
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(cfg))
-	srv.Use(extension.FixedComplexityLimit(5))
+	srv.Use(extension.FixedComplexityLimit(50))
 
 	router := http.NewServeMux()
 
