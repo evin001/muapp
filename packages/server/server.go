@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/99designs/gqlgen/graphql/handler/extension"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/rs/cors"
 
@@ -33,6 +34,7 @@ func main() {
 	})
 
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(cfg))
+	srv.Use(extension.FixedComplexityLimit(5))
 
 	router := http.NewServeMux()
 
