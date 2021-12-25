@@ -31,6 +31,6 @@ func Middleware(next http.Handler) http.Handler {
 	})
 }
 
-func For(ctx context.Context) *Loaders {
-	return ctx.Value(loadersKey).(*Loaders)
+func For(ctx context.Context) Loaders {
+	return ctx.Value(loadersKey).(Loaders)
 }

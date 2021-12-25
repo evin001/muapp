@@ -2,7 +2,7 @@ package dataloader
 
 import (
 	"context"
-	"fmt"
+	"strconv"
 	"strings"
 	"time"
 
@@ -14,19 +14,22 @@ func NewCategoryLoader(wait time.Duration, maxBatch int) *models.CategoryLoader 
 		MaxBatch: maxBatch,
 		Wait:     wait,
 		Fetch: func(keys []int) ([]*models.Category, []error) {
-			fmt.Printf("%v", keys)
-
+			var errs []error
 			placeholders := make([]string, len(keys))
 			args := make([]interface{}, len(keys))
 
-			for i := 0; i < len(keys); i++ {
-				placeholders[i] = "?"
-				args[i] = i
+			for i, key := range keys {
+				placeholders[i] = "$" + strconv.Itoa(i+1)
+				args[i] = key
 			}
-			fmt.Printf("\n p: %v, a: %v", placeholders, args)
+
 			query :=
 				"SELECT id, name, user_id, parent_id, type FROM categories WHERE id IN (" + strings.Join(placeholders, ",") + ")"
-			res, _ := db.Query(context.Background(), query, args...)
+			res, err := db.Query(context.Background(), query, args...)
+			if err != nil {
+				errs = append(errs, err)
+				return nil, errs
+			}
 
 			categoryByID := map[int]*models.Category{}
 
@@ -34,7 +37,7 @@ func NewCategoryLoader(wait time.Duration, maxBatch int) *models.CategoryLoader 
 				c := models.Category{}
 				err := res.Scan(&c.ID, &c.Name, &c.UserID, &c.ParentID, &c.Type)
 				if err != nil {
-					panic(err)
+					errs = append(errs, err)
 				}
 				categoryByID[c.ID] = &c
 			}
@@ -44,7 +47,7 @@ func NewCategoryLoader(wait time.Duration, maxBatch int) *models.CategoryLoader 
 				categories[i] = categoryByID[id]
 			}
 
-			return categories, nil
+			return categories, errs
 		},
 	})
 }
