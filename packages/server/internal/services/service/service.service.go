@@ -26,7 +26,7 @@ func (s ServiceService) CreateService(categoryID, duration, price, userID int) (
 	return &models.Service{
 		ID:         id,
 		Duration:   duration,
-		Price:      p,
+		Price:      price,
 		CategoryID: categoryID,
 		UserID:     userID,
 	}, nil

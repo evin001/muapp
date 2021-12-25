@@ -38,11 +38,7 @@ export const AddServiceModal = ({ onClose }: AddServiceModalProps) => {
   }
 
   const handleClickSave = () => {
-    EnititiesActions.categoryCreate({
-      name: serviceName,
-      parentId: category,
-      callback: onClose,
-    })
+    EnititiesActions.categoryCreate({ name: serviceName, parentId: category }, onClose)
   }
 
   return (

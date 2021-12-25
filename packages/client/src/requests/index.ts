@@ -3,15 +3,21 @@ import userSignIn, { UserSignInMutationType } from './mutations/userSignIn'
 import userRefreshToken, {
   UserRefreshTokenMutationType,
 } from './mutations/userRefreshToken'
-import categoryCreate, { CategoryCreateMutationType } from './mutations/categoryCreate'
 
+import categoryCreate, { CategoryCreateMutationType } from './mutations/categoryCreate'
 import categories, { CategoriesQueryType } from './queries/categories'
 
+import serviceCreate, { ServiceCreateMutationType } from './mutations/serviceCreate'
+
 type Mutations = {
+  // User
   userSignUp: UserSignUpMutationType
   userSignIn: UserSignInMutationType
   userRefreshToken: UserRefreshTokenMutationType
+
   categoryCreate: CategoryCreateMutationType
+
+  serviceCreate: ServiceCreateMutationType
 }
 
 type Queries = {
@@ -22,7 +28,10 @@ const mutations = {
   userSignUp,
   userSignIn,
   userRefreshToken,
+
   categoryCreate,
+
+  serviceCreate,
 }
 
 const queries = {

@@ -34,11 +34,13 @@ const schema = yup.object({
     .number()
     .typeError('Пожалуйста, введите число')
     .positive('Пожалуйста, укажите положительную длительность')
+    .integer('Пожалуйста, целое число')
     .required('Пожалуйста, укажите корректную длительность'),
   price: yup
     .number()
     .typeError('Пожалуйста, введите число')
     .positive('Пожалуйста, укажите положительную стоимость')
+    .integer('Пожалуйста, целое число')
     .required('Пожалуйста, укажите корректную стоимость'),
 })
 
@@ -88,7 +90,11 @@ export const MasterEditService = () => {
   }, [watch])
 
   const handleSubmitForm = (data: EditFormType) => {
-    console.log(data)
+    EnititiesActions.serviceCreate({
+      categoryId: data.service,
+      duration: data.duration,
+      price: data.price,
+    })
   }
 
   const handleClickAddCategory = (e: React.MouseEvent<HTMLDivElement>) => {

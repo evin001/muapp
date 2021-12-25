@@ -19,7 +19,7 @@ export const AddCategoryModal = ({ onClose }: AddCategoryModalProps) => {
   }))
 
   const handleClickSave = () => {
-    EnititiesActions.categoryCreate({ name: categoryName, callback: onClose })
+    EnititiesActions.categoryCreate({ name: categoryName }, onClose)
   }
 
   const handleChangeCategoryName = (e: React.ChangeEvent<HTMLInputElement>) => {
