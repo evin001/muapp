@@ -22,7 +22,7 @@ import { useSelector } from '~/hooks/useSelector'
 import { HintError } from '~/components/HintError'
 
 type EditFormType = {
-  category: number
+  category?: number | null
   service: number
   duration: number
   price: number
@@ -62,6 +62,7 @@ export const MasterEditService = () => {
     handleSubmit,
     control,
     watch,
+    setValue,
     formState: { isValid },
   } = useForm<EditFormType>({
     defaultValues: { duration: 0, price: 0 },
@@ -90,9 +91,16 @@ export const MasterEditService = () => {
   }, [watch])
 
   const fetchService = async () => {
-    if (id) {
-      await EnititiesActions.service(parseInt(id, 10))
-    }
+    if (!id) return
+
+    const service = await EnititiesActions.service(parseInt(id, 10))
+
+    if (!service) return
+
+    setValue('duration', service.duration)
+    setValue('price', service.price)
+    setValue('category', service.category.parentId)
+    setValue('service', service.category.id)
   }
 
   useEffect(() => {

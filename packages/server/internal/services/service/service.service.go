@@ -22,6 +22,7 @@ func (s ServiceService) GetByID(id int) (*models.Service, error) {
 	if err != nil {
 		return nil, err
 	}
+	ms.Price = utils.MoneyFromDB(ms.Price)
 	return ms, nil
 }
 
