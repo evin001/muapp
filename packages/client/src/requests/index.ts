@@ -7,6 +7,7 @@ import userRefreshToken, {
 import categoryCreate, { CategoryCreateMutationType } from './mutations/categoryCreate'
 import categories, { CategoriesQueryType } from './queries/categories'
 
+import serviceUpdate, { ServiceUpdateMutationType } from './mutations/serviceUpdate'
 import serviceCreate, { ServiceCreateMutationType } from './mutations/serviceCreate'
 import service, { ServiceQueryType } from './queries/service'
 
@@ -19,6 +20,7 @@ type Mutations = {
   categoryCreate: CategoryCreateMutationType
 
   serviceCreate: ServiceCreateMutationType
+  serviceUpdate: ServiceUpdateMutationType
 }
 
 type Queries = {
@@ -34,6 +36,7 @@ const mutations = {
   categoryCreate,
 
   serviceCreate,
+  serviceUpdate,
 }
 
 const queries = {

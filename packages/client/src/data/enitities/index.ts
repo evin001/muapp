@@ -3,8 +3,10 @@ import store, { EntitiesStore } from '../store'
 import {
   MutationServiceCreateArgs,
   MutationCategoryCreateArgs,
+  MutationServiceUpdateArgs,
 } from '~/generated/graphql'
 import request from '~/requests/request'
+import notify from '~/utils/notify'
 
 export const EnititiesActions = {
   async categoriesFetch() {
@@ -37,14 +39,27 @@ export const EnititiesActions = {
     }
   },
 
-  async serviceCreate(input: MutationServiceCreateArgs) {
+  async serviceUpdate(input: MutationServiceUpdateArgs, callback?: () => void) {
     try {
       EntitiesStore.mutationPending(true)
-      const service = await request('serviceCreate', input)
-      return service
+      await request('serviceUpdate', input)
+      callback?.()
     } catch (e) {
       const error = <RequestError>e
-      EntitiesStore.mutationReject(error.message)
+      notify('Обновление услуги', error.message, 'error')
+    } finally {
+      EntitiesStore.mutationPending(false)
+    }
+  },
+
+  async serviceCreate(input: MutationServiceCreateArgs, callback?: () => void) {
+    try {
+      EntitiesStore.mutationPending(true)
+      await request('serviceCreate', input)
+      callback?.()
+    } catch (e) {
+      const error = <RequestError>e
+      notify('Создание услуги', error.message, 'error')
     } finally {
       EntitiesStore.mutationPending(false)
     }

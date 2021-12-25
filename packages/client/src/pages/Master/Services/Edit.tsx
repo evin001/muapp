@@ -107,13 +107,27 @@ export const MasterEditService = () => {
     fetchService()
   }, [id])
 
+  const handleSave = () => navigate('../')
+
   const handleSubmitForm = (data: EditFormType) => {
     if (!id) {
-      EnititiesActions.serviceCreate({
-        categoryId: data.service,
-        duration: data.duration,
-        price: data.price,
-      })
+      EnititiesActions.serviceCreate(
+        {
+          categoryId: data.service,
+          duration: data.duration,
+          price: data.price,
+        },
+        handleSave,
+      )
+    } else {
+      EnititiesActions.serviceUpdate(
+        {
+          serviceId: +id,
+          duration: data.duration,
+          price: data.price,
+        },
+        handleSave,
+      )
     }
   }
 
@@ -160,9 +174,11 @@ export const MasterEditService = () => {
                   onChange(option?.value as number)
                 }}
                 rightChild={
-                  <Link mr="s" onClick={handleClickAddCategory}>
-                    Добавить
-                  </Link>
+                  !id && (
+                    <Link mr="s" onClick={handleClickAddCategory}>
+                      Добавить
+                    </Link>
+                  )
                 }
                 hint={<HintError error={error?.message} />}
                 disabled={!!id}
@@ -184,9 +200,11 @@ export const MasterEditService = () => {
                 }}
                 hint={<HintError error={error?.message} />}
                 rightChild={
-                  <Link mr="s" onClick={handleClickAddService}>
-                    Добавить
-                  </Link>
+                  !id && (
+                    <Link mr="s" onClick={handleClickAddService}>
+                      Добавить
+                    </Link>
+                  )
                 }
                 disabled={!!id}
               />
