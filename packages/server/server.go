@@ -8,6 +8,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/rs/cors"
 
+	"muapp.ru/dataloader"
 	"muapp.ru/graph/generated"
 	"muapp.ru/graph/resolvers"
 	"muapp.ru/internal/directives"
@@ -33,9 +34,11 @@ func main() {
 
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(cfg))
 
-	http.Handle("/", playground.Handler("GraphQL playground", "/graphql"))
-	http.Handle("/graphql", middlewares.AuthHandler(c.Handler(srv)))
+	router := http.NewServeMux()
+
+	router.Handle("/", playground.Handler("GraphQL playground", "/graphql"))
+	router.Handle("/graphql", middlewares.AuthHandler(c.Handler(srv)))
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	log.Fatal(http.ListenAndServe(":"+port, dataloader.Middleware(router)))
 }
