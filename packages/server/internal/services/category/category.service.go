@@ -11,6 +11,16 @@ var db = utils.DB
 
 type CategoryService struct{}
 
+func (s CategoryService) GetbyID(id int) (*models.Category, error) {
+	c := new(models.Category)
+	query := "SELECT id, name, parent_id, user_id, type FROM categories WHERE id = $1"
+	err := db.QueryRow(context.Background(), query, id).Scan(&c.ID, &c.Name, &c.ParentID, &c.UserID, &c.Type)
+	if err != nil {
+		return nil, err
+	}
+	return nil, nil
+}
+
 func (s CategoryService) GetAll() ([]*models.Category, error) {
 	query := "SELECT id, name, parent_id, user_id, type FROM categories ORDER BY name"
 	row, err := db.Query(context.Background(), query)

@@ -9,6 +9,11 @@ import (
 
 type CategoryController struct{}
 
+func (c CategoryController) GetByID(id int) (*models.Category, error) {
+	srv := new(CategoryService)
+	return srv.GetbyID(id)
+}
+
 func (c CategoryController) GetAll() ([]*models.Category, error) {
 	srv := new(CategoryService)
 	categories, err := srv.GetAll()
