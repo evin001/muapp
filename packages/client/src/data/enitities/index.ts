@@ -77,4 +77,20 @@ export const EnititiesActions = {
       EntitiesStore.mutationPending(false)
     }
   },
+
+  async servicesFetch() {
+    try {
+      const { user } = store.getState()
+      if (!user.data?.id) {
+        return
+      }
+
+      EntitiesStore.servicesFetch()
+      const services = await request('services', { userId: +user.data.id })
+      EntitiesStore.servicesResolve(services)
+    } catch (e) {
+      const error = <RequestError>e
+      EntitiesStore.servicesReject(error.message)
+    }
+  },
 }

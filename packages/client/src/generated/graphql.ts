@@ -97,11 +97,17 @@ export type Query = {
   __typename?: 'Query';
   categories: Array<Category>;
   service: Service;
+  services: Array<Service>;
 };
 
 
 export type QueryServiceArgs = {
   id: Scalars['Int'];
+};
+
+
+export type QueryServicesArgs = {
+  userId: Scalars['Int'];
 };
 
 export enum Role {

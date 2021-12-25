@@ -8,6 +8,7 @@ directive @hasRole(role: [Role]!) on FIELD_DEFINITION
 type Query {
   categories: [Category!]!
   service(id: Int!): Service!
+  services(userId: Int!): [Service!]!
 }
 
 type Mutation {

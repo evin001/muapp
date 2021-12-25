@@ -12,6 +12,28 @@ var db = utils.DB
 
 type ServiceService struct{}
 
+func (s ServiceService) GetAllUserServices(userID int) ([]*models.Service, error) {
+	query := "SELECT id, duration, price, category_id, user_id FROM services WHERE user_id = $1"
+	rows, err := db.Query(context.Background(), query, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	services := []*models.Service{}
+
+	for rows.Next() {
+		s := models.Service{}
+		err := rows.Scan(&s.ID, &s.Duration, &s.Price, &s.CategoryID, &s.UserID)
+		if err != nil {
+			return nil, err
+		}
+		s.Price = utils.MoneyFromDB(s.Price)
+		services = append(services, &s)
+	}
+
+	return services, nil
+}
+
 func (s ServiceService) UpdateService(serviceID, duration, price int) (bool, error) {
 	p := utils.MoneyToDBFormat(price)
 	query := "UPDATE services SET duration = $1, price = $2 WHERE id = $3"

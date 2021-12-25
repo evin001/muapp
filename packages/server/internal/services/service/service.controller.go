@@ -11,6 +11,11 @@ import (
 
 type ServiceController struct{}
 
+func (c ServiceController) GetAllUserServices(userID int) ([]*models.Service, error) {
+	srv := new(ServiceService)
+	return srv.GetAllUserServices(userID)
+}
+
 func (c ServiceController) UpdateService(ctx context.Context, serviceID, duration, price int) (*models.Service, error) {
 	srv := new(ServiceService)
 
