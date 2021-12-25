@@ -10,6 +10,11 @@ import (
 
 type ServiceController struct{}
 
+func (c ServiceController) GetByID(id int) (*models.Service, error) {
+	srv := new(ServiceService)
+	return srv.GetByID(id)
+}
+
 func (c ServiceController) CreateService(ctx context.Context, categoryID, duration, price int) (*models.Service, error) {
 	srv := new(ServiceService)
 	res, err := srv.CreateService(categoryID, duration, price, jwt.GetUserID(ctx))

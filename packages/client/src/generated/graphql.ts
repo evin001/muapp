@@ -88,6 +88,12 @@ export type MutationUserSignUpArgs = {
 export type Query = {
   __typename?: 'Query';
   categories: Array<Category>;
+  service: Service;
+};
+
+
+export type QueryServiceArgs = {
+  id: Scalars['Int'];
 };
 
 export enum Role {

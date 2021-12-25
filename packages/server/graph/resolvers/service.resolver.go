@@ -9,6 +9,15 @@ import (
 	"muapp.ru/internal/services/service"
 )
 
+func (r *queryResolver) Service(ctx context.Context, id int) (*models.Service, error) {
+	ctrl := new(service.ServiceController)
+	res, err := ctrl.GetByID(id)
+	if err != nil {
+		return nil, gqlerror.Errorf(err.Error())
+	}
+	return res, nil
+}
+
 func (r *mutationResolver) ServiceCreate(ctx context.Context, categoryID int, duration int, price int) (*models.Service, error) {
 	ctrl := new(service.ServiceController)
 	res, err := ctrl.CreateService(ctx, categoryID, duration, price)

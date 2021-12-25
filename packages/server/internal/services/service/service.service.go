@@ -11,6 +11,19 @@ var db = utils.DB
 
 type ServiceService struct{}
 
+func (s ServiceService) GetByID(id int) (*models.Service, error) {
+	ms := new(models.Service)
+
+	query := "SELECT id, duration, price, category_id, user_id FROM services WHERE id = $1"
+	err := db.QueryRow(context.Background(), query, id).Scan(&ms.ID, &ms.Duration, &ms.Price, &ms.CategoryID, &ms.UserID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return ms, nil
+}
+
 func (s ServiceService) CreateService(categoryID, duration, price, userID int) (*models.Service, error) {
 	var id int
 
