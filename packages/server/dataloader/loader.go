@@ -21,8 +21,8 @@ func Middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ldrs := Loaders{}
 
-		maxBatch := 100
-		wait := 250 * time.Microsecond
+		maxBatch := utils.GetIntEnv("DATALOADER_BATCH")
+		wait := time.Duration(utils.GetIntEnv("DATALOADER_WAIT")) * time.Microsecond
 
 		ldrs.Categories = NewCategoryLoader(wait, maxBatch)
 

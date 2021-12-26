@@ -19,3 +19,7 @@ func init() {
 func GetEnv(name string) string {
 	return viper.GetString(name)
 }
+
+func GetIntEnv(name string) int {
+	return viper.GetInt(name)
+}

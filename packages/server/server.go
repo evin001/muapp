@@ -19,6 +19,7 @@ import (
 
 func main() {
 	port := utils.GetEnv("SERVER_PORT")
+	limit := utils.GetIntEnv("COMPLEXITY_LIMIT")
 
 	cfg := generated.Config{Resolvers: &resolvers.Resolver{}}
 
@@ -34,7 +35,7 @@ func main() {
 	})
 
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(cfg))
-	srv.Use(extension.FixedComplexityLimit(50))
+	srv.Use(extension.FixedComplexityLimit(limit))
 
 	router := http.NewServeMux()
 

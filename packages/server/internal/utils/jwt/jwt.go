@@ -19,10 +19,7 @@ const (
 )
 
 func GenToken(user *models.User, tokenKey string) (string, error) {
-	exp, err := strconv.ParseInt(utils.GetEnv(tokenKey), 10, 64)
-	if err != nil {
-		return "", nil
-	}
+	exp := utils.GetIntEnv(tokenKey)
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
 		Id:        user.ID,
