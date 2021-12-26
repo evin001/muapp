@@ -2,8 +2,12 @@ import React from 'react'
 
 import { css, Global } from '@emotion/react'
 
-import BaseFont from '~/assets/fonts/OfficinaSansBookC-regular.ttf'
 import LogoFont from '~/assets/fonts/Moonbright-regular.ttf'
+import OfficinaSansR from '~/assets/fonts/OfficinaSans-regular.ttf'
+import OfficinaSansM from '~/assets/fonts/OfficinaSans-medium.ttf'
+import OfficinaSansB from '~/assets/fonts/OfficinaSans-bold.ttf'
+
+import { font } from '~/theme'
 
 const FontFace = (url: string, style: string, weight: number, family: string) =>
   css(`
@@ -17,11 +21,14 @@ const FontFace = (url: string, style: string, weight: number, family: string) =>
 const GlobalStyles = () => (
   <Global
     styles={[
-      FontFace(BaseFont, 'regular', 400, 'OfficinaSansBookC'),
+      FontFace(OfficinaSansR, 'regular', 400, font.regular),
+      FontFace(OfficinaSansM, 'regular', 600, font.medium),
+      FontFace(OfficinaSansB, 'regular', 800, font.bold),
       FontFace(LogoFont, 'regular', 400, 'Moonbright'),
       {
         'html,body,#app': {
-          fontFamily: 'OfficinaSansBookC, sans-serif',
+          fontFamily: `${font.regular}, sans-serif`,
+          // fontFamily: `${font.medium}, sans-serif`,
           fontWeight: 400,
         },
       },

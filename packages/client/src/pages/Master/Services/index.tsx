@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 
-import { Button, Spinner, Text, Flexbox } from '@stage-ui/core'
-import { Plus } from '@stage-ui/icons'
+import { Button, Spinner, Text, Flexbox, Grid } from '@stage-ui/core'
+import { Plus, Timer, Trash } from '@stage-ui/icons'
 import { useNavigate } from 'react-router-dom'
 
 import { Page } from '~/components/Page'
@@ -44,10 +44,38 @@ export const Services = () => {
         </Flexbox>
       )}
       {services.map((service) => (
-        <Flexbox key={service.id} column mb="m" onClick={handleClickService(service.id)}>
-          <Text>{service.category.name}</Text>
-          <Text>Длительность: {service.duration} мин</Text>
-          <Text>Стоимость: {service.price} ₽</Text>
+        <Flexbox
+          key={service.id}
+          mb="m"
+          p="0 m"
+          h="3rem"
+          alignItems="center"
+          justifyContent="space-between"
+          backgroundColor="onPrimary"
+          borderColor="surface"
+          borderStyle="solid"
+          borderWidth="0.0625rem"
+          borderRadius="0.3125rem"
+        >
+          <Grid templateColumns="70% 1fr 1fr" flex={1} alignItems="center">
+            <Text
+              size="m"
+              onClick={handleClickService(service.id)}
+              css={{ '&:hover': { textDecoration: 'underline' } }}
+            >
+              {service.category.name}
+            </Text>
+            <Flexbox alignItems="center">
+              <Text color="onSecondary" size="m" mr="0.25rem">
+                {service.duration}
+              </Text>
+              <Timer size="m" color="onSecondary" />
+            </Flexbox>
+            <Text color="onSecondary" size="m">
+              {service.price} ₽
+            </Text>
+          </Grid>
+          <Trash size="m" color="primary" />
         </Flexbox>
       ))}
     </Page>

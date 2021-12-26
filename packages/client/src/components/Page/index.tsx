@@ -3,6 +3,8 @@ import React from 'react'
 import { Flexbox, Header } from '@stage-ui/core'
 import FlexboxTypes from '@stage-ui/core/layout/Block/types'
 
+import { font } from '~/theme'
+
 type PageProps = { title: string; titleLeftChild?: React.ReactNode } & FlexboxTypes.Props
 
 export const Page: React.FC<PageProps> = ({
@@ -16,7 +18,7 @@ export const Page: React.FC<PageProps> = ({
       size="1.75rem"
       my="1.125rem"
       css={[
-        { fontWeight: 400 },
+        { fontFamily: font.medium },
         !!titleLeftChild && {
           display: 'inline-flex',
           justifyContent: 'space-between',

@@ -8,6 +8,12 @@ declare global {
   }
 }
 
+export const font = {
+  regular: 'OfficinaSans Regular',
+  medium: 'OfficinaSans Medium',
+  bold: 'OfficinaSans Bold',
+}
+
 const baseFontSize = (size: string | undefined) =>
   !size && {
     fontSize: '1.125rem',
@@ -16,9 +22,22 @@ const baseFontSize = (size: string | undefined) =>
 const theme = light.replace({
   main: {
     color: {
-      primary: [235, 140, 113],
+      // accent
+      primary: [227, 133, 107],
+      success: [163, 227, 107],
+      error: [227, 113, 107],
+
+      // dominant
+      background: [245, 239, 237],
+      onPrimary: [250, 246, 245],
+
+      // content
+      onBackground: [102, 79, 72],
+      onSecondary: [140, 122, 116],
+      hard: [64, 42, 36],
+
+      // other
       secondary: [255, 228, 137],
-      error: [173, 20, 87],
       palette: {
         orange: [168, 124, 51],
       },

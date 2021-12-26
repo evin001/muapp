@@ -47,6 +47,7 @@ export const Master = () => {
         h="3.5rem"
         display="flex"
         decoration="marker-reverse"
+        backgroundColor="onPrimary"
         css={{
           boxShadow: assets.shadow.s,
           justifyContent: 'space-around',
@@ -66,7 +67,7 @@ export const Master = () => {
             onClick={() => navigate(link)}
             active={menu === link}
           >
-            <Icon size="xl" color={menu === link ? 'primary' : 'light'} />
+            <Icon size="xl" color={menu === link ? 'primary' : 'onBackground'} />
           </Menu.Item>
         ))}
         <Menu.Item
@@ -74,7 +75,7 @@ export const Master = () => {
           overrides={menuOverrides}
           onClick={() => UserActions.logOut()}
         >
-          <LogOut size="xl" color="light" />
+          <LogOut size="xl" color="onBackground" />
         </Menu.Item>
       </Menu>
     </Flexbox>

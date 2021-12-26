@@ -32,7 +32,10 @@ module.exports = {
       {
         test: /\.(ttf|eot|svg|gif)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
         use: [{
-          loader: 'file-loader'
+          loader: 'file-loader',
+          options: {
+            name: '[path][name].[ext]',
+          },
         }]
       },
     ],

@@ -46,5 +46,5 @@ func (r *mutationResolver) ServiceCreate(ctx context.Context, categoryID int, du
 }
 
 func (r *serviceResolver) Category(ctx context.Context, obj *models.Service) (*models.Category, error) {
-	return dataloader.For(ctx).Categories.Load(obj.ID)
+	return dataloader.For(ctx).Categories.Load(obj.CategoryID)
 }
