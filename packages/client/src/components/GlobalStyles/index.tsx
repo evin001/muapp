@@ -28,8 +28,10 @@ const GlobalStyles = () => (
       {
         'html,body,#app': {
           fontFamily: `${font.regular}, sans-serif`,
-          // fontFamily: `${font.medium}, sans-serif`,
           fontWeight: 400,
+        },
+        '*': {
+          boxSizing: 'border-box',
         },
       },
     ]}

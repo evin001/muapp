@@ -47,8 +47,7 @@ export const Services = () => {
         <Flexbox
           key={service.id}
           mb="m"
-          p="0 m"
-          h="3rem"
+          p="s m"
           alignItems="center"
           justifyContent="space-between"
           backgroundColor="onPrimary"
@@ -56,9 +55,11 @@ export const Services = () => {
           borderStyle="solid"
           borderWidth="0.0625rem"
           borderRadius="0.3125rem"
+          css={{ minHeight: '3rem' }}
         >
-          <Grid templateColumns="70% 1fr 1fr" flex={1} alignItems="center">
+          <Grid templateColumns="1fr 46px 54px" flex={1} alignItems="center">
             <Text
+              pr="m"
               size="m"
               onClick={handleClickService(service.id)}
               css={{ '&:hover': { textDecoration: 'underline' } }}
