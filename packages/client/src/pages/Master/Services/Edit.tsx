@@ -153,8 +153,14 @@ export const MasterEditService = () => {
     <Page
       title={title}
       titleLeftChild={
-        <Button color="lightest" onClick={() => navigate('..')}>
-          <ArrowLeft />
+        <Button
+          color="onPrimary"
+          borderColor="onSecondary"
+          borderStyle="solid"
+          borderWidth="0.0625rem"
+          onClick={() => navigate('..')}
+        >
+          <ArrowLeft color="onBackground" />
         </Button>
       }
     >
