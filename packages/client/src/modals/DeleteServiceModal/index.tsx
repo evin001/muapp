@@ -16,12 +16,13 @@ export const DeleteServiceModal = ({
   category,
   onClose,
 }: DeleteServiceModalProps) => {
-  const handleClickDelete = () => {
-    EnititiesActions.serviceDelete(serviceId)
+  const handleClickDelete = async () => {
+    await EnititiesActions.serviceDelete(serviceId)
+    onClose()
   }
 
   return (
-    <Flexbox column w="16rem">
+    <Flexbox column w="16rem" css={{ maxWidth: '100%' }}>
       <Text>Вы действительно хотете удалить «{category}»?</Text>
       <Flexbox justifyContent="flex-end" mt="m">
         <Button label="Отменить" onClick={onClose} decoration="plain" />

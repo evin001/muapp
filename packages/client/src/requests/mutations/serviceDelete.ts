@@ -11,6 +11,6 @@ export type ServiceDeleteMutationType = GQLRequest<
 
 export default gql`
   mutation ($serviceId: Int!) {
-    serviceCreate(serviceId: $serviceId)
+    serviceDelete(serviceId: $serviceId)
   }
 `

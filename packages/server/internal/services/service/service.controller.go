@@ -93,7 +93,7 @@ func (c ServiceController) DeleteService(ctx context.Context, serviceID int) (bo
 	}()
 
 	res, err := srv.DeleteService(serviceID)
-	if contCategories == 0 {
+	if contCategories == 1 {
 		// Reset category type
 		catSrv := new(category.CategoryService)
 		err = catSrv.UpdateType(s.CategoryID, models.CategoryTypeFree)
