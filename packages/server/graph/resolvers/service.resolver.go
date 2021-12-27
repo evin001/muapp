@@ -18,15 +18,6 @@ func (r *queryResolver) Services(ctx context.Context, userID int) ([]*models.Ser
 	return res, nil
 }
 
-func (r *mutationResolver) ServiceUpdate(ctx context.Context, serviceID int, duration int, price int) (*models.Service, error) {
-	ctrl := new(service.ServiceController)
-	res, err := ctrl.UpdateService(ctx, serviceID, duration, price)
-	if err != nil {
-		return nil, gqlerror.Errorf(err.Error())
-	}
-	return res, nil
-}
-
 func (r *queryResolver) Service(ctx context.Context, id int) (*models.Service, error) {
 	ctrl := new(service.ServiceController)
 	res, err := ctrl.GetByID(id)
@@ -41,6 +32,24 @@ func (r *mutationResolver) ServiceCreate(ctx context.Context, categoryID int, du
 	res, err := ctrl.CreateService(ctx, categoryID, duration, price)
 	if err != nil {
 		return nil, gqlerror.Errorf(err.Error())
+	}
+	return res, nil
+}
+
+func (r *mutationResolver) ServiceUpdate(ctx context.Context, serviceID int, duration int, price int) (*models.Service, error) {
+	ctrl := new(service.ServiceController)
+	res, err := ctrl.UpdateService(ctx, serviceID, duration, price)
+	if err != nil {
+		return nil, gqlerror.Errorf(err.Error())
+	}
+	return res, nil
+}
+
+func (r *mutationResolver) ServiceDelete(ctx context.Context, serviceID int) (bool, error) {
+	ctrl := new(service.ServiceController)
+	res, err := ctrl.DeleteService(ctx, serviceID)
+	if err != nil {
+		return false, gqlerror.Errorf(err.Error())
 	}
 	return res, nil
 }

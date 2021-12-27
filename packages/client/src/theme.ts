@@ -55,7 +55,7 @@ const theme = light.replace({
     Button: (props) => ({
       container: [
         {
-          fontFamily: 'OfficinaSansBookC',
+          fontFamily: font.regular,
         },
         baseFontSize(props.size),
       ],

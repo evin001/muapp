@@ -81,7 +81,7 @@ func (s CategoryService) UpdateType(id int, categoryType models.CategoryType) er
 	if err != nil {
 		return err
 	}
-	if ct == categoryType {
+	if ct == categoryType || ct == models.CategoryTypeParent {
 		return nil
 	}
 

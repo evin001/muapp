@@ -40,16 +40,6 @@ func (s ServiceService) GetAllUserServices(userID int) ([]*models.Service, error
 	return services, nil
 }
 
-func (s ServiceService) UpdateService(serviceID, duration, price int) (bool, error) {
-	p := utils.MoneyToDBFormat(price)
-	query := "UPDATE services SET duration = $1, price = $2 WHERE id = $3"
-	res, err := db.Exec(context.Background(), query, duration, p, serviceID)
-	if err != nil {
-		return false, err
-	}
-	return res.RowsAffected() > 0, nil
-}
-
 func (s ServiceService) GetByID(id int) (*models.Service, error) {
 	ms := new(models.Service)
 	query := "SELECT id, duration, price, category_id, user_id FROM services WHERE id = $1"
@@ -62,6 +52,16 @@ func (s ServiceService) GetByID(id int) (*models.Service, error) {
 	}
 	ms.Price = utils.MoneyFromDB(ms.Price)
 	return ms, nil
+}
+
+func (s ServiceService) CountCategory(categoryID int) (int, error) {
+	var countCategories int
+	query := "SELECT COUNT(*) FROM services WHERE category_id = $1"
+	err := db.QueryRow(context.Background(), query, categoryID).Scan(&countCategories)
+	if err != nil {
+		return 0, err
+	}
+	return countCategories, nil
 }
 
 func (s ServiceService) CreateService(categoryID, duration, price, userID int) (*models.Service, error) {
@@ -83,4 +83,23 @@ func (s ServiceService) CreateService(categoryID, duration, price, userID int) (
 		CategoryID: categoryID,
 		UserID:     userID,
 	}, nil
+}
+
+func (s ServiceService) UpdateService(serviceID, duration, price int) (bool, error) {
+	p := utils.MoneyToDBFormat(price)
+	query := "UPDATE services SET duration = $1, price = $2 WHERE id = $3"
+	res, err := db.Exec(context.Background(), query, duration, p, serviceID)
+	if err != nil {
+		return false, err
+	}
+	return res.RowsAffected() > 0, nil
+}
+
+func (s ServiceService) DeleteService(serviceID int) (bool, error) {
+	query := "DELETE FROM services WHERE id = $1"
+	res, err := db.Exec(context.Background(), query, serviceID)
+	if err != nil {
+		return false, err
+	}
+	return res.RowsAffected() > 0, nil
 }

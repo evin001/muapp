@@ -40,4 +40,7 @@ type Mutation {
     duration: Int!, @binding(constraint: "required,gt=0")
     price: Int! @binding(constraint: "required,gt=0")
   ): Service! @hasRole(role: [master])
+  serviceDelete(
+    serviceId: Int!
+  ): Boolean! @hasRole(role: [master])
 }
