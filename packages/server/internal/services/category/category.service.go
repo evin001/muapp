@@ -75,13 +75,14 @@ func (s CategoryService) CreateCategory(name string, userID int, parentID *int) 
 
 func (s CategoryService) UpdateType(id int, categoryType models.CategoryType) error {
 	var ct models.CategoryType
+	var parentId *int
 
-	query := "SELECT type FROM categories WHERE id = $1"
-	err := db.QueryRow(context.Background(), query, id).Scan(&ct)
+	query := "SELECT type, parent_id FROM categories WHERE id = $1"
+	err := db.QueryRow(context.Background(), query, id).Scan(&ct, &parentId)
 	if err != nil {
 		return err
 	}
-	if ct == categoryType || ct == models.CategoryTypeParent {
+	if ct == categoryType || ct == models.CategoryTypeParent || parentId != nil {
 		return nil
 	}
 
