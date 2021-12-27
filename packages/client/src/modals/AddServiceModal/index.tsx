@@ -34,11 +34,14 @@ export const AddServiceModal = ({ onClose }: AddServiceModalProps) => {
   }
 
   const handleChangeServiceName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    serServiceName(e.target.value.trim())
+    serServiceName(e.target.value)
   }
 
   const handleClickSave = () => {
-    EnititiesActions.categoryCreate({ name: serviceName, parentId: category }, onClose)
+    EnititiesActions.categoryCreate(
+      { name: serviceName.trim(), parentId: category },
+      onClose,
+    )
   }
 
   return (

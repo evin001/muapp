@@ -14,11 +14,6 @@ export const font = {
   bold: 'OfficinaSans Bold',
 }
 
-const baseFontSize = (size: string | undefined) =>
-  !size && {
-    fontSize: '1.125rem',
-  }
-
 const theme = light.replace({
   main: {
     color: {
@@ -52,17 +47,15 @@ const theme = light.replace({
     },
   },
   overrides: (main) => ({
-    Button: (props) => ({
+    Button: () => ({
       container: [
         {
           fontFamily: font.regular,
         },
-        baseFontSize(props.size),
       ],
     }),
     TextField: (props) => ({
       input: [
-        baseFontSize(props.size),
         props.decoration === 'underline' && {
           color: main.color.surface.string(),
           '&:-webkit-autofill': {

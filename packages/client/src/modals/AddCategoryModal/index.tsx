@@ -19,11 +19,11 @@ export const AddCategoryModal = ({ onClose }: AddCategoryModalProps) => {
   }))
 
   const handleClickSave = () => {
-    EnititiesActions.categoryCreate({ name: categoryName }, onClose)
+    EnititiesActions.categoryCreate({ name: categoryName.trim() }, onClose)
   }
 
   const handleChangeCategoryName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCategoryName(e.target.value.trim())
+    setCategoryName(e.target.value)
   }
 
   return (
