@@ -35,7 +35,7 @@ export const Page: React.FC<PageProps> = ({
     <ScrollView>
       <Block
         pb="m"
-        css={{          
+        css={{
           '& :last-child': { margin: 0 },
         }}
       >
