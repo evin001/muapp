@@ -33,6 +33,9 @@ const GlobalStyles = () => (
         '*': {
           boxSizing: 'border-box',
         },
+        '#focused': {
+          boxShadow: 'none !important',
+        },
       },
     ]}
   />
