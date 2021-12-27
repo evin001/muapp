@@ -5,7 +5,10 @@ import FlexboxTypes from '@stage-ui/core/layout/Block/types'
 
 import { font } from '~/theme'
 
-type PageProps = { title: string; titleLeftChild?: React.ReactNode } & FlexboxTypes.Props
+type PageProps = {
+  title: string
+  titleLeftChild?: React.ReactNode
+} & FlexboxTypes.Props
 
 export const Page: React.FC<PageProps> = ({
   title,
@@ -30,7 +33,14 @@ export const Page: React.FC<PageProps> = ({
       {titleLeftChild}
     </Header>
     <ScrollView>
-      <Block>{children}</Block>
+      <Block
+        pb="m"
+        css={{          
+          '& :last-child': { margin: 0 },
+        }}
+      >
+        {children}
+      </Block>
     </ScrollView>
   </Flexbox>
 )

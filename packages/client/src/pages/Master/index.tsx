@@ -51,6 +51,7 @@ export const Master = () => {
         css={{
           boxShadow: assets.shadow.s,
           justifyContent: 'space-around',
+          flexShrink: 0,
           '& #focused': {
             boxShadow: 'none !important',
           },
