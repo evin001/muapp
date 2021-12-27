@@ -13,7 +13,13 @@ var db = utils.DB
 type ServiceService struct{}
 
 func (s ServiceService) GetAllUserServices(userID int) ([]*models.Service, error) {
-	query := "SELECT id, duration, price, category_id, user_id FROM services WHERE user_id = $1"
+	query := `		
+		SELECT s.id, s.duration, s.price, s.category_id, s.user_id
+		FROM services s 
+			INNER JOIN categories c ON s.category_id = c.id 
+		WHERE s.user_id = $1
+		ORDER BY c.parent_id DESC, c.name
+	`
 	rows, err := db.Query(context.Background(), query, userID)
 	if err != nil {
 		return nil, err
