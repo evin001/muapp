@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Flexbox, Header } from '@stage-ui/core'
+import { Flexbox, Header, ScrollView, Block } from '@stage-ui/core'
 import FlexboxTypes from '@stage-ui/core/layout/Block/types'
 
 import { font } from '~/theme'
@@ -29,6 +29,8 @@ export const Page: React.FC<PageProps> = ({
       {title}
       {titleLeftChild}
     </Header>
-    {children}
+    <ScrollView>
+      <Block>{children}</Block>
+    </ScrollView>
   </Flexbox>
 )
