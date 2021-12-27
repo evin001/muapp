@@ -35,6 +35,7 @@ const theme = light.replace({
       onBackground: [102, 79, 72],
       onSecondary: [140, 122, 116],
       hard: [64, 42, 36],
+      lightest: [222, 218, 217],
 
       // other
       secondary: [255, 228, 137],
