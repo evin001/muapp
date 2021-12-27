@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 
-import { Button, Spinner, Text, Header, Flexbox, Grid } from '@stage-ui/core'
+import { Button, Spinner, Text, Header, Flexbox, Grid, dialog } from '@stage-ui/core'
 import { Plus, Timer, Trash } from '@stage-ui/icons'
 import { useNavigate } from 'react-router-dom'
 
@@ -9,6 +9,7 @@ import { useTitle } from '~/hooks/useTitle'
 import { useSelector } from '~/hooks/useSelector'
 import { EnititiesActions } from '~/data/enitities'
 import { font } from '~/theme'
+import { DeleteServiceModal } from '~/modals/DeleteServiceModal'
 
 export const Services = () => {
   useTitle('Список услуг')
@@ -31,6 +32,15 @@ export const Services = () => {
 
   const handleClickService = (serviceId: number) => () => {
     navigate(`edit/${serviceId}`)
+  }
+
+  const handleClickDelete = (serviceId: number, category: string) => () => {
+    dialog({
+      title: 'Удаление услуги',
+      render: (close) => (
+        <DeleteServiceModal serviceId={serviceId} category={category} onClose={close} />
+      ),
+    })
   }
 
   let parentId: number
@@ -98,7 +108,11 @@ export const Services = () => {
                   {service.price} ₽
                 </Text>
               </Grid>
-              <Trash size="m" color="primary" />
+              <Trash
+                size="m"
+                color="primary"
+                onClick={handleClickDelete(service.id, service.category.name)}
+              />
             </Flexbox>
           </React.Fragment>
         )

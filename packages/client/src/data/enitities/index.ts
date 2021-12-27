@@ -93,4 +93,14 @@ export const EnititiesActions = {
       EntitiesStore.servicesReject(error.message)
     }
   },
+
+  async serviceDelete(serviceId: number) {
+    try {
+      await request('serviceDelete', { serviceId })
+      await EnititiesActions.servicesFetch()
+    } catch (e) {
+      const error = <RequestError>e
+      notify('Удаление услуги', error.message, 'error')
+    }
+  },
 }
