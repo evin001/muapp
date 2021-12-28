@@ -62,6 +62,13 @@ export const Services = () => {
           <Spinner /> <Text ml="s">Загрузка услуг</Text>
         </Flexbox>
       )}
+      {!services.length && (
+        <Flexbox justifyContent="center" p="2.5rem 1rem">
+          <Text color="onSecondary" textAlign="center">
+            Вы ещё не добавили ни одной услуги
+          </Text>
+        </Flexbox>
+      )}
       {services.map((service) => {
         const { category } = service
         let categoryName = ''
