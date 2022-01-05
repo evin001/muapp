@@ -4,6 +4,12 @@ declare global {
   namespace Stage {
     interface Palette<Color> {
       orange: Color
+
+      content1: Color
+      content2: Color
+      content3: Color
+
+      accent1: Color
     }
   }
 }
@@ -36,6 +42,12 @@ const theme = light.replace({
       secondary: [255, 228, 137],
       palette: {
         orange: [168, 124, 51],
+
+        content1: [222, 218, 217],
+        content2: [255, 216, 205],
+        content3: [205, 193, 190],
+
+        accent1: [255, 154, 125],
       },
     },
     radius: {

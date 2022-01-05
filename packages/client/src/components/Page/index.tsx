@@ -32,7 +32,7 @@ export const Page: React.FC<PageProps> = ({
       {title}
       {titleLeftChild}
     </Header>
-    <ScrollView>
+    <ScrollView xBarPosition="none">
       <Block
         pb="m"
         css={{

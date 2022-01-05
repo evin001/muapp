@@ -8,7 +8,7 @@ import { MainView } from './pages/MainView'
 import GlobalStyles from './components/GlobalStyles'
 import theme from './theme'
 import store from './data/store'
-import UserActions from './data/user'
+import { UserActions } from './data/user'
 
 import { Master } from './pages/Master'
 import { MasterEditService } from './pages/Master/Services/Edit'
