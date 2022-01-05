@@ -95,6 +95,7 @@ module.exports = {
     'import/extensions': ['error', {
        ts: 'never',
        svg: 'always',
+       png: 'always',
        ttf: 'always',       
     }],
   },

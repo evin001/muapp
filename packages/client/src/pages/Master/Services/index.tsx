@@ -10,6 +10,8 @@ import { useSelector } from '~/hooks/useSelector'
 import { EnititiesActions } from '~/data/enitities'
 import { font } from '~/theme'
 import { DeleteServiceModal } from '~/modals/DeleteServiceModal'
+import { ListPlaceholder } from '~/components/ListPlaceholder'
+import PlaceholderImage from '~/assets/images/casual-life-3d-freelancer-workspace.png'
 
 export const Services = () => {
   useTitle('Список услуг')
@@ -63,11 +65,10 @@ export const Services = () => {
         </Flexbox>
       )}
       {!services.length && (
-        <Flexbox justifyContent="center" p="2.5rem 1rem">
-          <Text color="onSecondary" textAlign="center">
-            Вы ещё не добавили ни одной услуги
-          </Text>
-        </Flexbox>
+        <ListPlaceholder
+          title="Вы ещё не добавили ни одной услуги"
+          image={PlaceholderImage}
+        />
       )}
       {services.map((service) => {
         const { category } = service
