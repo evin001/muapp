@@ -10,6 +10,23 @@ declare global {
       content3: Color
 
       accent1: Color
+
+      amber100: Color
+      amber500: Color
+      green100: Color
+      green500: Color
+      purple100: Color
+      purple500: Color
+      cyan100: Color
+      cyan500: Color
+      pink100: Color
+      pink500: Color
+      indigo100: Color
+      indigo500: Color
+      blue100: Color
+      blue500: Color
+      red100: Color
+      red500: Color
     }
   }
 }
@@ -48,6 +65,23 @@ const theme = light.replace({
         content3: [205, 193, 190],
 
         accent1: [255, 154, 125],
+
+        amber100: [255, 235, 204],
+        amber500: [250, 175, 63],
+        green100: [214, 249, 240],
+        green500: [13, 208, 149],
+        purple100: [236, 221, 255],
+        purple500: [163, 97, 235],
+        cyan100: [208, 251, 255],
+        cyan500: [34, 195, 210],
+        pink100: [255, 229, 238],
+        pink500: [253, 95, 155],
+        indigo100: [229, 238, 255],
+        indigo500: [95, 149, 253],
+        blue100: [229, 245, 255],
+        blue500: [95, 196, 253],
+        red100: [255, 229, 229],
+        red500: [253, 95, 95],
       },
     },
     radius: {

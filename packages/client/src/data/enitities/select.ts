@@ -18,3 +18,21 @@ export const selectCategoriesWithFreeParent = createSelector(
   (categories) =>
     categories.filter((category) => ['free', 'parent'].includes(category.type)),
 )
+
+export const selectServicesByParentCategory = createSelector(
+  [
+    (state: RootState) => state.entities.services.data,
+    (state: RootState) => state.entities.categories.data,
+  ],
+  (services, categories) => {
+    let parentId: number
+    return services.flatMap((service) => {
+      const data = []
+      if (service.category.parentId && parentId !== service.category.parentId) {
+        parentId = service.category.parentId
+        data.push(categories.find((c) => c.id === parentId))
+      }
+      return [...data, service]
+    })
+  },
+)

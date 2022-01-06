@@ -4,10 +4,12 @@ import { Button, Spinner, Text, Header, Flexbox, Grid, dialog } from '@stage-ui/
 import { Plus, Timer, Trash } from '@stage-ui/icons'
 import { useNavigate } from 'react-router-dom'
 
+import { Category, Service } from '~/generated/graphql'
 import { Page } from '~/components/Page'
 import { useTitle } from '~/hooks/useTitle'
 import { useSelector } from '~/hooks/useSelector'
 import { EnititiesActions } from '~/data/enitities'
+import { selectServicesByParentCategory } from '~/data/enitities/select'
 import { font } from '~/theme'
 import { DeleteServiceModal } from '~/modals/DeleteServiceModal'
 import { ListPlaceholder } from '~/components/ListPlaceholder'
@@ -17,6 +19,7 @@ export const Services = () => {
   useTitle('Список услуг')
 
   const navigate = useNavigate()
+  const servicesWithCategories = useSelector(selectServicesByParentCategory)
   const { services, categories, loading } = useSelector(({ entities }) => ({
     services: entities.services.data,
     categories: entities.categories.data,
@@ -45,8 +48,6 @@ export const Services = () => {
     })
   }
 
-  let parentId: number
-
   return (
     <Page
       title="Список услуг"
@@ -70,21 +71,28 @@ export const Services = () => {
           image={PlaceholderImage}
         />
       )}
-      {services.map((service) => {
-        const { category } = service
-        let categoryName = ''
-        if (category.parentId && parentId !== category.parentId) {
-          parentId = category.parentId
-          categoryName = categories.find((c) => c.id === parentId)?.name || ''
+      {servicesWithCategories.map((serviceOrCategory) => {
+        const category = (serviceOrCategory as Service)?.category
+          ? null
+          : (serviceOrCategory as Category)
+
+        if (category) {
+          return (
+            <Header
+              key={category.id}
+              size="s"
+              m="0.25rem 0 s"
+              css={{ fontFamily: font.medium }}
+            >
+              {category.name}
+            </Header>
+          )
         }
+
+        const service = serviceOrCategory as Service
 
         return (
           <React.Fragment key={service.id}>
-            {categoryName && (
-              <Header size="s" m="0.25rem 0 s" css={{ fontFamily: font.medium }}>
-                {categoryName}
-              </Header>
-            )}
             <Flexbox
               mb="s"
               p="s m"

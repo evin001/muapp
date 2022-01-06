@@ -64,13 +64,19 @@ export const Calendar = ({ ...flexboxProps }: CalendarProps) => {
                 backgroundColor="onPrimary"
                 css={[
                   { transition: 'background-color .2s ease' },
-                  isSelect && { backgroundColor: color.palette.accent1.hex() },
+                  isSelect && {
+                    backgroundColor: color.palette.accent1.hex(),
+                    fontFamily: font.medium,
+                  },
                 ]}
               >
                 <Text
                   css={[
                     { transition: 'color .2s ease', color: color.palette.content3.hex() },
-                    isSelect && { color: color.palette.content2.hex() },
+                    isSelect && {
+                      color: color.palette.content2.hex(),
+                      fontFamily: font.medium,
+                    },
                   ]}
                 >
                   {weekDay.format('dd')}

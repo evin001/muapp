@@ -44,7 +44,7 @@ const schema = yup.object({
     .required('Пожалуйста, укажите корректную стоимость'),
 })
 
-export const MasterEditService = () => {
+export const MasterServicesEdit = () => {
   const navigate = useNavigate()
   const [category, setCategory] = useState<EditFormType['category']>()
   const { setMenu } = useMasterContext()
@@ -158,7 +158,7 @@ export const MasterEditService = () => {
           borderColor="onSecondary"
           borderStyle="solid"
           borderWidth="0.0625rem"
-          onClick={() => navigate('..')}
+          onClick={() => navigate('../services')}
         >
           <ArrowLeft color="onBackground" />
         </Button>

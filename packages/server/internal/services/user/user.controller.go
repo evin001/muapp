@@ -80,6 +80,9 @@ func (c UserController) SignIn(email, password string) (*models.User, error) {
 
 func (c UserController) RefreshToken(refreshToken string) (*models.Tokens, error) {
 	rtClaims, err := jwt.VerifyToken(refreshToken)
+	if err == errors.UserTokenExpired {
+		return nil, errors.UserRefreshTokenExpired
+	}
 	if err != nil {
 		return nil, err
 	}
