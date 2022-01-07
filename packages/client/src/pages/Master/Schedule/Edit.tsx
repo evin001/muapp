@@ -63,7 +63,7 @@ export const MasterScheduleEdit = () => {
   const repetitionOptions = [
     { text: 'Ежедневно', value: '' },
     { text: `Еженедельно - ${moment().format('dddd')}`, value: '' },
-    { text: `Ежемесячно первый ${moment().format('dddd')}`, value: '' },
+    { text: `Ежемесячно перв. ${moment().format('dddd')}`, value: '' },
     { text: 'Каждый будний день (с понедельника по пятницу)', value: '' },
   ]
 
