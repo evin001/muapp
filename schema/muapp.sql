@@ -5,7 +5,7 @@
 -- Dumped from database version 14.1
 -- Dumped by pg_dump version 14.1
 
--- Started on 2022-01-07 20:50:33
+-- Started on 2022-01-10 20:18:19
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -156,10 +156,11 @@ ALTER SEQUENCE public.categories_id_seq OWNED BY public.categories.id;
 
 CREATE TABLE public.schedules (
     id bigint NOT NULL,
-    interval_start timestamp with time zone NOT NULL,
-    interval_end timestamp with time zone NOT NULL,
+    interval_start time without time zone NOT NULL,
+    interval_end time without time zone NOT NULL,
     color character varying(7) NOT NULL,
-    type public.repetition NOT NULL
+    type public.repetition NOT NULL,
+    date date NOT NULL
 );
 
 
@@ -429,7 +430,7 @@ COPY public.categories (id, name, parent_id, user_id, created_at, type) FROM std
 -- Data for Name: schedules; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.schedules (id, interval_start, interval_end, color, type) FROM stdin;
+COPY public.schedules (id, interval_start, interval_end, color, type, date) FROM stdin;
 \.
 
 
@@ -667,7 +668,7 @@ ALTER TABLE ONLY public.sessions
     ADD CONSTRAINT user_id_fk FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
--- Completed on 2022-01-07 20:50:33
+-- Completed on 2022-01-10 20:18:20
 
 --
 -- PostgreSQL database dump complete

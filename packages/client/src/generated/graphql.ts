@@ -10,6 +10,8 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** The `Date` is a date in the format YYYY-MM-DD */
+  Date: any;
 };
 
 export type Call = {
@@ -43,6 +45,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   callPassword: Call;
   categoryCreate: Category;
+  scheduleCreate: Schedule;
   serviceCreate: Service;
   serviceDelete: Scalars['Boolean'];
   serviceUpdate: Service;
@@ -60,6 +63,15 @@ export type MutationCallPasswordArgs = {
 export type MutationCategoryCreateArgs = {
   name: Scalars['String'];
   parentId?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type MutationScheduleCreateArgs = {
+  color?: InputMaybe<Scalars['String']>;
+  date: Scalars['Date'];
+  intervalEnd: Scalars['String'];
+  intervalStart: Scalars['String'];
+  type: ScheduleType;
 };
 
 
@@ -119,6 +131,24 @@ export type QueryServicesArgs = {
 export enum Role {
   Client = 'client',
   Master = 'master'
+}
+
+export type Schedule = {
+  __typename?: 'Schedule';
+  color?: Maybe<Scalars['String']>;
+  date: Scalars['Date'];
+  id: Scalars['Int'];
+  intervalEnd: Scalars['String'];
+  intervalStart: Scalars['String'];
+  type: ScheduleType;
+};
+
+export enum ScheduleType {
+  Daily = 'daily',
+  Monthly = 'monthly',
+  Once = 'once',
+  Weekday = 'weekday',
+  Weekly = 'weekly'
 }
 
 export type Service = {

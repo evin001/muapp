@@ -5,6 +5,9 @@
 directive @binding(constraint: String!) on INPUT_FIELD_DEFINITION | ARGUMENT_DEFINITION
 directive @hasRole(role: [Role]!) on FIELD_DEFINITION
 
+"The `Date` is a date in the format YYYY-MM-DD"
+scalar Date
+
 type Query {
   categories: [Category!]!
   service(id: Int!): Service!
@@ -43,4 +46,12 @@ type Mutation {
   serviceDelete(
     serviceId: Int!
   ): Boolean! @hasRole(role: [master])
+
+  scheduleCreate(
+    date: Date!,
+    intervalStart: String!,
+    intervalEnd: String!,
+    type: ScheduleType!,
+    color: String
+  ): Schedule! @hasRole(role: [master])
 }

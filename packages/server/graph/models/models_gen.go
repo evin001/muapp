@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"strconv"
+	"time"
 )
 
 type Call struct {
@@ -20,6 +21,15 @@ type Category struct {
 	UserID   int          `json:"userId"`
 	ParentID *int         `json:"parentId"`
 	Type     CategoryType `json:"type"`
+}
+
+type Schedule struct {
+	ID            int          `json:"id"`
+	Date          time.Time    `json:"date"`
+	IntervalStart string       `json:"intervalStart"`
+	IntervalEnd   string       `json:"intervalEnd"`
+	Type          ScheduleType `json:"type"`
+	Color         *string      `json:"color"`
 }
 
 type Tokens struct {
@@ -162,5 +172,52 @@ func (e *Role) UnmarshalGQL(v interface{}) error {
 }
 
 func (e Role) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+type ScheduleType string
+
+const (
+	ScheduleTypeOnce    ScheduleType = "once"
+	ScheduleTypeDaily   ScheduleType = "daily"
+	ScheduleTypeWeekly  ScheduleType = "weekly"
+	ScheduleTypeMonthly ScheduleType = "monthly"
+	ScheduleTypeWeekday ScheduleType = "weekday"
+)
+
+var AllScheduleType = []ScheduleType{
+	ScheduleTypeOnce,
+	ScheduleTypeDaily,
+	ScheduleTypeWeekly,
+	ScheduleTypeMonthly,
+	ScheduleTypeWeekday,
+}
+
+func (e ScheduleType) IsValid() bool {
+	switch e {
+	case ScheduleTypeOnce, ScheduleTypeDaily, ScheduleTypeWeekly, ScheduleTypeMonthly, ScheduleTypeWeekday:
+		return true
+	}
+	return false
+}
+
+func (e ScheduleType) String() string {
+	return string(e)
+}
+
+func (e *ScheduleType) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = ScheduleType(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid ScheduleType", str)
+	}
+	return nil
+}
+
+func (e ScheduleType) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }

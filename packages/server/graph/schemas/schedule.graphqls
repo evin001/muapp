@@ -1,0 +1,16 @@
+type Schedule {
+  id: Int!
+  date: Date!
+  intervalStart: String!
+  intervalEnd: String!
+  type: ScheduleType!
+  color: String
+}
+
+enum ScheduleType {
+  once
+  daily
+  weekly
+  monthly
+  weekday
+}
