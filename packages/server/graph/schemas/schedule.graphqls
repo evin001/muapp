@@ -1,13 +1,25 @@
-type Schedule {
+type ScheduleEvent {
   id: Int!
   date: Date!
   intervalStart: String!
   intervalEnd: String!
-  type: ScheduleType!
+  type: ScheduleEventType!
+  services: [Int]
+  color: String
+  userId: Int!
+}
+
+input ScheduleEventInput {
+  id: Int
+  date: Date!
+  intervalStart: String!
+  intervalEnd: String!
+  type: ScheduleEventType!
+  services: [Int]
   color: String
 }
 
-enum ScheduleType {
+enum ScheduleEventType {
   once
   daily
   weekly

@@ -23,13 +23,25 @@ type Category struct {
 	Type     CategoryType `json:"type"`
 }
 
-type Schedule struct {
-	ID            int          `json:"id"`
-	Date          time.Time    `json:"date"`
-	IntervalStart string       `json:"intervalStart"`
-	IntervalEnd   string       `json:"intervalEnd"`
-	Type          ScheduleType `json:"type"`
-	Color         *string      `json:"color"`
+type ScheduleEvent struct {
+	ID            int               `json:"id"`
+	Date          time.Time         `json:"date"`
+	IntervalStart string            `json:"intervalStart"`
+	IntervalEnd   string            `json:"intervalEnd"`
+	Type          ScheduleEventType `json:"type"`
+	Services      []*int            `json:"services"`
+	Color         *string           `json:"color"`
+	UserID        int               `json:"userId"`
+}
+
+type ScheduleEventInput struct {
+	ID            *int              `json:"id"`
+	Date          time.Time         `json:"date"`
+	IntervalStart string            `json:"intervalStart"`
+	IntervalEnd   string            `json:"intervalEnd"`
+	Type          ScheduleEventType `json:"type"`
+	Services      []*int            `json:"services"`
+	Color         *string           `json:"color"`
 }
 
 type Tokens struct {
@@ -175,49 +187,49 @@ func (e Role) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
-type ScheduleType string
+type ScheduleEventType string
 
 const (
-	ScheduleTypeOnce    ScheduleType = "once"
-	ScheduleTypeDaily   ScheduleType = "daily"
-	ScheduleTypeWeekly  ScheduleType = "weekly"
-	ScheduleTypeMonthly ScheduleType = "monthly"
-	ScheduleTypeWeekday ScheduleType = "weekday"
+	ScheduleEventTypeOnce    ScheduleEventType = "once"
+	ScheduleEventTypeDaily   ScheduleEventType = "daily"
+	ScheduleEventTypeWeekly  ScheduleEventType = "weekly"
+	ScheduleEventTypeMonthly ScheduleEventType = "monthly"
+	ScheduleEventTypeWeekday ScheduleEventType = "weekday"
 )
 
-var AllScheduleType = []ScheduleType{
-	ScheduleTypeOnce,
-	ScheduleTypeDaily,
-	ScheduleTypeWeekly,
-	ScheduleTypeMonthly,
-	ScheduleTypeWeekday,
+var AllScheduleEventType = []ScheduleEventType{
+	ScheduleEventTypeOnce,
+	ScheduleEventTypeDaily,
+	ScheduleEventTypeWeekly,
+	ScheduleEventTypeMonthly,
+	ScheduleEventTypeWeekday,
 }
 
-func (e ScheduleType) IsValid() bool {
+func (e ScheduleEventType) IsValid() bool {
 	switch e {
-	case ScheduleTypeOnce, ScheduleTypeDaily, ScheduleTypeWeekly, ScheduleTypeMonthly, ScheduleTypeWeekday:
+	case ScheduleEventTypeOnce, ScheduleEventTypeDaily, ScheduleEventTypeWeekly, ScheduleEventTypeMonthly, ScheduleEventTypeWeekday:
 		return true
 	}
 	return false
 }
 
-func (e ScheduleType) String() string {
+func (e ScheduleEventType) String() string {
 	return string(e)
 }
 
-func (e *ScheduleType) UnmarshalGQL(v interface{}) error {
+func (e *ScheduleEventType) UnmarshalGQL(v interface{}) error {
 	str, ok := v.(string)
 	if !ok {
 		return fmt.Errorf("enums must be strings")
 	}
 
-	*e = ScheduleType(str)
+	*e = ScheduleEventType(str)
 	if !e.IsValid() {
-		return fmt.Errorf("%s is not a valid ScheduleType", str)
+		return fmt.Errorf("%s is not a valid ScheduleEventType", str)
 	}
 	return nil
 }
 
-func (e ScheduleType) MarshalGQL(w io.Writer) {
+func (e ScheduleEventType) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }

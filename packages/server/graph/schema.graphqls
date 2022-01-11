@@ -47,11 +47,5 @@ type Mutation {
     serviceId: Int!
   ): Boolean! @hasRole(role: [master])
 
-  scheduleCreate(
-    date: Date!,
-    intervalStart: String!,
-    intervalEnd: String!,
-    type: ScheduleType!,
-    color: String
-  ): Schedule! @hasRole(role: [master])
+  scheduleEventCreate(input: ScheduleEventInput!): ScheduleEvent! @hasRole(role: [master])
 }

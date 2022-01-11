@@ -5,7 +5,7 @@
 -- Dumped from database version 14.1
 -- Dumped by pg_dump version 14.1
 
--- Started on 2022-01-10 20:18:19
+-- Started on 2022-01-11 20:06:35
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -33,7 +33,7 @@ CREATE TYPE public.category_type AS ENUM (
 ALTER TYPE public.category_type OWNER TO postgres;
 
 --
--- TOC entry 858 (class 1247 OID 24702)
+-- TOC entry 855 (class 1247 OID 24702)
 -- Name: repetition; Type: TYPE; Schema: public; Owner: postgres
 --
 
@@ -99,7 +99,7 @@ CREATE SEQUENCE public.call_log_id_seq
 ALTER TABLE public.call_log_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3394 (class 0 OID 0)
+-- TOC entry 3395 (class 0 OID 0)
 -- Dependencies: 209
 -- Name: call_log_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -141,7 +141,7 @@ CREATE SEQUENCE public.categories_id_seq
 ALTER TABLE public.categories_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3395 (class 0 OID 0)
+-- TOC entry 3396 (class 0 OID 0)
 -- Dependencies: 215
 -- Name: categories_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -151,20 +151,34 @@ ALTER SEQUENCE public.categories_id_seq OWNED BY public.categories.id;
 
 --
 -- TOC entry 220 (class 1259 OID 24695)
--- Name: schedules; Type: TABLE; Schema: public; Owner: postgres
+-- Name: schedule_events; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE public.schedules (
+CREATE TABLE public.schedule_events (
     id bigint NOT NULL,
     interval_start time without time zone NOT NULL,
     interval_end time without time zone NOT NULL,
     color character varying(7) NOT NULL,
     type public.repetition NOT NULL,
-    date date NOT NULL
+    date date NOT NULL,
+    user_id integer NOT NULL
 );
 
 
-ALTER TABLE public.schedules OWNER TO postgres;
+ALTER TABLE public.schedule_events OWNER TO postgres;
+
+--
+-- TOC entry 221 (class 1259 OID 24713)
+-- Name: schedule_events_services; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.schedule_events_services (
+    schedule_id integer NOT NULL,
+    service_id integer NOT NULL
+);
+
+
+ALTER TABLE public.schedule_events_services OWNER TO postgres;
 
 --
 -- TOC entry 219 (class 1259 OID 24694)
@@ -182,26 +196,13 @@ CREATE SEQUENCE public.schedules_id_seq
 ALTER TABLE public.schedules_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3396 (class 0 OID 0)
+-- TOC entry 3397 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: schedules_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE public.schedules_id_seq OWNED BY public.schedules.id;
+ALTER SEQUENCE public.schedules_id_seq OWNED BY public.schedule_events.id;
 
-
---
--- TOC entry 221 (class 1259 OID 24713)
--- Name: schedules_services; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.schedules_services (
-    schedule_id integer NOT NULL,
-    service_id integer NOT NULL
-);
-
-
-ALTER TABLE public.schedules_services OWNER TO postgres;
 
 --
 -- TOC entry 218 (class 1259 OID 24662)
@@ -237,7 +238,7 @@ CREATE SEQUENCE public.services_id_seq
 ALTER TABLE public.services_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3397 (class 0 OID 0)
+-- TOC entry 3398 (class 0 OID 0)
 -- Dependencies: 217
 -- Name: services_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -278,7 +279,7 @@ CREATE SEQUENCE public.sessions_id_seq
 ALTER TABLE public.sessions_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3398 (class 0 OID 0)
+-- TOC entry 3399 (class 0 OID 0)
 -- Dependencies: 213
 -- Name: sessions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -324,7 +325,7 @@ CREATE SEQUENCE public.users_id_seq
 ALTER TABLE public.users_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3399 (class 0 OID 0)
+-- TOC entry 3400 (class 0 OID 0)
 -- Dependencies: 211
 -- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -350,10 +351,10 @@ ALTER TABLE ONLY public.categories ALTER COLUMN id SET DEFAULT nextval('public.c
 
 --
 -- TOC entry 3214 (class 2604 OID 24698)
--- Name: schedules id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: schedule_events id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.schedules ALTER COLUMN id SET DEFAULT nextval('public.schedules_id_seq'::regclass);
+ALTER TABLE ONLY public.schedule_events ALTER COLUMN id SET DEFAULT nextval('public.schedules_id_seq'::regclass);
 
 
 --
@@ -381,7 +382,7 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 
 --
--- TOC entry 3377 (class 0 OID 16396)
+-- TOC entry 3378 (class 0 OID 16396)
 -- Dependencies: 210
 -- Data for Name: call_log; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -399,7 +400,7 @@ COPY public.call_log (id, phone, code, response, created_at, active_before) FROM
 
 
 --
--- TOC entry 3383 (class 0 OID 24641)
+-- TOC entry 3384 (class 0 OID 24641)
 -- Dependencies: 216
 -- Data for Name: categories; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -425,27 +426,27 @@ COPY public.categories (id, name, parent_id, user_id, created_at, type) FROM std
 
 
 --
--- TOC entry 3387 (class 0 OID 24695)
+-- TOC entry 3388 (class 0 OID 24695)
 -- Dependencies: 220
--- Data for Name: schedules; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: schedule_events; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.schedules (id, interval_start, interval_end, color, type, date) FROM stdin;
+COPY public.schedule_events (id, interval_start, interval_end, color, type, date, user_id) FROM stdin;
 \.
 
 
 --
--- TOC entry 3388 (class 0 OID 24713)
+-- TOC entry 3389 (class 0 OID 24713)
 -- Dependencies: 221
--- Data for Name: schedules_services; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: schedule_events_services; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.schedules_services (schedule_id, service_id) FROM stdin;
+COPY public.schedule_events_services (schedule_id, service_id) FROM stdin;
 \.
 
 
 --
--- TOC entry 3385 (class 0 OID 24662)
+-- TOC entry 3386 (class 0 OID 24662)
 -- Dependencies: 218
 -- Data for Name: services; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -459,7 +460,7 @@ COPY public.services (id, category_id, duration, price, user_id, created_at) FRO
 
 
 --
--- TOC entry 3381 (class 0 OID 16449)
+-- TOC entry 3382 (class 0 OID 16449)
 -- Dependencies: 214
 -- Data for Name: sessions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -470,7 +471,7 @@ COPY public.sessions (id, user_id, created_at, expires_in, refresh_token) FROM s
 
 
 --
--- TOC entry 3379 (class 0 OID 16415)
+-- TOC entry 3380 (class 0 OID 16415)
 -- Dependencies: 212
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -481,7 +482,7 @@ COPY public.users (id, first_name, last_name, email, phone, password, email_veri
 
 
 --
--- TOC entry 3400 (class 0 OID 0)
+-- TOC entry 3401 (class 0 OID 0)
 -- Dependencies: 209
 -- Name: call_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -490,7 +491,7 @@ SELECT pg_catalog.setval('public.call_log_id_seq', 12, true);
 
 
 --
--- TOC entry 3401 (class 0 OID 0)
+-- TOC entry 3402 (class 0 OID 0)
 -- Dependencies: 215
 -- Name: categories_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -499,7 +500,7 @@ SELECT pg_catalog.setval('public.categories_id_seq', 18, true);
 
 
 --
--- TOC entry 3402 (class 0 OID 0)
+-- TOC entry 3403 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: schedules_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -508,7 +509,7 @@ SELECT pg_catalog.setval('public.schedules_id_seq', 1, false);
 
 
 --
--- TOC entry 3403 (class 0 OID 0)
+-- TOC entry 3404 (class 0 OID 0)
 -- Dependencies: 217
 -- Name: services_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -517,7 +518,7 @@ SELECT pg_catalog.setval('public.services_id_seq', 16, true);
 
 
 --
--- TOC entry 3404 (class 0 OID 0)
+-- TOC entry 3405 (class 0 OID 0)
 -- Dependencies: 213
 -- Name: sessions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -526,7 +527,7 @@ SELECT pg_catalog.setval('public.sessions_id_seq', 27, true);
 
 
 --
--- TOC entry 3405 (class 0 OID 0)
+-- TOC entry 3406 (class 0 OID 0)
 -- Dependencies: 211
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -554,19 +555,19 @@ ALTER TABLE ONLY public.categories
 
 --
 -- TOC entry 3227 (class 2606 OID 24700)
--- Name: schedules schedules_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: schedule_events schedules_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.schedules
+ALTER TABLE ONLY public.schedule_events
     ADD CONSTRAINT schedules_pkey PRIMARY KEY (id);
 
 
 --
 -- TOC entry 3229 (class 2606 OID 24717)
--- Name: schedules_services schedules_services_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: schedule_events_services schedules_services_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.schedules_services
+ALTER TABLE ONLY public.schedule_events_services
     ADD CONSTRAINT schedules_services_pkey PRIMARY KEY (schedule_id, service_id);
 
 
@@ -624,21 +625,30 @@ ALTER TABLE ONLY public.categories
 
 
 --
--- TOC entry 3235 (class 2606 OID 24718)
--- Name: schedules_services fk_schedule_id_schedules_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3236 (class 2606 OID 24718)
+-- Name: schedule_events_services fk_schedule_id_schedules_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.schedules_services
-    ADD CONSTRAINT fk_schedule_id_schedules_id FOREIGN KEY (schedule_id) REFERENCES public.schedules(id) ON DELETE CASCADE;
+ALTER TABLE ONLY public.schedule_events_services
+    ADD CONSTRAINT fk_schedule_id_schedules_id FOREIGN KEY (schedule_id) REFERENCES public.schedule_events(id) ON DELETE CASCADE;
 
 
 --
--- TOC entry 3236 (class 2606 OID 24723)
--- Name: schedules_services fk_service_id_services_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3237 (class 2606 OID 24723)
+-- Name: schedule_events_services fk_service_id_services_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.schedules_services
+ALTER TABLE ONLY public.schedule_events_services
     ADD CONSTRAINT fk_service_id_services_id FOREIGN KEY (schedule_id) REFERENCES public.services(id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 3235 (class 2606 OID 24736)
+-- Name: schedule_events fk_user_id_user_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.schedule_events
+    ADD CONSTRAINT fk_user_id_user_id FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE NOT VALID;
 
 
 --
@@ -668,7 +678,7 @@ ALTER TABLE ONLY public.sessions
     ADD CONSTRAINT user_id_fk FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
--- Completed on 2022-01-10 20:18:20
+-- Completed on 2022-01-11 20:06:35
 
 --
 -- PostgreSQL database dump complete

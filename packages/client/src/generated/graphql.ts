@@ -45,7 +45,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   callPassword: Call;
   categoryCreate: Category;
-  scheduleCreate: Schedule;
+  scheduleEventCreate: ScheduleEvent;
   serviceCreate: Service;
   serviceDelete: Scalars['Boolean'];
   serviceUpdate: Service;
@@ -66,12 +66,8 @@ export type MutationCategoryCreateArgs = {
 };
 
 
-export type MutationScheduleCreateArgs = {
-  color?: InputMaybe<Scalars['String']>;
-  date: Scalars['Date'];
-  intervalEnd: Scalars['String'];
-  intervalStart: Scalars['String'];
-  type: ScheduleType;
+export type MutationScheduleEventCreateArgs = {
+  input: ScheduleEventInput;
 };
 
 
@@ -133,17 +129,29 @@ export enum Role {
   Master = 'master'
 }
 
-export type Schedule = {
-  __typename?: 'Schedule';
+export type ScheduleEvent = {
+  __typename?: 'ScheduleEvent';
   color?: Maybe<Scalars['String']>;
   date: Scalars['Date'];
   id: Scalars['Int'];
   intervalEnd: Scalars['String'];
   intervalStart: Scalars['String'];
-  type: ScheduleType;
+  services?: Maybe<Array<Maybe<Scalars['Int']>>>;
+  type: ScheduleEventType;
+  userId: Scalars['Int'];
 };
 
-export enum ScheduleType {
+export type ScheduleEventInput = {
+  color?: InputMaybe<Scalars['String']>;
+  date: Scalars['Date'];
+  id?: InputMaybe<Scalars['Int']>;
+  intervalEnd: Scalars['String'];
+  intervalStart: Scalars['String'];
+  services?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  type: ScheduleEventType;
+};
+
+export enum ScheduleEventType {
   Daily = 'daily',
   Monthly = 'monthly',
   Once = 'once',
