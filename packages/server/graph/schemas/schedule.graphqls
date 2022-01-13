@@ -7,6 +7,7 @@ type ScheduleEvent {
   services: [Int]
   color: String
   userId: Int!
+  code: String!
 }
 
 input ScheduleEventInput {

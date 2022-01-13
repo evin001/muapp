@@ -72,6 +72,10 @@ export const Services = () => {
         />
       )}
       {servicesWithCategories.map((serviceOrCategory) => {
+        if (!serviceOrCategory) {
+          return null
+        }
+
         const category = (serviceOrCategory as Service)?.category
           ? null
           : (serviceOrCategory as Category)

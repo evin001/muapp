@@ -11,12 +11,13 @@ import {
   TextField,
   useTheme,
 } from '@stage-ui/core'
+import SelectTypes from '@stage-ui/core/control/Select/types'
 import { ArrowLeft } from '@stage-ui/icons'
 import moment from 'moment'
 
 import { useMasterContext } from '..'
 
-import { Service, Category } from '~/generated/graphql'
+import { Service, Category, ScheduleEventType } from '~/generated/graphql'
 import { font } from '~/theme'
 import { useTitle } from '~/hooks/useTitle'
 import { useSelector } from '~/hooks/useSelector'
@@ -26,20 +27,20 @@ import { Page } from '~/components/Page'
 import { HintError } from '~/components/HintError'
 
 const colorSaturation = 500
-const colors = [
-  { label: 'Оранжевый', color: 'amber' },
-  { label: 'Зелёный', color: 'green' },
-  { label: 'Фиолетовый', color: 'purple' },
-  { label: 'Голубой', color: 'cyan' },
-  { label: 'Розовый', color: 'pink' },
-  { label: 'Индиго', color: 'indigo' },
-  { label: 'Синий', color: 'blue' },
-  { label: 'Красный', color: 'red' },
+const colorOptions = [
+  { text: 'Оранжевый', value: 'amber' },
+  { text: 'Зелёный', value: 'green' },
+  { text: 'Фиолетовый', value: 'purple' },
+  { text: 'Голубой', value: 'cyan' },
+  { text: 'Розовый', value: 'pink' },
+  { text: 'Индиго', value: 'indigo' },
+  { text: 'Синий', value: 'blue' },
+  { text: 'Красный', value: 'red' },
 ]
 
 export const MasterScheduleEdit = () => {
   const { id } = useParams<{ id?: string }>()
-  const title = id ? 'Редактирование расписания' : 'Новое расписание'
+  const title = id ? 'Редактирование события' : 'Новое событие'
 
   useTitle(title)
 
@@ -55,16 +56,18 @@ export const MasterScheduleEdit = () => {
     EnititiesActions.servicesFetch()
   }, [])
 
-  const colorOptions = colors.map((c) => ({
-    text: c.label,
-    value: color.palette[`${c.color}${colorSaturation}`].hex(),
-  }))
-
-  const repetitionOptions = [
-    { text: 'Ежедневно', value: '' },
-    { text: `Еженедельно - ${moment().format('dddd')}`, value: '' },
-    { text: `Ежемесячно перв. ${moment().format('dddd')}`, value: '' },
-    { text: 'Каждый будний день (с понедельника по пятницу)', value: '' },
+  const repetitionOptions: SelectTypes.Option<ScheduleEventType>[] = [
+    { text: 'Не повторять', value: ScheduleEventType.Once },
+    { text: 'Ежедневно', value: ScheduleEventType.Daily },
+    { text: `Еженедельно - ${moment().format('dddd')}`, value: ScheduleEventType.Weekly },
+    {
+      text: `Ежемесячно перв. ${moment().format('dddd')}`,
+      value: ScheduleEventType.Monthly,
+    },
+    {
+      text: 'Каждый будний день (с понедельника по пятницу)',
+      value: ScheduleEventType.Weekday,
+    },
   ]
 
   const serviceOptions = useMemo(() => {
@@ -106,14 +109,13 @@ export const MasterScheduleEdit = () => {
             <Text size="s" mb="0.25rem">
               Временной интеравал
             </Text>
-            <Flexbox alignItems="center">
+            <Grid alignItems="center" templateColumns="1fr 1.25rem 1fr" gap="0.625rem">
               <TextField
                 placeholder="00:00"
                 pattern="^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$"
               />
               <Flexbox
-                mx="0.625rem"
-                w="1.25rem"
+                w="100%"
                 h="0.0625rem"
                 backgroundColor="onBackground"
                 borderRadius="0.3125rem"
@@ -122,7 +124,7 @@ export const MasterScheduleEdit = () => {
                 placeholder="00:00"
                 pattern="^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$"
               />
-            </Flexbox>
+            </Grid>
             <HintError error="" />
           </Flexbox>
           <Select
@@ -158,7 +160,9 @@ export const MasterScheduleEdit = () => {
                   mr="s"
                   w="2rem"
                   h="1rem"
-                  backgroundColor={option.value.toString()}
+                  backgroundColor={color.palette[
+                    `${option.value.toString()}${colorSaturation}`
+                  ].hex()}
                   borderRadius="0.3125rem"
                   borderWidth="0.0625rem"
                   borderStyle="solid"

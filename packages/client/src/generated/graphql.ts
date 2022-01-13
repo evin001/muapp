@@ -131,6 +131,7 @@ export enum Role {
 
 export type ScheduleEvent = {
   __typename?: 'ScheduleEvent';
+  code: Scalars['String'];
   color?: Maybe<Scalars['String']>;
   date: Scalars['Date'];
   id: Scalars['Int'];

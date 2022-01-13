@@ -23,6 +23,8 @@ var (
 	ServiceNotBelongUser = GenError("The service does not belong to the user")
 
 	CategoryNotFound = GenError("Category not found")
+
+	EventNotCreated = GenError("Event not created")
 )
 
 func GenError(err string) error {

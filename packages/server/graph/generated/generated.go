@@ -82,6 +82,7 @@ type ComplexityRoot struct {
 	}
 
 	ScheduleEvent struct {
+		Code          func(childComplexity int) int
 		Color         func(childComplexity int) int
 		Date          func(childComplexity int) int
 		ID            func(childComplexity int) int
@@ -348,6 +349,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Services(childComplexity, args["userId"].(int)), true
+
+	case "ScheduleEvent.code":
+		if e.complexity.ScheduleEvent.Code == nil {
+			break
+		}
+
+		return e.complexity.ScheduleEvent.Code(childComplexity), true
 
 	case "ScheduleEvent.color":
 		if e.complexity.ScheduleEvent.Color == nil {
@@ -672,6 +680,7 @@ enum CategoryType {
   services: [Int]
   color: String
   userId: Int!
+  code: String!
 }
 
 input ScheduleEventInput {
@@ -2471,6 +2480,41 @@ func (ec *executionContext) _ScheduleEvent_userId(ctx context.Context, field gra
 	res := resTmp.(int)
 	fc.Result = res
 	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ScheduleEvent_code(ctx context.Context, field graphql.CollectedField, obj *models.ScheduleEvent) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "ScheduleEvent",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Code, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Service_id(ctx context.Context, field graphql.CollectedField, obj *models.Service) (ret graphql.Marshaler) {
@@ -4529,6 +4573,11 @@ func (ec *executionContext) _ScheduleEvent(ctx context.Context, sel ast.Selectio
 			out.Values[i] = ec._ScheduleEvent_color(ctx, field, obj)
 		case "userId":
 			out.Values[i] = ec._ScheduleEvent_userId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "code":
+			out.Values[i] = ec._ScheduleEvent_code(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}

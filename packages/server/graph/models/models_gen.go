@@ -32,6 +32,7 @@ type ScheduleEvent struct {
 	Services      []*int            `json:"services"`
 	Color         *string           `json:"color"`
 	UserID        int               `json:"userId"`
+	Code          string            `json:"code"`
 }
 
 type ScheduleEventInput struct {
