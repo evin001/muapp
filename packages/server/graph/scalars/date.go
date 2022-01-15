@@ -11,7 +11,8 @@ import (
 
 func MarshalDate(t time.Time) graphql.Marshaler {
 	return graphql.WriterFunc(func(w io.Writer) {
-		io.WriteString(w, strconv.Quote(t.Format("2022-01-10")))
+		formatted := fmt.Sprintf("%d-%02d-%02d", t.Year(), t.Month(), t.Day())
+		io.WriteString(w, strconv.Quote(formatted))
 	})
 }
 
