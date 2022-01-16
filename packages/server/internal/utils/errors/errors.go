@@ -24,7 +24,8 @@ var (
 
 	CategoryNotFound = GenError("Category not found")
 
-	EventNotCreated = GenError("Event not created")
+	EventNotCreated        = GenError("Event not created")
+	EventWrongTimeInterval = GenError("Incorrect time interval")
 )
 
 func GenError(err string) error {

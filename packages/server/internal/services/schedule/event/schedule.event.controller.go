@@ -9,6 +9,7 @@ import (
 	"github.com/jackc/pgx/v4"
 	"muapp.ru/graph/models"
 	"muapp.ru/internal/utils"
+	"muapp.ru/internal/utils/errors"
 	"muapp.ru/internal/utils/jwt"
 )
 
@@ -21,6 +22,10 @@ type eventDateHandler func(time.Time, int) time.Time
 func (c EventController) CreateEvent(ctx context.Context, input models.ScheduleEventInput) (*models.ScheduleEvent, error) {
 	srv := new(EventService)
 	userID := jwt.GetUserID(ctx)
+
+	if input.IntervalStart > input.IntervalEnd {
+		return nil, errors.EventWrongTimeInterval
+	}
 
 	tx, err := utils.DB.BeginTx(ctx, pgx.TxOptions{})
 	if err != nil {
