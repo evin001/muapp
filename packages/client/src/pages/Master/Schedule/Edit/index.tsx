@@ -46,7 +46,7 @@ export const MasterScheduleEdit = () => {
   const {
     handleSubmit,
     control,
-    formState: { isValid },
+    formState: { isValid, errors },
   } = useForm<EditFormType>({
     defaultValues: {
       date: new Date(),
@@ -153,7 +153,9 @@ export const MasterScheduleEdit = () => {
                 )}
               />
             </Grid>
-            <HintError error="" />
+            <HintError
+              error={errors.intervalEnd?.message || errors.intervalStart?.message}
+            />
           </Flexbox>
           <Controller
             name="type"

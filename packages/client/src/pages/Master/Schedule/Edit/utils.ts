@@ -19,15 +19,22 @@ export const schema = yup.object({
   date: yup.string().required('Пожалуйста, укажите дату'),
   intervalStart: yup
     .string()
-    .required('Пожалуйста, временной интервал')
-    .matches(TIME_FORMAT, 'Пожалуйста, введите корректное время'),
+    .required('Пожалуйста, укажите время начала')
+    .matches(TIME_FORMAT, 'Пожалуйста, введите корректное время начала')
+    .test('time', 'Время начала не может превышать время завершения', function (value) {
+      return !!value && this.parent.intervalEnd > value
+    }),
   intervalEnd: yup
     .string()
-    .required('Пожалуйста, временной интервал')
-    .matches(TIME_FORMAT, 'Пожалуйста, введите корректное время')
-    .test('time', 'Пожалуйста, введите корректный интервал', function (value) {
-      return !!value && this.parent.intervalStart < value
-    }),
+    .required('Пожалуйста, укажите время завершения')
+    .matches(TIME_FORMAT, 'Пожалуйста, введите корректное время завершения')
+    .test(
+      'time',
+      'Время завершения не может быть меньше времени начала',
+      function (value) {
+        return !!value && this.parent.intervalStart < value
+      },
+    ),
   color: yup.string().required('Пожалуйста, укажите цвет'),
   type: yup.string().required('Пожалуйста, укажите повторение'),
 })
