@@ -1,8 +1,17 @@
 import React, { useEffect, useMemo, useState } from 'react'
 
 import { useNavigate, useParams } from 'react-router-dom'
-import { Button, Select, Flexbox, Text, DatePicker, Grid, useTheme } from '@stage-ui/core'
-import { ArrowLeft, Save, Plus } from '@stage-ui/icons'
+import {
+  Button,
+  Select,
+  Flexbox,
+  Text,
+  DatePicker,
+  Grid,
+  useTheme,
+  dialog,
+} from '@stage-ui/core'
+import { ArrowLeft, Save, Plus, Close } from '@stage-ui/icons'
 import moment from 'moment'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -11,15 +20,13 @@ import { useMasterContext } from '../..'
 
 import { colorOptions, colorSaturation, getRepetitionOptions, schema } from './utils'
 
-import { Service, Category, ScheduleEventType } from '~/generated/graphql'
-import { font } from '~/theme'
+import { ScheduleEventType } from '~/generated/graphql'
 import { useTitle } from '~/hooks/useTitle'
-import { useSelector } from '~/hooks/useSelector'
 import { EnititiesActions } from '~/data/enitities'
-import { selectServicesByParentCategory } from '~/data/enitities/select'
 import { Page } from '~/components/Page'
 import { HintError } from '~/components/HintError'
 import { TimeField } from '~/components/TimeField'
+import { SelectMultipleService } from '~/modals/SelectMultipleService'
 
 type EditFormType = {
   intervalStart: string
@@ -40,12 +47,9 @@ export const MasterScheduleEdit = () => {
   const { color } = useTheme()
   const { setMenu } = useMasterContext()
 
-  const servicesWithCategories = useSelector(selectServicesByParentCategory)
-
   const {
     handleSubmit,
     control,
-    watch,
     getValues,
     formState: { isValid, errors },
   } = useForm<EditFormType>({
@@ -70,19 +74,6 @@ export const MasterScheduleEdit = () => {
   }, [])
 
   const repetitionOptions = useMemo(() => getRepetitionOptions(date), [date])
-
-  const serviceOptions = useMemo(() => {
-    return servicesWithCategories.map((serviceOrCategory) => {
-      if (!serviceOrCategory) return { text: '', value: '' }
-      if ((serviceOrCategory as Service).category) {
-        return {
-          text: (serviceOrCategory as Service).category.name,
-          value: serviceOrCategory?.id.toString() || '',
-        }
-      }
-      return { text: (serviceOrCategory as Category).name, value: 'group' }
-    })
-  }, [servicesWithCategories.length])
 
   const handleSubmitForm = (data: EditFormType) => {}
 
@@ -170,32 +161,46 @@ export const MasterScheduleEdit = () => {
             name="services"
             control={control}
             render={({ field: { value, onChange }, fieldState: { error } }) => (
-              <Select
-                multiselect
-                label="Услуга"
-                placeholder="Любая услуга"
-                options={serviceOptions}
-                values={serviceOptions.filter((s) => value?.includes(s.value))}
-                hint={<HintError error={error?.message} />}
-                onChange={(_, option) => {
-                  if (option?.value && option?.value !== 'group') {
-                    if (value?.includes(option.value.toString())) {
-                      onChange(value.filter((v) => v !== option.value))
-                    } else {
-                      onChange(value?.concat(option.value.toString()))
-                    }
-                  }
-                }}
-                renderOption={(option) => (
-                  <Flexbox>
-                    {option.value === 'group' ? (
-                      <Text css={{ fontFamily: font.medium }}>{option.text}</Text>
-                    ) : (
-                      <Text ml="m">{option.text}</Text>
-                    )}
-                  </Flexbox>
-                )}
-              />
+              <Flexbox mb="1.5rem" justifyContent="space-between">
+                <Text>{value?.length ? `Услуги (${value.length})` : 'Любая услуга'}</Text>
+                <Flexbox alignItems="center">
+                  {(value?.length || 0) > 0 && (
+                    <Flexbox
+                      mr="s"
+                      p="0.125rem"
+                      backgroundColor="content1"
+                      css={{ borderRadius: '50%' }}
+                      onClick={() => onChange([])}
+                    >
+                      <Close size="s" color="onSecondary" />
+                    </Flexbox>
+                  )}
+                  <Text
+                    decoration="underline"
+                    color="primary"
+                    onClick={() => {
+                      dialog({
+                        title: 'Выбор услуг',
+                        render: (close) => (
+                          <SelectMultipleService
+                            services={value}
+                            onClose={close}
+                            onChange={onChange}
+                          />
+                        ),
+                        overrides: {
+                          window: () => ({
+                            width: '80vw',
+                            maxWidth: '20rem',
+                          }),
+                        },
+                      })
+                    }}
+                  >
+                    Выбрать
+                  </Text>
+                </Flexbox>
+              </Flexbox>
             )}
           />
           <Controller

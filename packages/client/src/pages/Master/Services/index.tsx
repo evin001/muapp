@@ -20,9 +20,8 @@ export const Services = () => {
 
   const navigate = useNavigate()
   const servicesWithCategories = useSelector(selectServicesByParentCategory)
-  const { services, categories, loading } = useSelector(({ entities }) => ({
+  const { services, loading } = useSelector(({ entities }) => ({
     services: entities.services.data,
-    categories: entities.categories.data,
     loading:
       entities.services.fetch === 'pending' ||
       entities.services.fetch === 'idle' ||

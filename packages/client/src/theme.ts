@@ -93,6 +93,13 @@ const theme = light.replace({
     },
   },
   overrides: (main) => ({
+    Checkbox: () => ({
+      check: [
+        {
+          borderRadius: '0.25rem',
+        },
+      ],
+    }),
     Button: () => ({
       container: [
         {

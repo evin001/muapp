@@ -4,6 +4,30 @@ import moment from 'moment'
 import { ScheduleEventType } from '~/generated/graphql'
 import { TIME_FORMAT } from '~/components/TimeField'
 
+export const schema = yup.object({
+  date: yup.string().required('Пожалуйста, укажите дату'),
+  intervalStart: yup
+    .string()
+    .required('Пожалуйста, укажите время начала')
+    .matches(TIME_FORMAT, 'Пожалуйста, введите корректное время начала')
+    .test('time', 'Время начала не может превышать время завершения', function (value) {
+      return !!value && this.parent.intervalEnd > value
+    }),
+  intervalEnd: yup
+    .string()
+    .required('Пожалуйста, укажите время завершения')
+    .matches(TIME_FORMAT, 'Пожалуйста, введите корректное время завершения')
+    .test(
+      'time',
+      'Время завершения не может быть меньше времени начала',
+      function (value) {
+        return !!value && this.parent.intervalStart < value
+      },
+    ),
+  color: yup.string().required('Пожалуйста, укажите цвет'),
+  type: yup.string().required('Пожалуйста, укажите повторение'),
+})
+
 export const colorSaturation = 500
 
 export const colorOptions = [
@@ -51,27 +75,3 @@ export const getRepetitionOptions = (date: Date) => {
     },
   ]
 }
-
-export const schema = yup.object({
-  date: yup.string().required('Пожалуйста, укажите дату'),
-  intervalStart: yup
-    .string()
-    .required('Пожалуйста, укажите время начала')
-    .matches(TIME_FORMAT, 'Пожалуйста, введите корректное время начала')
-    .test('time', 'Время начала не может превышать время завершения', function (value) {
-      return !!value && this.parent.intervalEnd > value
-    }),
-  intervalEnd: yup
-    .string()
-    .required('Пожалуйста, укажите время завершения')
-    .matches(TIME_FORMAT, 'Пожалуйста, введите корректное время завершения')
-    .test(
-      'time',
-      'Время завершения не может быть меньше времени начала',
-      function (value) {
-        return !!value && this.parent.intervalStart < value
-      },
-    ),
-  color: yup.string().required('Пожалуйста, укажите цвет'),
-  type: yup.string().required('Пожалуйста, укажите повторение'),
-})
