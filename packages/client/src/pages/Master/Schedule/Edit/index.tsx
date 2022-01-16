@@ -7,9 +7,10 @@ import { ArrowLeft, Save, Plus } from '@stage-ui/icons'
 import moment from 'moment'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import * as yup from 'yup'
 
-import { useMasterContext } from '..'
+import { useMasterContext } from '../..'
+
+import { colorOptions, colorSaturation, schema } from './utils'
 
 import { Service, Category, ScheduleEventType } from '~/generated/graphql'
 import { font } from '~/theme'
@@ -19,7 +20,7 @@ import { EnititiesActions } from '~/data/enitities'
 import { selectServicesByParentCategory } from '~/data/enitities/select'
 import { Page } from '~/components/Page'
 import { HintError } from '~/components/HintError'
-import { TimeField, TIME_FORMAT } from '~/components/TimeField'
+import { TimeField } from '~/components/TimeField'
 
 type EditFormType = {
   intervalStart: string
@@ -29,35 +30,6 @@ type EditFormType = {
   date: Date
   services?: string[]
 }
-
-const colorSaturation = 500
-const colorOptions = [
-  { text: 'Оранжевый', value: 'amber' },
-  { text: 'Зелёный', value: 'green' },
-  { text: 'Фиолетовый', value: 'purple' },
-  { text: 'Голубой', value: 'cyan' },
-  { text: 'Розовый', value: 'pink' },
-  { text: 'Индиго', value: 'indigo' },
-  { text: 'Синий', value: 'blue' },
-  { text: 'Красный', value: 'red' },
-]
-
-const schema = yup.object({
-  date: yup.string().required('Пожалуйста, укажите дату'),
-  intervalStart: yup
-    .string()
-    .required('Пожалуйста, временной интервал')
-    .matches(TIME_FORMAT, 'Пожалуйста, введите корректное время'),
-  intervalEnd: yup
-    .string()
-    .required('Пожалуйста, временной интервал')
-    .matches(TIME_FORMAT, 'Пожалуйста, введите корректное время')
-    .test('time', 'Пожалуйста, введите корректный интервал', function (value) {
-      return !!value && this.parent.intervalStart < value
-    }),
-  color: yup.string().required('Пожалуйста, укажите цвет'),
-  type: yup.string().required('Пожалуйста, укажите повторение'),
-})
 
 export const MasterScheduleEdit = () => {
   const { id } = useParams<{ id?: string }>()
