@@ -1,4 +1,5 @@
 import * as yup from 'yup'
+import moment from 'moment'
 
 import { TIME_FORMAT } from '~/components/TimeField'
 
@@ -38,3 +39,13 @@ export const schema = yup.object({
   color: yup.string().required('Пожалуйста, укажите цвет'),
   type: yup.string().required('Пожалуйста, укажите повторение'),
 })
+
+export const weekdayOfMonth = (date: Date) => {
+  const labels = ['', 'перв.', 'втор.', 'трет.', 'четв.', 'послед.']
+  const week = Math.ceil(moment(date).date() / 7)
+  const lastWeek = Math.ceil(moment(date).endOf('month').date() / 7)
+  if (week === lastWeek) {
+    return labels[labels.length - 1]
+  }
+  return labels[week]
+}

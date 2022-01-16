@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 
 import { useNavigate, useParams } from 'react-router-dom'
 import { Button, Select, Flexbox, Text, DatePicker, Grid, useTheme } from '@stage-ui/core'
@@ -10,7 +10,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 
 import { useMasterContext } from '../..'
 
-import { colorOptions, colorSaturation, schema } from './utils'
+import { colorOptions, colorSaturation, schema, weekdayOfMonth } from './utils'
 
 import { Service, Category, ScheduleEventType } from '~/generated/graphql'
 import { font } from '~/theme'
@@ -46,6 +46,8 @@ export const MasterScheduleEdit = () => {
   const {
     handleSubmit,
     control,
+    watch,
+    getValues,
     formState: { isValid, errors },
   } = useForm<EditFormType>({
     defaultValues: {
@@ -59,18 +61,24 @@ export const MasterScheduleEdit = () => {
     mode: 'onChange',
     resolver: yupResolver(schema),
   })
+  const values = getValues()
+  const [date, setDate] = useState(values.date)
 
   useEffect(() => {
     setMenu('schedule')
     EnititiesActions.categoriesFetch()
     EnititiesActions.servicesFetch()
   }, [])
+
   const repetitionOptions: SelectTypes.Option<ScheduleEventType>[] = [
     { text: 'Не повторять', value: ScheduleEventType.Once },
     { text: 'Ежедневно', value: ScheduleEventType.Daily },
-    { text: `Еженедельно - ${moment().format('dddd')}`, value: ScheduleEventType.Weekly },
     {
-      text: `Ежемесячно перв. ${moment().format('dddd')}`,
+      text: `Еженедельно - ${moment(date).format('dddd')}`,
+      value: ScheduleEventType.Weekly,
+    },
+    {
+      text: `Ежемесячно ${weekdayOfMonth(date)} ${moment(date).format('dddd')}`,
       value: ScheduleEventType.Monthly,
     },
     {
@@ -120,8 +128,10 @@ export const MasterScheduleEdit = () => {
                 placeholder="Выберите дату"
                 format="DD.MM.YYYY"
                 value={value}
-                onChange={(_, date) => {
-                  onChange(date)
+                onChange={(_, d) => {
+                  const nextDate = moment(d, 'DD.MM.YYYY').toDate()
+                  setDate(nextDate)
+                  onChange(nextDate)
                 }}
                 hint={<HintError error={error?.message} />}
               />
