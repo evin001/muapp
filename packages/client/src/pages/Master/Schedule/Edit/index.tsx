@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from 'react'
 
 import { useNavigate, useParams } from 'react-router-dom'
 import { Button, Select, Flexbox, Text, DatePicker, Grid, useTheme } from '@stage-ui/core'
-import SelectTypes from '@stage-ui/core/control/Select/types'
 import { ArrowLeft, Save, Plus } from '@stage-ui/icons'
 import moment from 'moment'
 import { useForm, Controller } from 'react-hook-form'
@@ -10,7 +9,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 
 import { useMasterContext } from '../..'
 
-import { colorOptions, colorSaturation, schema, weekdayOfMonth } from './utils'
+import { colorOptions, colorSaturation, getRepetitionOptions, schema } from './utils'
 
 import { Service, Category, ScheduleEventType } from '~/generated/graphql'
 import { font } from '~/theme'
@@ -70,22 +69,7 @@ export const MasterScheduleEdit = () => {
     EnititiesActions.servicesFetch()
   }, [])
 
-  const repetitionOptions: SelectTypes.Option<ScheduleEventType>[] = [
-    { text: 'Не повторять', value: ScheduleEventType.Once },
-    { text: 'Ежедневно', value: ScheduleEventType.Daily },
-    {
-      text: `Еженедельно - ${moment(date).format('dddd')}`,
-      value: ScheduleEventType.Weekly,
-    },
-    {
-      text: `Ежемесячно ${weekdayOfMonth(date)} ${moment(date).format('dddd')}`,
-      value: ScheduleEventType.Monthly,
-    },
-    {
-      text: 'Каждый будний день (с понедельника по пятницу)',
-      value: ScheduleEventType.Weekday,
-    },
-  ]
+  const repetitionOptions = useMemo(() => getRepetitionOptions(date), [date])
 
   const serviceOptions = useMemo(() => {
     return servicesWithCategories.map((serviceOrCategory) => {

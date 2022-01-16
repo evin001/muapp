@@ -1,6 +1,7 @@
 import * as yup from 'yup'
 import moment from 'moment'
 
+import { ScheduleEventType } from '~/generated/graphql'
 import { TIME_FORMAT } from '~/components/TimeField'
 
 export const colorSaturation = 500
@@ -15,6 +16,41 @@ export const colorOptions = [
   { text: 'Синий', value: 'blue' },
   { text: 'Красный', value: 'red' },
 ]
+
+export const weekdayOfMonth = (date: Date) => {
+  const labels = ['', 'перв.', 'втор.', 'трет.', 'четв.', 'послед.']
+
+  const sourceDay = moment(date).date()
+  const sourceWeek = Math.ceil(sourceDay / 7)
+
+  const lastDay = moment(date).endOf('month').date()
+  const lastWeek = Math.ceil(lastDay / 7)
+
+  if (sourceWeek === lastWeek || sourceDay + 7 > lastDay) {
+    return labels[labels.length - 1]
+  }
+
+  return labels[sourceWeek]
+}
+
+export const getRepetitionOptions = (date: Date) => {
+  return [
+    { text: 'Не повторять', value: ScheduleEventType.Once },
+    { text: 'Ежедневно', value: ScheduleEventType.Daily },
+    {
+      text: `Еженедельно - ${moment(date).format('dddd')}`,
+      value: ScheduleEventType.Weekly,
+    },
+    {
+      text: `Ежемесячно ${weekdayOfMonth(date)} ${moment(date).format('dddd')}`,
+      value: ScheduleEventType.Monthly,
+    },
+    {
+      text: 'Каждый будний день (с понедельника по пятницу)',
+      value: ScheduleEventType.Weekday,
+    },
+  ]
+}
 
 export const schema = yup.object({
   date: yup.string().required('Пожалуйста, укажите дату'),
@@ -39,13 +75,3 @@ export const schema = yup.object({
   color: yup.string().required('Пожалуйста, укажите цвет'),
   type: yup.string().required('Пожалуйста, укажите повторение'),
 })
-
-export const weekdayOfMonth = (date: Date) => {
-  const labels = ['', 'перв.', 'втор.', 'трет.', 'четв.', 'послед.']
-  const week = Math.ceil(moment(date).date() / 7)
-  const lastWeek = Math.ceil(moment(date).endOf('month').date() / 7)
-  if (week === lastWeek) {
-    return labels[labels.length - 1]
-  }
-  return labels[week]
-}
