@@ -1,23 +1,19 @@
 import React, { useEffect } from 'react'
 
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, useRoutes } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import { Viewport } from '@stage-ui/core'
 
-import { MainView } from './pages/MainView'
 import GlobalStyles from './components/GlobalStyles'
 import theme from './theme'
 import store from './data/store'
 import { UserActions } from './data/user'
+import { mainRoutes } from './pages/routes'
 
-import { Master } from './pages/Master'
-import { MasterServicesEdit } from './pages/Master/Services/Edit'
-import { MasterScheduleEdit } from './pages/Master/Schedule/Edit'
-import { MasterMainView } from './pages/Master/MainView'
-
-import { Auth } from './pages/Auth'
-import { Login } from './pages/Auth/Login'
-import { Register } from './pages/Auth/Register'
+const AppRoutes = () => {
+  const routes = useRoutes(mainRoutes)
+  return routes
+}
 
 const App = () => {
   useEffect(() => {
@@ -29,24 +25,7 @@ const App = () => {
       <GlobalStyles />
       <Viewport theme={theme}>
         <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<MainView />}>
-              <Route path="master" element={<Master />}>
-                <Route path=":id" element={<MasterMainView />} />
-                <Route path="services/edit" element={<MasterServicesEdit />} />
-                <Route path="services/edit/:id" element={<MasterServicesEdit />} />
-                <Route path="schedule/edit" element={<MasterScheduleEdit />} />
-                <Route path="schedule/edit/:id" element={<MasterScheduleEdit />} />
-                <Route path="" element={<Navigate replace to="services" />} />
-              </Route>
-              <Route path="auth" element={<Auth />}>
-                <Route path="register" element={<Register />} />
-                <Route path="login" element={<Login />} />
-                <Route path="" element={<Navigate replace to="login" />} />
-              </Route>
-              {/* <Route path="*" element={<Navigate replace to="auth" />} /> */}
-            </Route>
-          </Routes>
+          <AppRoutes />
         </BrowserRouter>
       </Viewport>
     </Provider>

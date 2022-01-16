@@ -259,3 +259,5 @@ export const MasterServicesEdit = () => {
     </Page>
   )
 }
+
+export default MasterServicesEdit

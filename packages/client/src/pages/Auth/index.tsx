@@ -38,3 +38,5 @@ export const Auth = () => {
 export function useAuthContext() {
   return useOutletContext<AuthOutletContext>()
 }
+
+export default Auth

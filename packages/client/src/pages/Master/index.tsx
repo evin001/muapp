@@ -86,3 +86,5 @@ export const Master = () => {
 export function useMasterContext() {
   return useOutletContext<MasterContext>()
 }
+
+export default Master

@@ -286,3 +286,5 @@ export const MasterScheduleEdit = () => {
     </Page>
   )
 }
+
+export default MasterScheduleEdit
