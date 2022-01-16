@@ -51,7 +51,10 @@ const schema = yup.object({
   intervalEnd: yup
     .string()
     .required('Пожалуйста, временной интервал')
-    .matches(TIME_FORMAT, 'Пожалуйста, введите корректное время'),
+    .matches(TIME_FORMAT, 'Пожалуйста, введите корректное время')
+    .test('time', 'Пожалуйста, введите корректный интервал', function (value) {
+      return !!value && this.parent.intervalStart < value
+    }),
   color: yup.string().required('Пожалуйста, укажите цвет'),
   type: yup.string().required('Пожалуйста, укажите повторение'),
 })
@@ -90,7 +93,6 @@ export const MasterScheduleEdit = () => {
     EnititiesActions.categoriesFetch()
     EnititiesActions.servicesFetch()
   }, [])
-
   const repetitionOptions: SelectTypes.Option<ScheduleEventType>[] = [
     { text: 'Не повторять', value: ScheduleEventType.Once },
     { text: 'Ежедневно', value: ScheduleEventType.Daily },

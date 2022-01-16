@@ -15,7 +15,7 @@ export const TimeField = ({ onChange, ...props }: TimeFieldProps) => {
     const more = sourceValue.length > nextValue.length
     const less = sourceValue.length < nextValue.length
 
-    if (/[^\d:]/.test(nextValue)) {
+    if (/[^\d:]/.test(nextValue) || nextValue.length > 5) {
       nextValue = sourceValue
     }
 
