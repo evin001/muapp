@@ -1,16 +1,7 @@
 import React, { useEffect, useMemo } from 'react'
 
 import { useNavigate, useParams } from 'react-router-dom'
-import {
-  Button,
-  Select,
-  Flexbox,
-  Text,
-  DatePicker,
-  Grid,
-  TextField,
-  useTheme,
-} from '@stage-ui/core'
+import { Button, Select, Flexbox, Text, DatePicker, Grid, useTheme } from '@stage-ui/core'
 import SelectTypes from '@stage-ui/core/control/Select/types'
 import { ArrowLeft, Save, Plus } from '@stage-ui/icons'
 import moment from 'moment'
@@ -28,6 +19,7 @@ import { EnititiesActions } from '~/data/enitities'
 import { selectServicesByParentCategory } from '~/data/enitities/select'
 import { Page } from '~/components/Page'
 import { HintError } from '~/components/HintError'
+import { TimeField, TIME_FORMAT } from '~/components/TimeField'
 
 type EditFormType = {
   intervalStart: string
@@ -52,8 +44,14 @@ const colorOptions = [
 
 const schema = yup.object({
   date: yup.string().required('Пожалуйста, укажите дату'),
-  intervalStart: yup.string().required('Пожалуйста, временной интервал'),
-  intervalEnd: yup.string().required('Пожалуйста, временной интервал'),
+  intervalStart: yup
+    .string()
+    .required('Пожалуйста, временной интервал')
+    .matches(TIME_FORMAT, 'Пожалуйста, введите корректное время'),
+  intervalEnd: yup
+    .string()
+    .required('Пожалуйста, временной интервал')
+    .matches(TIME_FORMAT, 'Пожалуйста, введите корректное время'),
   color: yup.string().required('Пожалуйста, укажите цвет'),
   type: yup.string().required('Пожалуйста, укажите повторение'),
 })
@@ -164,12 +162,7 @@ export const MasterScheduleEdit = () => {
                 name="intervalStart"
                 control={control}
                 render={({ field: { value, onChange } }) => (
-                  <TextField
-                    placeholder="00:00"
-                    pattern="^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$"
-                    value={value}
-                    onChange={onChange}
-                  />
+                  <TimeField value={value} onChange={onChange} />
                 )}
               />
               <Flexbox
@@ -182,12 +175,7 @@ export const MasterScheduleEdit = () => {
                 name="intervalEnd"
                 control={control}
                 render={({ field: { value, onChange } }) => (
-                  <TextField
-                    placeholder="00:00"
-                    pattern="^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$"
-                    value={value}
-                    onChange={onChange}
-                  />
+                  <TimeField value={value} onChange={onChange} />
                 )}
               />
             </Grid>
