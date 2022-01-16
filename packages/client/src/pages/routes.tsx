@@ -46,7 +46,7 @@ export const mainRoutes: RouteObject[] = [
           },
           {
             path: '',
-            element: <Navigate replace to="services" />,
+            element: <Navigate replace to="schedule" />,
           },
         ],
       },
