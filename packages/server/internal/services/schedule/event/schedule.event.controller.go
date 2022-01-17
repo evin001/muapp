@@ -19,6 +19,26 @@ type EventController struct{}
 
 type eventDateHandler func(time.Time, int) time.Time
 
+func (c EventController) GetEventByID(ctx context.Context, id int) (*models.ScheduleEvent, error) {
+	srv := new(EventService)
+
+	event, err := srv.GetEventByID(id)
+	if err != nil {
+		return nil, err
+	}
+	if event.UserID != jwt.GetUserID(ctx) {
+		return nil, errors.EventNotBelongUser
+	}
+
+	services, err := srv.GetServicesByEvent(id)
+	if err != nil {
+		return nil, err
+	}
+	event.Services = services
+
+	return event, nil
+}
+
 func (c EventController) CreateEvent(ctx context.Context, input models.ScheduleEventInput) (*models.ScheduleEvent, error) {
 	srv := new(EventService)
 	userID := jwt.GetUserID(ctx)

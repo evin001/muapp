@@ -76,9 +76,10 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Categories func(childComplexity int) int
-		Service    func(childComplexity int, id int) int
-		Services   func(childComplexity int, userID int) int
+		Categories    func(childComplexity int) int
+		ScheduleEvent func(childComplexity int, id int) int
+		Service       func(childComplexity int, id int) int
+		Services      func(childComplexity int, userID int) int
 	}
 
 	ScheduleEvent struct {
@@ -135,6 +136,7 @@ type QueryResolver interface {
 	Categories(ctx context.Context) ([]*models.Category, error)
 	Service(ctx context.Context, id int) (*models.Service, error)
 	Services(ctx context.Context, userID int) ([]*models.Service, error)
+	ScheduleEvent(ctx context.Context, id int) (*models.ScheduleEvent, error)
 }
 type ServiceResolver interface {
 	Category(ctx context.Context, obj *models.Service) (*models.Category, error)
@@ -325,6 +327,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Categories(childComplexity), true
+
+	case "Query.scheduleEvent":
+		if e.complexity.Query.ScheduleEvent == nil {
+			break
+		}
+
+		args, err := ec.field_Query_scheduleEvent_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ScheduleEvent(childComplexity, args["id"].(int)), true
 
 	case "Query.service":
 		if e.complexity.Query.Service == nil {
@@ -610,6 +624,7 @@ type Query {
   categories: [Category!]!
   service(id: Int!): Service!
   services(userId: Int!): [Service!]!
+  scheduleEvent(id: Int!): ScheduleEvent! @hasRole(role: [master])
 }
 
 type Mutation {
@@ -1172,6 +1187,21 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 		}
 	}
 	args["name"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_scheduleEvent_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
 	return args, nil
 }
 
@@ -2135,6 +2165,72 @@ func (ec *executionContext) _Query_services(ctx context.Context, field graphql.C
 	res := resTmp.([]*models.Service)
 	fc.Result = res
 	return ec.marshalNService2ᚕᚖmuappᚗruᚋgraphᚋmodelsᚐServiceᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_scheduleEvent(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_scheduleEvent_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		directive0 := func(rctx context.Context) (interface{}, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().ScheduleEvent(rctx, args["id"].(int))
+		}
+		directive1 := func(ctx context.Context) (interface{}, error) {
+			role, err := ec.unmarshalNRole2ᚕᚖmuappᚗruᚋgraphᚋmodelsᚐRole(ctx, []interface{}{"master"})
+			if err != nil {
+				return nil, err
+			}
+			if ec.directives.HasRole == nil {
+				return nil, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*models.ScheduleEvent); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *muapp.ru/graph/models.ScheduleEvent`, tmp)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*models.ScheduleEvent)
+	fc.Result = res
+	return ec.marshalNScheduleEvent2ᚖmuappᚗruᚋgraphᚋmodelsᚐScheduleEvent(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -4511,6 +4607,20 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_services(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "scheduleEvent":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_scheduleEvent(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}

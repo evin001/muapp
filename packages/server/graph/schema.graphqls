@@ -12,6 +12,7 @@ type Query {
   categories: [Category!]!
   service(id: Int!): Service!
   services(userId: Int!): [Service!]!
+  scheduleEvent(id: Int!): ScheduleEvent! @hasRole(role: [master])
 }
 
 type Mutation {

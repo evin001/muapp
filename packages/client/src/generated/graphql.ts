@@ -110,8 +110,14 @@ export type MutationUserSignUpArgs = {
 export type Query = {
   __typename?: 'Query';
   categories: Array<Category>;
+  scheduleEvent: ScheduleEvent;
   service: Service;
   services: Array<Service>;
+};
+
+
+export type QueryScheduleEventArgs = {
+  id: Scalars['Int'];
 };
 
 

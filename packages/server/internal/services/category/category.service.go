@@ -12,7 +12,7 @@ var db = utils.DB
 
 type CategoryService struct{}
 
-func (s CategoryService) GetbyID(id int) (*models.Category, error) {
+func (s CategoryService) GetByID(id int) (*models.Category, error) {
 	c := new(models.Category)
 
 	query := "SELECT id, name, parent_id, user_id, type FROM categories WHERE id = $1"

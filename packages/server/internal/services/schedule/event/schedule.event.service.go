@@ -4,6 +4,7 @@ import (
 	"context"
 	"strconv"
 	"strings"
+	"time"
 
 	"muapp.ru/graph/models"
 	"muapp.ru/internal/utils"
@@ -13,6 +14,52 @@ import (
 var db = utils.DB
 
 type EventService struct{}
+
+func (s EventService) GetEventByID(id int) (*models.ScheduleEvent, error) {
+	e := new(models.ScheduleEvent)
+	query := `
+		SELECT id, user_id, color, code, type, date, interval_start, interval_end
+		FROM schedule_events
+		WHERE id = $1
+	`
+
+	var intervalStart, intervalEnd time.Time
+	err := db.QueryRow(context.Background(), query, id).Scan(&e.ID, &e.UserID, &e.Color, &e.Code, &e.Type, &e.Date,
+		&intervalStart, &intervalEnd)
+
+	if errors.IsEmptyRows(err) {
+		return nil, errors.EventNotFound
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	e.IntervalStart = intervalStart.Format("15:04")
+	e.IntervalEnd = intervalEnd.Format("15:04")
+
+	return e, nil
+}
+
+func (s EventService) GetServicesByEvent(eventID int) ([]*int, error) {
+	query := "SELECT service_id FROM schedule_events_services WHERE schedule_id = $1"
+	row, err := db.Query(context.Background(), query, eventID)
+	if err != nil {
+		return nil, err
+	}
+
+	var services []*int
+
+	for row.Next() {
+		var id int
+		err := row.Scan(&id)
+		if err != nil {
+			return nil, err
+		}
+		services = append(services, &id)
+	}
+
+	return services, nil
+}
 
 func (s EventService) CreateEvent(userID int, code string, input models.ScheduleEventInput) (*models.ScheduleEvent, error) {
 	var id int
