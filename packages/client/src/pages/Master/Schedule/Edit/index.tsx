@@ -52,6 +52,7 @@ export const MasterScheduleEdit = () => {
     handleSubmit,
     control,
     getValues,
+    setValue,
     formState: { isValid, errors },
   } = useForm<EditFormType>({
     defaultValues: {
@@ -72,6 +73,29 @@ export const MasterScheduleEdit = () => {
     setMenu('schedule')
     EnititiesActions.categoriesFetch()
     EnititiesActions.servicesFetch()
+  }, [])
+
+  const eventFetch = async () => {
+    if (!id) {
+      return false
+    }
+    const event = await ScheduleActions.eventFetch(+id)
+    if (!event) {
+      return false
+    }
+
+    setValue('intervalStart', event.intervalStart)
+    setValue('intervalEnd', event.intervalEnd)
+    setValue('color', event.color as string)
+    setValue('date', moment(event.date as string).toDate())
+    setValue('type', event.type)
+    if (event.services) {
+      setValue('services', event.services as number[])
+    }
+  }
+
+  useEffect(() => {
+    eventFetch()
   }, [])
 
   const repetitionOptions = useMemo(() => getRepetitionOptions(date), [date])

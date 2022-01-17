@@ -16,6 +16,7 @@ import services, { ServicesQueryType } from './queries/services'
 import scheduleEventCreate, {
   ScheduleEventCreateMutationType,
 } from './mutations/scheduleEventCreate'
+import scheduleEvent, { ScheduleEventQueryType } from './queries/scheduleEvent'
 
 type Mutations = {
   // User
@@ -36,6 +37,7 @@ type Queries = {
   categories: CategoriesQueryType
   service: ServiceQueryType
   services: ServicesQueryType
+  scheduleEvent: ScheduleEventQueryType
 }
 
 const mutations = {
@@ -56,6 +58,7 @@ const queries = {
   categories,
   service,
   services,
+  scheduleEvent,
 }
 
 export type Requests = Mutations & Queries

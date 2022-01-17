@@ -17,4 +17,17 @@ export const ScheduleActions = {
       ScheduleStore.mutationPending(false)
     }
   },
+
+  async eventFetch(id: number) {
+    try {
+      ScheduleStore.mutationPending(true)
+      const event = await request('scheduleEvent', { id })
+      return event
+    } catch (e) {
+      const error = <RequestError>e
+      ScheduleStore.mutationReject(error.message)
+    } finally {
+      ScheduleStore.mutationPending(false)
+    }
+  },
 }
