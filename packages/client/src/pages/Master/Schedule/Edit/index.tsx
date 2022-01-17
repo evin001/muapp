@@ -27,6 +27,7 @@ import { Page } from '~/components/Page'
 import { HintError } from '~/components/HintError'
 import { TimeField } from '~/components/TimeField'
 import { SelectMultipleService } from '~/modals/SelectMultipleService'
+import { ScheduleActions } from '~/data/schedule'
 
 type EditFormType = {
   intervalStart: string
@@ -34,7 +35,7 @@ type EditFormType = {
   color: string
   type: ScheduleEventType
   date: Date
-  services?: string[]
+  services?: number[]
 }
 
 export const MasterScheduleEdit = () => {
@@ -75,7 +76,21 @@ export const MasterScheduleEdit = () => {
 
   const repetitionOptions = useMemo(() => getRepetitionOptions(date), [date])
 
-  const handleSubmitForm = (data: EditFormType) => {}
+  const handleSave = () => navigate('../')
+
+  const handleSubmitForm = (data: EditFormType) => {
+    if (!id) {
+      ScheduleActions.eventCreate(
+        {
+          ...data,
+          date: moment(data.date).format('YYYY-MM-DD'),
+        },
+        handleSave,
+      )
+    } else {
+      // TODO Update event
+    }
+  }
 
   return (
     <Page
@@ -237,13 +252,10 @@ export const MasterScheduleEdit = () => {
             )}
           />
 
-          <Button
-            textColor="surface"
-            label={id ? 'Сохранить' : 'Добавить'}
-            leftChild={id ? <Save /> : <Plus />}
-            type="submit"
-            disabled={!isValid}
-          />
+          <Button textColor="surface" type="submit" disabled={!isValid}>
+            {id ? <Save /> : <Plus />}
+            <Text pl="s">{id ? 'Сохранить' : 'Добавить'}</Text>
+          </Button>
         </Grid>
       </form>
     </Page>

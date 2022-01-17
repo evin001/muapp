@@ -10,7 +10,7 @@ export type ScheduleEventCreateMutationType = GQLRequest<
 >
 
 export default gql`
-  mutation (input: ScheduleEventInput!) {
+  mutation ($input: ScheduleEventInput!) {
     scheduleEventCreate(input: $input) {
       id
       code

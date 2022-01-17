@@ -72,6 +72,7 @@ export const MasterServicesEdit = () => {
 
   const categories = useSelector(selectCategoriesWithParent)
   const services = useSelector(selectCategoriesWithFreeChild)
+  const loading = useSelector((state) => state.schedule.mutationPending)
 
   const categoryOptions = useMemo(
     () => categories.map((c) => ({ text: c.name, value: c.id })),
@@ -247,13 +248,10 @@ export const MasterServicesEdit = () => {
             )}
           />
 
-          <Button
-            textColor="surface"
-            label={id ? 'Сохранить' : 'Добавить'}
-            leftChild={id ? <Save /> : <Plus />}
-            type="submit"
-            disabled={!isValid}
-          />
+          <Button textColor="surface" type="submit" disabled={!isValid || loading}>
+            {id ? <Save /> : <Plus />}
+            <Text pl="s">{id ? 'Сохранить' : 'Добавить'}</Text>
+          </Button>
         </Grid>
       </form>
     </Page>

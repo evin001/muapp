@@ -7,9 +7,9 @@ import { useSelector } from '~/hooks/useSelector'
 import { selectServicesByParentCategory } from '~/data/enitities/select'
 
 export type SelectMultipleServiceProps = {
-  services?: string[]
+  services?: number[]
   onClose: () => void
-  onChange: (items: string[]) => void
+  onChange: (items: number[]) => void
 }
 
 export const SelectMultipleService = ({
@@ -25,7 +25,7 @@ export const SelectMultipleService = ({
     onClose()
   }
 
-  const handleClickItem = (id: string) => () => {
+  const handleClickItem = (id: number) => () => {
     const nextItems = [...items]
     if (nextItems.includes(id)) {
       setItems(nextItems.filter((item) => item !== id))
@@ -54,8 +54,8 @@ export const SelectMultipleService = ({
             const service = serviceOrCategory as Service
 
             return (
-              <Flexbox key={service.id} onClick={handleClickItem(`${service.id}`)}>
-                <Checkbox checked={items.includes(`${service.id}`)} />
+              <Flexbox key={service.id} onClick={handleClickItem(service.id)}>
+                <Checkbox checked={items.includes(service.id)} />
                 <Text ml="s">{service.category.name}</Text>
               </Flexbox>
             )
