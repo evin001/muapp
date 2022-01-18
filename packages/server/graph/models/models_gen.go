@@ -35,8 +35,20 @@ type ScheduleEvent struct {
 	Code          string            `json:"code"`
 }
 
-type ScheduleEventInput struct {
-	ID            *int              `json:"id"`
+type ScheduleEventCurrent struct {
+	IntervalStart string  `json:"intervalStart"`
+	IntervalEnd   string  `json:"intervalEnd"`
+	Services      []*int  `json:"services"`
+	Color         *string `json:"color"`
+}
+
+type ScheduleEventCurrentFilter struct {
+	ID       *int       `json:"id"`
+	Code     string     `json:"code"`
+	FromDate *time.Time `json:"fromDate"`
+}
+
+type ScheduleEventNew struct {
 	Date          time.Time         `json:"date"`
 	IntervalStart string            `json:"intervalStart"`
 	IntervalEnd   string            `json:"intervalEnd"`

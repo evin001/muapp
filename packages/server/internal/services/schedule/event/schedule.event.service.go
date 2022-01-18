@@ -2,6 +2,8 @@ package event
 
 import (
 	"context"
+	"fmt"
+	"reflect"
 	"strconv"
 	"strings"
 	"time"
@@ -61,7 +63,7 @@ func (s EventService) GetServicesByEvent(eventID int) ([]*int, error) {
 	return services, nil
 }
 
-func (s EventService) CreateEvent(userID int, code string, input models.ScheduleEventInput) (*models.ScheduleEvent, error) {
+func (s EventService) CreateEvent(userID int, code string, input models.ScheduleEventNew) (*models.ScheduleEvent, error) {
 	var id int
 	query := `
 		INSERT INTO schedule_events (date, interval_start, interval_end, type, color, user_id, code)
@@ -115,4 +117,122 @@ func (s EventService) AssignEventWithServices(eventID int, services []*int) erro
 	return nil
 }
 
-func (s EventService) UpdateEvent() {}
+func (s EventService) UpdateEventByID(input models.ScheduleEventCurrent, eventID, userID int) (bool, error) {
+	query := `
+		UPDATE schedule_event
+		SET interval_start = $3, interval_end = $4, color = $5
+		WHERE id = $1 AND user_id = $2
+	`
+	res, err := db.Exec(context.Background(), query, eventID, userID,
+		input.IntervalStart, input.IntervalEnd, input.Color)
+	if errors.IsEmptyRows(err) {
+		return false, errors.EventUserNotFound
+	}
+	if err != nil {
+		return false, err
+	}
+
+	if err = s.DeleteEventServices(eventID); err != nil {
+		return false, err
+	}
+
+	if input.Services != nil {
+		err = s.AssignEventWithServices(eventID, input.Services)
+		if err != nil {
+			return false, err
+		}
+	}
+
+	return res.RowsAffected() > 0, err
+}
+
+func (s EventService) DeleteEventServices(eventID int) error {
+	query := "DELETE FROM schedule_events_services WHERE schedule_id = $1"
+	_, err := db.Exec(context.Background(), query, eventID)
+	if err != nil && !errors.IsEmptyRows(err) {
+		return err
+	}
+	return nil
+}
+
+func (s EventService) UpdateManyEvents(
+	input models.ScheduleEventCurrent,
+	filter models.ScheduleEventCurrentFilter,
+	userID int,
+) (bool, error) {
+	query := "SELECT id FROM WHERE user_id = $1 AND code = $2 AND date >= $3"
+	row, err := db.Query(context.Background(), query, userID, filter.Code, filter.FromDate)
+	if errors.IsEmptyRows(err) {
+		return false, errors.EventUserNotFound
+	}
+	if err != nil {
+		return false, err
+	}
+
+	var events []int
+
+	for row.Next() {
+		var eventID int
+		err := row.Scan(&eventID)
+		if err != nil {
+			return false, err
+		}
+		events = append(events, eventID)
+	}
+
+	const countInputKeys = 3
+	fmt.Println("Count fields:", reflect.TypeOf(models.ScheduleEventCurrent{}).NumField())
+	placeholders := make([]string, len(events))
+	args := make([]interface{}, len(events)+countInputKeys)
+
+	args[0] = input.IntervalStart
+	args[1] = input.IntervalEnd
+	args[2] = input.Color
+
+	for i, eventID := range events {
+		key := i + countInputKeys + 1
+		placeholders[i] = "($" + strconv.Itoa(key) + ", $1, $2, $3)"
+		args[key-1] = eventID
+	}
+
+	query = `
+		UPDATE schedule_event AS e
+		SET			
+		 	interval_start = ev.interval_start,
+		  interval_end = ev.interval_end,
+			color = ev.color
+		FROM (VALUES` + strings.Join(placeholders, ",") +
+		`) AS ev(id, data, interval_start, interval_end, color)
+		WHERE ev.id = e.id
+	`
+	res, err := db.Exec(context.Background(), query, args...)
+	if err != nil {
+		return false, nil
+	}
+
+	if err = s.DeleteManyEventServices(events); err != nil {
+		return false, nil
+	}
+
+	// TODO Update services
+
+	return int(res.RowsAffected()) == len(events), nil
+}
+
+func (s EventService) DeleteManyEventServices(events []int) error {
+	placeholders := make([]string, len(events))
+	args := make([]interface{}, len(events))
+
+	for i, eventID := range events {
+		placeholders[i] = "$" + strconv.Itoa(i+1)
+		args[i] = eventID
+	}
+
+	query := "DELETE FROM schedule_events_services WHERE schedule_id IN (" + strings.Join(placeholders, ",") + ")"
+	_, err := db.Exec(context.Background(), query, args...)
+	if err != nil && !errors.IsEmptyRows(err) {
+		return err
+	}
+
+	return nil
+}

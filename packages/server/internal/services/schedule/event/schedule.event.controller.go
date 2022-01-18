@@ -39,7 +39,10 @@ func (c EventController) GetEventByID(ctx context.Context, id int) (*models.Sche
 	return event, nil
 }
 
-func (c EventController) CreateEvent(ctx context.Context, input models.ScheduleEventInput) (*models.ScheduleEvent, error) {
+func (c EventController) CreateEvent(
+	ctx context.Context,
+	input models.ScheduleEventNew,
+) (*models.ScheduleEvent, error) {
 	srv := new(EventService)
 	userID := jwt.GetUserID(ctx)
 
@@ -133,4 +136,29 @@ func (c EventController) CreateEvent(ctx context.Context, input models.ScheduleE
 	return event, err
 }
 
-func (c EventController) UpdateEvent() {}
+func (c EventController) UpdateEvent(
+	ctx context.Context,
+	input models.ScheduleEventCurrent,
+	filter models.ScheduleEventCurrentFilter,
+) (bool, error) {
+	srv := new(EventService)
+	userID := jwt.GetUserID(ctx)
+
+	tx, err := utils.DB.BeginTx(ctx, pgx.TxOptions{})
+	if err != nil {
+		return false, err
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback(ctx)
+		} else {
+			tx.Commit(ctx)
+		}
+	}()
+
+	if filter.ID != nil {
+		return srv.UpdateEventByID(input, *filter.ID, userID)
+	}
+
+	return srv.UpdateManyEvents(input, filter, userID)
+}

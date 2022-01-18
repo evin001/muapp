@@ -17,11 +17,24 @@ func (r *queryResolver) ScheduleEvent(ctx context.Context, id int) (*models.Sche
 	return res, nil
 }
 
-func (r *mutationResolver) ScheduleEventCreate(ctx context.Context, input models.ScheduleEventInput) (*models.ScheduleEvent, error) {
+func (r *mutationResolver) ScheduleEventCreate(ctx context.Context, input models.ScheduleEventNew) (*models.ScheduleEvent, error) {
 	ctrl := new(event.EventController)
 	res, err := ctrl.CreateEvent(ctx, input)
 	if err != nil {
 		return nil, gqlerror.Errorf(err.Error())
+	}
+	return res, nil
+}
+
+func (r *mutationResolver) ScheduleEventUpdate(
+	ctx context.Context,
+	input models.ScheduleEventCurrent,
+	filter models.ScheduleEventCurrentFilter,
+) (bool, error) {
+	ctrl := new(event.EventController)
+	res, err := ctrl.UpdateEvent(ctx, input, filter)
+	if err != nil {
+		return false, gqlerror.Errorf(err.Error())
 	}
 	return res, nil
 }

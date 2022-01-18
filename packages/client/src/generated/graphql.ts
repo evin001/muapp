@@ -46,6 +46,7 @@ export type Mutation = {
   callPassword: Call;
   categoryCreate: Category;
   scheduleEventCreate: ScheduleEvent;
+  scheduleEventUpdate: Scalars['Boolean'];
   serviceCreate: Service;
   serviceDelete: Scalars['Boolean'];
   serviceUpdate: Service;
@@ -67,7 +68,13 @@ export type MutationCategoryCreateArgs = {
 
 
 export type MutationScheduleEventCreateArgs = {
-  input: ScheduleEventInput;
+  input: ScheduleEventNew;
+};
+
+
+export type MutationScheduleEventUpdateArgs = {
+  filter: ScheduleEventCurrentFilter;
+  input: ScheduleEventCurrent;
 };
 
 
@@ -148,10 +155,22 @@ export type ScheduleEvent = {
   userId: Scalars['Int'];
 };
 
-export type ScheduleEventInput = {
+export type ScheduleEventCurrent = {
+  color?: InputMaybe<Scalars['String']>;
+  intervalEnd: Scalars['String'];
+  intervalStart: Scalars['String'];
+  services?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+};
+
+export type ScheduleEventCurrentFilter = {
+  code: Scalars['String'];
+  fromDate?: InputMaybe<Scalars['Date']>;
+  id?: InputMaybe<Scalars['Int']>;
+};
+
+export type ScheduleEventNew = {
   color?: InputMaybe<Scalars['String']>;
   date: Scalars['Date'];
-  id?: InputMaybe<Scalars['Int']>;
   intervalEnd: Scalars['String'];
   intervalStart: Scalars['String'];
   services?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;

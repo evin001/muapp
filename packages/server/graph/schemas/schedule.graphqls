@@ -10,14 +10,26 @@ type ScheduleEvent {
   code: String!
 }
 
-input ScheduleEventInput {
-  id: Int
+input ScheduleEventNew {  
   date: Date!
   intervalStart: String!
   intervalEnd: String!
   type: ScheduleEventType!
   services: [Int]
   color: String
+}
+
+input ScheduleEventCurrent {  
+  intervalStart: String!
+  intervalEnd: String!
+  services: [Int]
+  color: String
+}
+
+input ScheduleEventCurrentFilter {  
+  id: Int
+  code: String!
+  fromDate: Date
 }
 
 enum ScheduleEventType {

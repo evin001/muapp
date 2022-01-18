@@ -28,6 +28,7 @@ var (
 	EventWrongTimeInterval = GenError("Incorrect time interval")
 	EventNotBelongUser     = GenError("The event does not belong to the user")
 	EventNotFound          = GenError("Event not found")
+	EventUserNotFound      = GenError("User events not found")
 )
 
 func GenError(err string) error {
