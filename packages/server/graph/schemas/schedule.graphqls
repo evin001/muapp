@@ -28,7 +28,7 @@ input ScheduleEventCurrent {
 
 input ScheduleEventCurrentFilter {  
   id: Int
-  code: String!
+  code: String
   fromDate: Date
 }
 

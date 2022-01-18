@@ -163,7 +163,7 @@ export type ScheduleEventCurrent = {
 };
 
 export type ScheduleEventCurrentFilter = {
-  code: Scalars['String'];
+  code?: InputMaybe<Scalars['String']>;
   fromDate?: InputMaybe<Scalars['Date']>;
   id?: InputMaybe<Scalars['Int']>;
 };

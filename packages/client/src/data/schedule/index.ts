@@ -1,11 +1,11 @@
 import { ScheduleStore } from '../store'
 
-import { ScheduleEventInput } from '~/generated/graphql'
+import { ScheduleEventNew } from '~/generated/graphql'
 import request from '~/requests/request'
 import notify from '~/utils/notify'
 
 export const ScheduleActions = {
-  async eventCreate(input: ScheduleEventInput, callback?: () => void) {
+  async eventCreate(input: ScheduleEventNew, callback?: () => void) {
     try {
       ScheduleStore.mutationPending(true)
       await request('scheduleEventCreate', { input })

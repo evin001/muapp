@@ -734,7 +734,7 @@ input ScheduleEventCurrent {
 
 input ScheduleEventCurrentFilter {  
   id: Int
-  code: String!
+  code: String
   fromDate: Date
 }
 
@@ -4512,7 +4512,7 @@ func (ec *executionContext) unmarshalInputScheduleEventCurrentFilter(ctx context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("code"))
-			it.Code, err = ec.unmarshalNString2string(ctx, v)
+			it.Code, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}

@@ -44,7 +44,7 @@ type ScheduleEventCurrent struct {
 
 type ScheduleEventCurrentFilter struct {
 	ID       *int       `json:"id"`
-	Code     string     `json:"code"`
+	Code     *string    `json:"code"`
 	FromDate *time.Time `json:"fromDate"`
 }
 
