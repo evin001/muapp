@@ -141,6 +141,10 @@ func (c EventController) UpdateEvent(
 	input models.ScheduleEventCurrent,
 	filter models.ScheduleEventCurrentFilter,
 ) (bool, error) {
+	if input.IntervalStart > input.IntervalEnd {
+		return false, errors.EventWrongTimeInterval
+	}
+
 	srv := new(EventService)
 	userID := jwt.GetUserID(ctx)
 

@@ -156,14 +156,14 @@ export type ScheduleEvent = {
 };
 
 export type ScheduleEventCurrent = {
-  color?: InputMaybe<Scalars['String']>;
+  color: Scalars['String'];
   intervalEnd: Scalars['String'];
   intervalStart: Scalars['String'];
   services?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
 };
 
 export type ScheduleEventCurrentFilter = {
-  code?: InputMaybe<Scalars['String']>;
+  code: Scalars['String'];
   fromDate?: InputMaybe<Scalars['Date']>;
   id?: InputMaybe<Scalars['Int']>;
 };

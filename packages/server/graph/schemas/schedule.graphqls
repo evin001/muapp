@@ -22,13 +22,13 @@ input ScheduleEventNew {
 input ScheduleEventCurrent {  
   intervalStart: String!
   intervalEnd: String!
-  services: [Int]
-  color: String
+  color: String!
+  services: [Int]  
 }
 
 input ScheduleEventCurrentFilter {  
   id: Int
-  code: String
+  code: String!
   fromDate: Date
 }
 

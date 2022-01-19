@@ -728,13 +728,13 @@ input ScheduleEventNew {
 input ScheduleEventCurrent {  
   intervalStart: String!
   intervalEnd: String!
-  services: [Int]
-  color: String
+  color: String!
+  services: [Int]  
 }
 
 input ScheduleEventCurrentFilter {  
   id: Int
-  code: String
+  code: String!
   fromDate: Date
 }
 
@@ -4469,19 +4469,19 @@ func (ec *executionContext) unmarshalInputScheduleEventCurrent(ctx context.Conte
 			if err != nil {
 				return it, err
 			}
+		case "color":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("color"))
+			it.Color, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		case "services":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("services"))
 			it.Services, err = ec.unmarshalOInt2ᚕᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "color":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("color"))
-			it.Color, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -4512,7 +4512,7 @@ func (ec *executionContext) unmarshalInputScheduleEventCurrentFilter(ctx context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("code"))
-			it.Code, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.Code, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}

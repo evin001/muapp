@@ -36,15 +36,15 @@ type ScheduleEvent struct {
 }
 
 type ScheduleEventCurrent struct {
-	IntervalStart string  `json:"intervalStart"`
-	IntervalEnd   string  `json:"intervalEnd"`
-	Services      []*int  `json:"services"`
-	Color         *string `json:"color"`
+	IntervalStart string `json:"intervalStart"`
+	IntervalEnd   string `json:"intervalEnd"`
+	Color         string `json:"color"`
+	Services      []*int `json:"services"`
 }
 
 type ScheduleEventCurrentFilter struct {
 	ID       *int       `json:"id"`
-	Code     *string    `json:"code"`
+	Code     string     `json:"code"`
 	FromDate *time.Time `json:"fromDate"`
 }
 

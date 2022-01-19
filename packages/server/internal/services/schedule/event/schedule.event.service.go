@@ -75,7 +75,7 @@ func (s EventService) CreateEvent(userID int, code string, input models.Schedule
 		return nil, err
 	}
 
-	if err = s.AssignEventWithServices(id, input.Services); err != nil {
+	if err = s.AssignEventWithServices([]int{id}, input.Services); err != nil {
 		return nil, err
 	}
 
@@ -91,18 +91,20 @@ func (s EventService) CreateEvent(userID int, code string, input models.Schedule
 	}, nil
 }
 
-func (s EventService) AssignEventWithServices(eventID int, services []*int) error {
-	if len(services) == 0 {
+func (s EventService) AssignEventWithServices(events []int, services []*int) error {
+	if len(services) == 0 || len(events) == 0 {
 		return nil
 	}
 
-	placeholders := make([]string, len(services))
-	args := make([]interface{}, len(services)*2)
-	for i, serviceID := range services {
-		key := i * 2
-		placeholders[i] = "($" + strconv.Itoa(key+1) + ", $" + strconv.Itoa(key+2) + ")"
-		args[key] = eventID
-		args[key+1] = *serviceID
+	placeholders := make([]string, len(services)*len(events))
+	args := make([]interface{}, len(services)+len(events))
+	for j, eventID := range events {
+		for i, serviceID := range services {
+			key := j + len(services)
+			placeholders[i+j*len(services)] = "($" + strconv.Itoa(key+1) + ", $" + strconv.Itoa(i+1) + ")"
+			args[i] = serviceID
+			args[key] = eventID
+		}
 	}
 
 	query := "INSERT INTO schedule_events_services (schedule_id, service_id) VALUES " + strings.Join(placeholders, ",")
@@ -110,7 +112,7 @@ func (s EventService) AssignEventWithServices(eventID int, services []*int) erro
 	if err != nil {
 		return err
 	}
-	if res.RowsAffected() != int64(len(services)) {
+	if res.RowsAffected() != int64(len(services)*len(events)) {
 		return errors.EventNotCreated
 	}
 	return nil
@@ -136,7 +138,7 @@ func (s EventService) UpdateEventByID(input models.ScheduleEventCurrent, eventID
 	}
 
 	if input.Services != nil {
-		err = s.AssignEventWithServices(eventID, input.Services)
+		err = s.AssignEventWithServices([]int{eventID}, input.Services)
 		if err != nil {
 			return false, err
 		}
@@ -159,8 +161,21 @@ func (s EventService) UpdateManyEvents(
 	filter models.ScheduleEventCurrentFilter,
 	userID int,
 ) (bool, error) {
-	query := "SELECT id FROM schedule_events WHERE user_id = $1 AND code = $2 AND date >= $3"
-	row, err := db.Query(context.Background(), query, userID, *filter.Code, filter.FromDate)
+	query := "SELECT id FROM schedule_events WHERE user_id = $1 AND code = $2"
+
+	argsLen := 2
+	if filter.FromDate != nil {
+		argsLen++
+		query = query + " AND date >= $3"
+	}
+	args := make([]interface{}, argsLen)
+	args[0] = userID
+	args[1] = filter.Code
+	if filter.FromDate != nil {
+		args[2] = filter.FromDate
+	}
+
+	row, err := db.Query(context.Background(), query, args...)
 	if errors.IsEmptyRows(err) {
 		return false, errors.EventUserNotFound
 	}
@@ -181,11 +196,11 @@ func (s EventService) UpdateManyEvents(
 
 	countInputKeys := reflect.TypeOf(models.ScheduleEventCurrent{}).NumField() - 1
 	placeholders := make([]string, len(events))
-	args := make([]interface{}, len(events)+countInputKeys)
+	args = make([]interface{}, len(events)+countInputKeys)
 
 	args[0] = input.IntervalStart
 	args[1] = input.IntervalEnd
-	args[2] = *input.Color
+	args[2] = input.Color
 
 	for i, eventID := range events {
 		key := i + countInputKeys + 1
@@ -199,7 +214,8 @@ func (s EventService) UpdateManyEvents(
 			interval_start = CAST(ev.interval_start AS time),
 		  interval_end = CAST(ev.interval_end AS time),
 			color = ev.color
-		FROM (VALUES` + strings.Join(placeholders, ",") + `) AS ev(id, interval_start, interval_end, color)
+		FROM (VALUES` + strings.Join(placeholders, ",") +
+		`) AS ev(id, interval_start, interval_end, color)
 		WHERE CAST(ev.id AS bigint) = e.id
 	`
 
@@ -208,11 +224,14 @@ func (s EventService) UpdateManyEvents(
 		return false, err
 	}
 
-	if err = s.DeleteManyEventServices(events); err != nil {
-		return false, err
+	if input.Services != nil {
+		if err = s.DeleteManyEventServices(events); err != nil {
+			return false, err
+		}
+		if err = s.AssignEventWithServices(events, input.Services); err != nil {
+			return false, err
+		}
 	}
-
-	// TODO Update services
 
 	return int(res.RowsAffected()) == len(events), nil
 }
