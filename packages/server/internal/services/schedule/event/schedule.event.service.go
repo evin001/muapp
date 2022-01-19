@@ -102,7 +102,7 @@ func (s EventService) AssignEventWithServices(events []int, services []*int) err
 		for i, serviceID := range services {
 			key := j + len(services)
 			placeholders[i+j*len(services)] = "($" + strconv.Itoa(key+1) + ", $" + strconv.Itoa(i+1) + ")"
-			args[i] = serviceID
+			args[i] = *serviceID
 			args[key] = eventID
 		}
 	}
