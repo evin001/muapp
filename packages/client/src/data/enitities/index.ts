@@ -72,7 +72,7 @@ export const EnititiesActions = {
       return service
     } catch (e) {
       const error = <RequestError>e
-      EntitiesStore.mutationReject(error.message)
+      notify('Ошибка!', error.message, 'error')
     } finally {
       EntitiesStore.mutationPending(false)
     }

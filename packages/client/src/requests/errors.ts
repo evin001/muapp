@@ -9,7 +9,8 @@ export const messages = [
     'Wrong password please try again',
     'Неправильный пароль, пожалуйста, попробуйте еще раз',
   ],
-  ['Refresh token does not exist', 'Сессия истекла, пожалуйста, авторизуйтесь заново'],
+  ['Event not found', 'Событие не найдено'],
+  ['Service not found', 'Услуга не найдена'],
 ]
 
 // REFRESH_TOKEN_EXPIRED

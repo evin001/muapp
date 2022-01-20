@@ -46,7 +46,8 @@ export const ScheduleActions = {
       return event
     } catch (e) {
       const error = <RequestError>e
-      ScheduleStore.mutationReject(error.message)
+      notify('Ошибка!', error.message, 'error')
+      return null
     } finally {
       ScheduleStore.mutationPending(false)
     }

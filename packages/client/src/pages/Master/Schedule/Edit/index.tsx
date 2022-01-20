@@ -77,13 +77,15 @@ export const MasterScheduleEdit = () => {
     EnititiesActions.servicesFetch()
   }, [])
 
+  const handleSave = () => navigate('../schedule')
+
   const eventFetch = async () => {
     if (!id) {
       return false
     }
     const event = await ScheduleActions.eventFetch(+id)
     if (!event) {
-      return false
+      return handleSave()
     }
 
     codeRef.current = event.code
@@ -103,8 +105,6 @@ export const MasterScheduleEdit = () => {
   }, [])
 
   const repetitionOptions = useMemo(() => getRepetitionOptions(date), [date])
-
-  const handleSave = () => navigate('../')
 
   const handleEventUpdate = (data: EditFormType, filter: ScheduleEventCurrentFilter) => {
     ScheduleActions.eventUpdate(

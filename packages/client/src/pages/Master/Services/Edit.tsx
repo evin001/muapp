@@ -91,12 +91,16 @@ export const MasterServicesEdit = () => {
     return () => subscription.unsubscribe()
   }, [watch])
 
+  const handleSave = () => navigate('../services')
+
   const fetchService = async () => {
     if (!id) return
 
     const service = await EnititiesActions.serviceFetch(+id)
 
-    if (!service) return
+    if (!service) {
+      return handleSave()
+    }
 
     setValue('duration', service.duration)
     setValue('price', service.price)
@@ -107,8 +111,6 @@ export const MasterServicesEdit = () => {
   useEffect(() => {
     fetchService()
   }, [id])
-
-  const handleSave = () => navigate('../')
 
   const handleSubmitForm = (data: EditFormType) => {
     if (!id) {
