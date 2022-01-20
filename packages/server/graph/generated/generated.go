@@ -653,7 +653,7 @@ type Query {
   service(id: Int!): Service!
   services(userId: Int!): [Service!]!
   scheduleEvent(id: Int!): ScheduleEvent! @hasRole(role: [master])
-  scheduleEvents(userId: Int!, filter: ScheduleEventsFilter!): [ScheduleEvent!]!
+  scheduleEvents(userId: Int!, filter: ScheduleEventsFilter!): [ScheduleEvent!]! @hasRole(role: [master])
 }
 
 type Mutation {
@@ -2421,8 +2421,32 @@ func (ec *executionContext) _Query_scheduleEvents(ctx context.Context, field gra
 	}
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().ScheduleEvents(rctx, args["userId"].(int), args["filter"].(models.ScheduleEventsFilter))
+		directive0 := func(rctx context.Context) (interface{}, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().ScheduleEvents(rctx, args["userId"].(int), args["filter"].(models.ScheduleEventsFilter))
+		}
+		directive1 := func(ctx context.Context) (interface{}, error) {
+			role, err := ec.unmarshalNRole2ᚕᚖmuappᚗruᚋgraphᚋmodelsᚐRole(ctx, []interface{}{"master"})
+			if err != nil {
+				return nil, err
+			}
+			if ec.directives.HasRole == nil {
+				return nil, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.([]*models.ScheduleEvent); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*muapp.ru/graph/models.ScheduleEvent`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
