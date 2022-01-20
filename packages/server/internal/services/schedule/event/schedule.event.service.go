@@ -16,6 +16,36 @@ var db = utils.DB
 
 type EventService struct{}
 
+func (s EventService) GetEvents(userID int, filter models.ScheduleEventsFilter) ([]*models.ScheduleEvent, error) {
+	query := `
+		SELECT id, user_id, color, code, type, date, interval_start, interval_end
+		FROM schedule_events
+		WHERE user_id = $1 AND date >= $2 AND date <= $3
+		ORDER BY date, interval_start
+	`
+	row, err := db.Query(context.Background(), query, userID, filter.FromDate, filter.ToDate)
+	if err != nil {
+		return nil, err
+	}
+
+	var events []*models.ScheduleEvent
+	for row.Next() {
+		var intervalStart, intervalEnd time.Time
+		e := models.ScheduleEvent{}
+
+		err := row.Scan(&e.ID, &e.UserID, &e.Color, &e.Code, &e.Type, &e.Date, &intervalStart, &intervalEnd)
+		if err != nil {
+			return nil, err
+		}
+		e.IntervalStart = intervalStart.Format("15:04")
+		e.IntervalEnd = intervalEnd.Format("15:04")
+
+		events = append(events, &e)
+	}
+
+	return events, nil
+}
+
 func (s EventService) GetEventByID(id int) (*models.ScheduleEvent, error) {
 	e := new(models.ScheduleEvent)
 	query := `

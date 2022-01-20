@@ -57,6 +57,11 @@ type ScheduleEventNew struct {
 	Color         *string           `json:"color"`
 }
 
+type ScheduleEventsFilter struct {
+	FromDate time.Time `json:"fromDate"`
+	ToDate   time.Time `json:"toDate"`
+}
+
 type Tokens struct {
 	AuthToken    string `json:"authToken"`
 	RefreshToken string `json:"refreshToken"`

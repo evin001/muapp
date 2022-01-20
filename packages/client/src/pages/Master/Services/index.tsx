@@ -64,7 +64,7 @@ export const Services = () => {
           <Spinner /> <Text ml="s">Загрузка услуг</Text>
         </Flexbox>
       )}
-      {!services.length && (
+      {!services.length && !loading && (
         <ListPlaceholder
           title="Вы ещё не добавили ни одной услуги"
           image={PlaceholderImage}

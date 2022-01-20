@@ -77,10 +77,11 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Categories    func(childComplexity int) int
-		ScheduleEvent func(childComplexity int, id int) int
-		Service       func(childComplexity int, id int) int
-		Services      func(childComplexity int, userID int) int
+		Categories     func(childComplexity int) int
+		ScheduleEvent  func(childComplexity int, id int) int
+		ScheduleEvents func(childComplexity int, userID int, filter models.ScheduleEventsFilter) int
+		Service        func(childComplexity int, id int) int
+		Services       func(childComplexity int, userID int) int
 	}
 
 	ScheduleEvent struct {
@@ -139,6 +140,7 @@ type QueryResolver interface {
 	Service(ctx context.Context, id int) (*models.Service, error)
 	Services(ctx context.Context, userID int) ([]*models.Service, error)
 	ScheduleEvent(ctx context.Context, id int) (*models.ScheduleEvent, error)
+	ScheduleEvents(ctx context.Context, userID int, filter models.ScheduleEventsFilter) ([]*models.ScheduleEvent, error)
 }
 type ServiceResolver interface {
 	Category(ctx context.Context, obj *models.Service) (*models.Category, error)
@@ -353,6 +355,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.ScheduleEvent(childComplexity, args["id"].(int)), true
+
+	case "Query.scheduleEvents":
+		if e.complexity.Query.ScheduleEvents == nil {
+			break
+		}
+
+		args, err := ec.field_Query_scheduleEvents_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ScheduleEvents(childComplexity, args["userId"].(int), args["filter"].(models.ScheduleEventsFilter)), true
 
 	case "Query.service":
 		if e.complexity.Query.Service == nil {
@@ -639,6 +653,7 @@ type Query {
   service(id: Int!): Service!
   services(userId: Int!): [Service!]!
   scheduleEvent(id: Int!): ScheduleEvent! @hasRole(role: [master])
+  scheduleEvents(userId: Int!, filter: ScheduleEventsFilter!): [ScheduleEvent!]!
 }
 
 type Mutation {
@@ -736,6 +751,11 @@ input ScheduleEventCurrentFilter {
   id: Int
   code: String!
   fromDate: Date
+}
+
+input ScheduleEventsFilter {
+  fromDate: Date!
+  toDate: Date!  
 }
 
 enum ScheduleEventType {
@@ -1256,6 +1276,30 @@ func (ec *executionContext) field_Query_scheduleEvent_args(ctx context.Context, 
 		}
 	}
 	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_scheduleEvents_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["userId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["userId"] = arg0
+	var arg1 models.ScheduleEventsFilter
+	if tmp, ok := rawArgs["filter"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("filter"))
+		arg1, err = ec.unmarshalNScheduleEventsFilter2muappᚗruᚋgraphᚋmodelsᚐScheduleEventsFilter(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["filter"] = arg1
 	return args, nil
 }
 
@@ -2351,6 +2395,48 @@ func (ec *executionContext) _Query_scheduleEvent(ctx context.Context, field grap
 	res := resTmp.(*models.ScheduleEvent)
 	fc.Result = res
 	return ec.marshalNScheduleEvent2ᚖmuappᚗruᚋgraphᚋmodelsᚐScheduleEvent(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_scheduleEvents(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_scheduleEvents_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().ScheduleEvents(rctx, args["userId"].(int), args["filter"].(models.ScheduleEventsFilter))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*models.ScheduleEvent)
+	fc.Result = res
+	return ec.marshalNScheduleEvent2ᚕᚖmuappᚗruᚋgraphᚋmodelsᚐScheduleEventᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -4593,6 +4679,37 @@ func (ec *executionContext) unmarshalInputScheduleEventNew(ctx context.Context, 
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputScheduleEventsFilter(ctx context.Context, obj interface{}) (models.ScheduleEventsFilter, error) {
+	var it models.ScheduleEventsFilter
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	for k, v := range asMap {
+		switch k {
+		case "fromDate":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("fromDate"))
+			it.FromDate, err = ec.unmarshalNDate2timeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "toDate":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("toDate"))
+			it.ToDate, err = ec.unmarshalNDate2timeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 // endregion **************************** input.gotpl *****************************
 
 // region    ************************** interface.gotpl ***************************
@@ -4824,6 +4941,20 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_scheduleEvent(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "scheduleEvents":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_scheduleEvents(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -5509,6 +5640,50 @@ func (ec *executionContext) marshalNScheduleEvent2muappᚗruᚋgraphᚋmodelsᚐ
 	return ec._ScheduleEvent(ctx, sel, &v)
 }
 
+func (ec *executionContext) marshalNScheduleEvent2ᚕᚖmuappᚗruᚋgraphᚋmodelsᚐScheduleEventᚄ(ctx context.Context, sel ast.SelectionSet, v []*models.ScheduleEvent) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNScheduleEvent2ᚖmuappᚗruᚋgraphᚋmodelsᚐScheduleEvent(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
 func (ec *executionContext) marshalNScheduleEvent2ᚖmuappᚗruᚋgraphᚋmodelsᚐScheduleEvent(ctx context.Context, sel ast.SelectionSet, v *models.ScheduleEvent) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
@@ -5542,6 +5717,11 @@ func (ec *executionContext) unmarshalNScheduleEventType2muappᚗruᚋgraphᚋmod
 
 func (ec *executionContext) marshalNScheduleEventType2muappᚗruᚋgraphᚋmodelsᚐScheduleEventType(ctx context.Context, sel ast.SelectionSet, v models.ScheduleEventType) graphql.Marshaler {
 	return v
+}
+
+func (ec *executionContext) unmarshalNScheduleEventsFilter2muappᚗruᚋgraphᚋmodelsᚐScheduleEventsFilter(ctx context.Context, v interface{}) (models.ScheduleEventsFilter, error) {
+	res, err := ec.unmarshalInputScheduleEventsFilter(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNService2muappᚗruᚋgraphᚋmodelsᚐService(ctx context.Context, sel ast.SelectionSet, v models.Service) graphql.Marshaler {

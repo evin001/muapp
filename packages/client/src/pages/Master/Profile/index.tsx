@@ -42,12 +42,14 @@ export const Profile = () => {
       <Grid gap="1rem">
         <TextField
           label="Имя"
+          placeholder="Мария"
           name="firstName"
           value={user.firstName}
           onChange={handleChangeTextField}
         />
         <TextField
           label="Фамилия"
+          placeholder="Гамильтон"
           name="lastName"
           value={user.lastName}
           onChange={handleChangeTextField}

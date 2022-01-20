@@ -32,6 +32,11 @@ input ScheduleEventCurrentFilter {
   fromDate: Date
 }
 
+input ScheduleEventsFilter {
+  fromDate: Date!
+  toDate: Date!  
+}
+
 enum ScheduleEventType {
   once
   daily

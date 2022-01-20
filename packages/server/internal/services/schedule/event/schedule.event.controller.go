@@ -19,6 +19,11 @@ type EventController struct{}
 
 type eventDateHandler func(time.Time, int) time.Time
 
+func (c EventController) GetEvents(userID int, filter models.ScheduleEventsFilter) ([]*models.ScheduleEvent, error) {
+	srv := new(EventService)
+	return srv.GetEvents(userID, filter)
+}
+
 func (c EventController) GetEventByID(ctx context.Context, id int) (*models.ScheduleEvent, error) {
 	srv := new(EventService)
 

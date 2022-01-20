@@ -8,6 +8,15 @@ import (
 	"muapp.ru/internal/services/schedule/event"
 )
 
+func (r *queryResolver) ScheduleEvents(ctx context.Context, userID int, filter models.ScheduleEventsFilter) ([]*models.ScheduleEvent, error) {
+	ctrl := new(event.EventController)
+	res, err := ctrl.GetEvents(userID, filter)
+	if err != nil {
+		return nil, gqlerror.Errorf(err.Error())
+	}
+	return res, nil
+}
+
 func (r *queryResolver) ScheduleEvent(ctx context.Context, id int) (*models.ScheduleEvent, error) {
 	ctrl := new(event.EventController)
 	res, err := ctrl.GetEventByID(ctx, id)

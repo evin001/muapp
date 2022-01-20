@@ -13,6 +13,7 @@ type Query {
   service(id: Int!): Service!
   services(userId: Int!): [Service!]!
   scheduleEvent(id: Int!): ScheduleEvent! @hasRole(role: [master])
+  scheduleEvents(userId: Int!, filter: ScheduleEventsFilter!): [ScheduleEvent!]!
 }
 
 type Mutation {

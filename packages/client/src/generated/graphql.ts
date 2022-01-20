@@ -118,6 +118,7 @@ export type Query = {
   __typename?: 'Query';
   categories: Array<Category>;
   scheduleEvent: ScheduleEvent;
+  scheduleEvents: Array<ScheduleEvent>;
   service: Service;
   services: Array<Service>;
 };
@@ -125,6 +126,12 @@ export type Query = {
 
 export type QueryScheduleEventArgs = {
   id: Scalars['Int'];
+};
+
+
+export type QueryScheduleEventsArgs = {
+  filter: ScheduleEventsFilter;
+  userId: Scalars['Int'];
 };
 
 
@@ -184,6 +191,11 @@ export enum ScheduleEventType {
   Weekday = 'weekday',
   Weekly = 'weekly'
 }
+
+export type ScheduleEventsFilter = {
+  fromDate: Scalars['Date'];
+  toDate: Scalars['Date'];
+};
 
 export type Service = {
   __typename?: 'Service';
