@@ -1,6 +1,10 @@
 import { ScheduleStore } from '../store'
 
-import { ScheduleEventNew } from '~/generated/graphql'
+import {
+  ScheduleEventNew,
+  ScheduleEventCurrent,
+  ScheduleEventCurrentFilter,
+} from '~/generated/graphql'
 import request from '~/requests/request'
 import notify from '~/utils/notify'
 
@@ -13,6 +17,23 @@ export const ScheduleActions = {
     } catch (e) {
       const error = <RequestError>e
       notify('Создание события', error.message, 'error')
+    } finally {
+      ScheduleStore.mutationPending(false)
+    }
+  },
+
+  async eventUpdate(
+    input: ScheduleEventCurrent,
+    filter: ScheduleEventCurrentFilter,
+    callback?: () => void,
+  ) {
+    try {
+      ScheduleStore.mutationPending(true)
+      await request('scheduleEventUpdate', { input, filter })
+      callback?.()
+    } catch (e) {
+      const error = <RequestError>e
+      notify('Обновление события', error.message, 'error')
     } finally {
       ScheduleStore.mutationPending(false)
     }

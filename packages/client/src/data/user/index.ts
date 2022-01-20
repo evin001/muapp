@@ -42,8 +42,7 @@ export const UserActions = {
       UserStorage.set(user)
       UserStore.userResolve(user)
     } catch (e) {
-      const error = <RequestError>e
-      UserStore.userReject(error.message)
+      // Do nothing
     }
   },
 

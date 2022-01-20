@@ -45,13 +45,15 @@ const createClient = <CR extends ClientRequests>(
       return response[name]
     } catch (e) {
       const error = <ClientError>e
-      const message = error?.response?.errors?.[0].message || error.message // Token is expired
-
+      const message = error?.response?.errors?.[0].message || error.message
       if (message === 'Token is expired') {
         await UserActions.refreshToken()
         return request(name, variables)
       }
-      if (message === 'Refresh token is expired') {
+      if (
+        message === 'Refresh token is expired' ||
+        message === 'Refresh token does not exist'
+      ) {
         UserActions.logOut()
         return
       }

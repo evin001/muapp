@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState, useRef } from 'react'
 
 import { useNavigate, useParams } from 'react-router-dom'
 import {
@@ -20,7 +20,7 @@ import { useMasterContext } from '../..'
 
 import { colorOptions, colorSaturation, getRepetitionOptions, schema } from './utils'
 
-import { ScheduleEventType } from '~/generated/graphql'
+import { ScheduleEventType, ScheduleEventCurrentFilter } from '~/generated/graphql'
 import { useTitle } from '~/hooks/useTitle'
 import { EnititiesActions } from '~/data/enitities'
 import { Page } from '~/components/Page'
@@ -28,6 +28,7 @@ import { HintError } from '~/components/HintError'
 import { TimeField } from '~/components/TimeField'
 import { SelectMultipleService } from '~/modals/SelectMultipleService'
 import { ScheduleActions } from '~/data/schedule'
+import { EventActionModal } from '~/modals/EventActionModal'
 
 type EditFormType = {
   intervalStart: string
@@ -47,6 +48,7 @@ export const MasterScheduleEdit = () => {
   const navigate = useNavigate()
   const { color } = useTheme()
   const { setMenu } = useMasterContext()
+  const codeRef = useRef('')
 
   const {
     handleSubmit,
@@ -84,6 +86,8 @@ export const MasterScheduleEdit = () => {
       return false
     }
 
+    codeRef.current = event.code
+
     setValue('intervalStart', event.intervalStart)
     setValue('intervalEnd', event.intervalEnd)
     setValue('color', event.color as string)
@@ -102,6 +106,19 @@ export const MasterScheduleEdit = () => {
 
   const handleSave = () => navigate('../')
 
+  const handleEventUpdate = (data: EditFormType, filter: ScheduleEventCurrentFilter) => {
+    ScheduleActions.eventUpdate(
+      {
+        color: data.color,
+        intervalStart: data.intervalStart,
+        intervalEnd: data.intervalEnd,
+        services: data.services,
+      },
+      filter,
+      handleSave,
+    )
+  }
+
   const handleSubmitForm = (data: EditFormType) => {
     if (!id) {
       ScheduleActions.eventCreate(
@@ -111,9 +128,30 @@ export const MasterScheduleEdit = () => {
         },
         handleSave,
       )
-    } else {
-      // TODO Update event
+      return
     }
+
+    if (data.type !== ScheduleEventType.Once) {
+      dialog({
+        title: 'Обновление события',
+        render: (close) => (
+          <EventActionModal
+            onClose={close}
+            label="Сохранить"
+            onConfirm={(variant) => {
+              const filter: ScheduleEventCurrentFilter = { code: codeRef.current }
+              if (variant === 'next') {
+                filter.fromDate = moment(data.date).format('YYYY-MM-DD')
+              }
+              handleEventUpdate(data, { code: codeRef.current })
+            }}
+          />
+        ),
+      })
+      return
+    }
+
+    handleEventUpdate(data, { id: +id, code: codeRef.current })
   }
 
   return (
