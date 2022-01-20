@@ -36,6 +36,9 @@ const GlobalStyles = () => (
         '#focused': {
           boxShadow: 'none !important',
         },
+        'input:disabled': {
+          opacity: 1,
+        },
       },
     ]}
   />

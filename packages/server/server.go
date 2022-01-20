@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/handler/extension"
@@ -29,7 +30,7 @@ func main() {
 	c := cors.New(cors.Options{
 		AllowedMethods:   []string{"POST"},
 		AllowedHeaders:   []string{"Authorization", "Content-Type"},
-		AllowedOrigins:   []string{utils.GetEnv("HOST")},
+		AllowedOrigins:   strings.Split(utils.GetEnv("HOST"), " "),
 		AllowCredentials: true,
 		Debug:            false,
 	})

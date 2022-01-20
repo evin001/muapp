@@ -121,6 +121,16 @@ const theme = light.replace({
         },
       ],
     }),
+    // Select: (props) => ({
+    //   input: [
+    //     props.disabled && {
+    //       // color: 'rgb(150,150,150)',
+    //       '&:disabled': {
+    //         // opacity: '1 !important',
+    //       },
+    //     },
+    //   ],
+    // }),
   }),
 })
 

@@ -13,7 +13,7 @@ export const verify = (
   if (type === 'email' && !EMAIL_FORMAT.test(value)) {
     return { ok: false, error: 'Пожалуйста, укажите корректный адрес электронной почты' }
   }
-  if (type === 'password' && !PHONE_FORMAT.test(`+${value}`)) {
+  if (type === 'phone' && !PHONE_FORMAT.test(`+${value}`)) {
     return { ok: false, error: 'Пожалуйста, укажите корректный номер телефона' }
   }
   if (type === 'password' && value.length < PASSWORD_MIN_LEN) {

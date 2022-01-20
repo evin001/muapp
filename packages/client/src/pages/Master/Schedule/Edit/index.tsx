@@ -148,6 +148,7 @@ export const MasterScheduleEdit = () => {
                   onChange(nextDate)
                 }}
                 hint={<HintError error={error?.message} />}
+                disabled={!!id}
               />
             )}
           />
@@ -193,6 +194,7 @@ export const MasterScheduleEdit = () => {
                   onChange(option?.value)
                 }}
                 hint={<HintError error={error?.message} />}
+                disabled={!!id}
               />
             )}
           />

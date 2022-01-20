@@ -182,7 +182,7 @@ export const MasterServicesEdit = () => {
                 }}
                 rightChild={
                   !id && (
-                    <Link mr="s" onClick={handleClickAddCategory}>
+                    <Link mx="s" onClick={handleClickAddCategory}>
                       Добавить
                     </Link>
                   )
@@ -208,7 +208,7 @@ export const MasterServicesEdit = () => {
                 hint={<HintError error={error?.message} />}
                 rightChild={
                   !id && (
-                    <Link mr="s" onClick={handleClickAddService}>
+                    <Link mx="s" onClick={handleClickAddService}>
                       Добавить
                     </Link>
                   )
