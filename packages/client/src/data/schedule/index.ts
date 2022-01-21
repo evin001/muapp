@@ -4,6 +4,7 @@ import {
   ScheduleEventNew,
   ScheduleEventCurrent,
   ScheduleEventCurrentFilter,
+  ScheduleEventsFilter,
 } from '~/generated/graphql'
 import request from '~/requests/request'
 import notify from '~/utils/notify'
@@ -50,6 +51,17 @@ export const ScheduleActions = {
       return null
     } finally {
       ScheduleStore.mutationPending(false)
+    }
+  },
+
+  async eventsFetch(userId: number, filter: ScheduleEventsFilter) {
+    try {
+      ScheduleStore.eventsFetch()
+      const events = await request('scheduleEvents', { userId, filter })
+      ScheduleStore.eventsResolve(events)
+    } catch (e) {
+      const error = <RequestError>e
+      ScheduleStore.eventsReject(error.message)
     }
   },
 }

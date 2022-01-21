@@ -10,7 +10,7 @@ import (
 
 func (r *queryResolver) ScheduleEvents(ctx context.Context, userID int, filter models.ScheduleEventsFilter) ([]*models.ScheduleEvent, error) {
 	ctrl := new(event.EventController)
-	res, err := ctrl.GetEvents(userID, filter)
+	res, err := ctrl.GetEvents(ctx, userID, filter)
 	if err != nil {
 		return nil, gqlerror.Errorf(err.Error())
 	}

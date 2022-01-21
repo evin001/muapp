@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { Grid, Flexbox, Text, useTheme } from '@stage-ui/core'
 import FlexboxTypes from '@stage-ui/core/layout/Flexbox/types'
@@ -8,11 +8,17 @@ import moment from 'moment'
 import { upperFirst } from '~/utils/strings'
 import { font } from '~/theme'
 
-type CalendarProps = FlexboxTypes.Props
+type CalendarProps = {
+  onChange?: (day: Date) => void
+} & FlexboxTypes.Props
 
-export const Calendar = ({ ...flexboxProps }: CalendarProps) => {
+export const Calendar = ({ onChange, ...flexboxProps }: CalendarProps) => {
   const { color } = useTheme()
   const [selectDay, setSelectDay] = useState(moment())
+
+  useEffect(() => {
+    onChange?.(moment(selectDay).toDate())
+  }, [selectDay])
 
   const handleClickNextWeek = () => {
     const nextSelectDay = moment(selectDay).add(1, 'week')

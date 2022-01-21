@@ -19,8 +19,11 @@ type EventController struct{}
 
 type eventDateHandler func(time.Time, int) time.Time
 
-func (c EventController) GetEvents(userID int, filter models.ScheduleEventsFilter) ([]*models.ScheduleEvent, error) {
+func (c EventController) GetEvents(ctx context.Context, userID int, filter models.ScheduleEventsFilter) ([]*models.ScheduleEvent, error) {
 	srv := new(EventService)
+	if userID != jwt.GetUserID(ctx) {
+		return nil, errors.EventNotBelongUser
+	}
 	return srv.GetEvents(userID, filter)
 }
 

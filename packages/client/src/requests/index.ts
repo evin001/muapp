@@ -20,6 +20,7 @@ import scheduleEventUpdate, {
   ScheduleEventUpdateMutationType,
 } from './mutations/scheduleEventUpdate'
 import scheduleEvent, { ScheduleEventQueryType } from './queries/scheduleEvent'
+import scheduleEvents, { ScheduleEventsQueryType } from './queries/scheduleEvents'
 
 type Mutations = {
   // User
@@ -42,6 +43,7 @@ type Queries = {
   service: ServiceQueryType
   services: ServicesQueryType
   scheduleEvent: ScheduleEventQueryType
+  scheduleEvents: ScheduleEventsQueryType
 }
 
 const mutations = {
@@ -64,6 +66,7 @@ const queries = {
   service,
   services,
   scheduleEvent,
+  scheduleEvents,
 }
 
 export type Requests = Mutations & Queries
