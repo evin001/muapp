@@ -11,9 +11,15 @@ import { useSelector } from '~/hooks/useSelector'
 import { ScheduleActions } from '~/data/schedule'
 import { ListPlaceholder } from '~/components/ListPlaceholder'
 import { Calendar } from '~/components/Calendar'
-import { FORMAT_DATE } from '~/utils/formats'
+import { FORMAT_DATE, STORAGE_EVENTS_FILTER } from '~/utils/formats'
 import { font } from '~/theme'
 import PlaceholderImage from '~/assets/images/casual-life-3d-workspace.png'
+
+type EventsFilter = {
+  fromDate: string
+  toDate: string
+  day: string
+}
 
 export const Schedule = () => {
   useTitle('Расписание')
@@ -26,7 +32,17 @@ export const Schedule = () => {
     loading:
       state.schedule.events.fetch === 'idle' || state.schedule.events.fetch === 'pending',
   }))
-  const [filter, setFilter] = useState({ fromDate: '', toDate: '', day: '' })
+
+  const storageFilter = localStorage.getItem(STORAGE_EVENTS_FILTER)
+  const [filter, setFilter] = useState<EventsFilter>(
+    storageFilter
+      ? (JSON.parse(storageFilter) as EventsFilter)
+      : {
+          fromDate: '',
+          toDate: '',
+          day: '',
+        },
+  )
 
   useEffect(() => {
     if (userId && filter.fromDate && filter.toDate) {
@@ -40,11 +56,13 @@ export const Schedule = () => {
   const handleChangeDay = (day: Date) => {
     const fromDate = moment(day).startOf('weeks')
     const toDate = moment(day).endOf('weeks')
-    setFilter({
+    const nextFilter = {
       fromDate: fromDate.format(FORMAT_DATE),
       toDate: toDate.format(FORMAT_DATE),
       day: moment(day).format(FORMAT_DATE),
-    })
+    }
+    setFilter(nextFilter)
+    localStorage.setItem(STORAGE_EVENTS_FILTER, JSON.stringify(nextFilter))
   }
 
   const eventsToShow = useMemo(
@@ -72,7 +90,11 @@ export const Schedule = () => {
         />
       }
     >
-      <Calendar mb="m" onChange={handleChangeDay} />
+      <Calendar
+        mb="m"
+        day={filter.day ? moment(filter.day, FORMAT_DATE).toDate() : undefined}
+        onChange={handleChangeDay}
+      />
       {loading && (
         <Flexbox alignItems="center" justifyContent="center" h="7rem">
           <Spinner /> <Text ml="s">Загрузка событий</Text>

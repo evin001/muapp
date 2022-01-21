@@ -9,12 +9,13 @@ import { upperFirst } from '~/utils/strings'
 import { font } from '~/theme'
 
 type CalendarProps = {
+  day?: Date
   onChange?: (day: Date) => void
 } & FlexboxTypes.Props
 
-export const Calendar = ({ onChange, ...flexboxProps }: CalendarProps) => {
+export const Calendar = ({ day, onChange, ...flexboxProps }: CalendarProps) => {
   const { color } = useTheme()
-  const [selectDay, setSelectDay] = useState(moment())
+  const [selectDay, setSelectDay] = useState(moment(day))
 
   useEffect(() => {
     onChange?.(moment(selectDay).toDate())
