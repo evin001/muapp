@@ -29,6 +29,7 @@ import { TimeField } from '~/components/TimeField'
 import { SelectMultipleService } from '~/modals/SelectMultipleService'
 import { ScheduleActions } from '~/data/schedule'
 import { EventActionModal } from '~/modals/EventActionModal'
+import { STORAGE_EVENTS_FILTER, FORMAT_DATE, EventsFilter } from '~/utils/formats'
 
 type EditFormType = {
   intervalStart: string
@@ -37,6 +38,16 @@ type EditFormType = {
   type: ScheduleEventType
   date: Date
   services?: number[]
+}
+
+const getFilterDay = () => {
+  const filter = JSON.parse(
+    localStorage.getItem(STORAGE_EVENTS_FILTER) || 'null',
+  ) as EventsFilter
+  if (filter) {
+    return moment(filter.day, FORMAT_DATE).toDate()
+  }
+  return new Date()
 }
 
 export const MasterScheduleEdit = () => {
@@ -58,7 +69,7 @@ export const MasterScheduleEdit = () => {
     formState: { isValid, errors },
   } = useForm<EditFormType>({
     defaultValues: {
-      date: new Date(),
+      date: getFilterDay(),
       intervalStart: '09:00',
       intervalEnd: '10:00',
       type: ScheduleEventType.Once,

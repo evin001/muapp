@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 
 import { Button, Flexbox, Spinner, Text, Grid, useTheme } from '@stage-ui/core'
-import { Plus } from '@stage-ui/icons'
+import { Plus, Trash } from '@stage-ui/icons'
 import { useNavigate } from 'react-router-dom'
 import moment from 'moment'
 
@@ -11,15 +11,9 @@ import { useSelector } from '~/hooks/useSelector'
 import { ScheduleActions } from '~/data/schedule'
 import { ListPlaceholder } from '~/components/ListPlaceholder'
 import { Calendar } from '~/components/Calendar'
-import { FORMAT_DATE, STORAGE_EVENTS_FILTER } from '~/utils/formats'
+import { FORMAT_DATE, STORAGE_EVENTS_FILTER, EventsFilter } from '~/utils/formats'
 import { font } from '~/theme'
 import PlaceholderImage from '~/assets/images/casual-life-3d-workspace.png'
-
-type EventsFilter = {
-  fromDate: string
-  toDate: string
-  day: string
-}
 
 export const Schedule = () => {
   useTitle('Расписание')
@@ -121,11 +115,17 @@ export const Schedule = () => {
             />
             <Text
               size="m"
+              flex={1}
               color={event.color ? color.palette[`${event.color}500`] : 'onBackground'}
               css={{ fontFamily: font.medium }}
             >
               {event.intervalStart} - {event.intervalEnd}
             </Text>
+            <Trash
+              px="m"
+              size="m"
+              color={event.color ? color.palette[`${event.color}500`] : 'onBackground'}
+            />
           </Flexbox>
         ))}
       </Grid>
