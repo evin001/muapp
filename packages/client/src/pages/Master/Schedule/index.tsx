@@ -72,6 +72,9 @@ export const Schedule = () => {
     navigate(`edit/${eventId}`)
   }
 
+  const isPastDate =
+    moment(filter.day, FORMAT_DATE).startOf('day').diff(moment().startOf('day')) < 0
+
   return (
     <Page
       title="Расписание"
@@ -79,8 +82,9 @@ export const Schedule = () => {
         <Button
           label="Добавить"
           textColor="surface"
-          leftChild={<Plus color="surface" />}
+          leftChild={<Plus />}
           onClick={handleClickAdd}
+          disabled={isPastDate}
         />
       }
     >
@@ -103,6 +107,7 @@ export const Schedule = () => {
             borderRadius="0.3125rem"
             backgroundColor={event.color ? color.palette[`${event.color}100`] : 'surface'}
             onClick={handleClickEvent(event.id)}
+            css={[isPastDate && { opacity: 0.75 }]}
           >
             <Flexbox
               mr="s"
