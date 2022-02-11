@@ -54,4 +54,5 @@ type Mutation {
     input: ScheduleEventCurrent!,
     filter: ScheduleEventCurrentFilter!
   ): Boolean! @hasRole(role: [master])
+  scheduleEventDelete(filter: ScheduleEventCurrentFilter!): Boolean! @hasRole(role: [master])
 }

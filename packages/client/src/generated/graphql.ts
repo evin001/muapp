@@ -46,6 +46,7 @@ export type Mutation = {
   callPassword: Call;
   categoryCreate: Category;
   scheduleEventCreate: ScheduleEvent;
+  scheduleEventDelete: Scalars['Boolean'];
   scheduleEventUpdate: Scalars['Boolean'];
   serviceCreate: Service;
   serviceDelete: Scalars['Boolean'];
@@ -69,6 +70,11 @@ export type MutationCategoryCreateArgs = {
 
 export type MutationScheduleEventCreateArgs = {
   input: ScheduleEventNew;
+};
+
+
+export type MutationScheduleEventDeleteArgs = {
+  filter: ScheduleEventCurrentFilter;
 };
 
 

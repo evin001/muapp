@@ -67,6 +67,7 @@ type ComplexityRoot struct {
 		CallPassword        func(childComplexity int, phone string) int
 		CategoryCreate      func(childComplexity int, name string, parentID *int) int
 		ScheduleEventCreate func(childComplexity int, input models.ScheduleEventNew) int
+		ScheduleEventDelete func(childComplexity int, filter models.ScheduleEventCurrentFilter) int
 		ScheduleEventUpdate func(childComplexity int, input models.ScheduleEventCurrent, filter models.ScheduleEventCurrentFilter) int
 		ServiceCreate       func(childComplexity int, categoryID int, duration int, price int) int
 		ServiceDelete       func(childComplexity int, serviceID int) int
@@ -134,6 +135,7 @@ type MutationResolver interface {
 	ServiceDelete(ctx context.Context, serviceID int) (bool, error)
 	ScheduleEventCreate(ctx context.Context, input models.ScheduleEventNew) (*models.ScheduleEvent, error)
 	ScheduleEventUpdate(ctx context.Context, input models.ScheduleEventCurrent, filter models.ScheduleEventCurrentFilter) (bool, error)
+	ScheduleEventDelete(ctx context.Context, filter models.ScheduleEventCurrentFilter) (bool, error)
 }
 type QueryResolver interface {
 	Categories(ctx context.Context) ([]*models.Category, error)
@@ -252,6 +254,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.ScheduleEventCreate(childComplexity, args["input"].(models.ScheduleEventNew)), true
+
+	case "Mutation.scheduleEventDelete":
+		if e.complexity.Mutation.ScheduleEventDelete == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_scheduleEventDelete_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ScheduleEventDelete(childComplexity, args["filter"].(models.ScheduleEventCurrentFilter)), true
 
 	case "Mutation.scheduleEventUpdate":
 		if e.complexity.Mutation.ScheduleEventUpdate == nil {
@@ -694,6 +708,7 @@ type Mutation {
     input: ScheduleEventCurrent!,
     filter: ScheduleEventCurrentFilter!
   ): Boolean! @hasRole(role: [master])
+  scheduleEventDelete(filter: ScheduleEventCurrentFilter!): Boolean! @hasRole(role: [master])
 }
 `, BuiltIn: false},
 	{Name: "graph/schemas/call.graphqls", Input: `type Call {
@@ -916,6 +931,21 @@ func (ec *executionContext) field_Mutation_scheduleEventCreate_args(ctx context.
 		}
 	}
 	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_scheduleEventDelete_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 models.ScheduleEventCurrentFilter
+	if tmp, ok := rawArgs["filter"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("filter"))
+		arg0, err = ec.unmarshalNScheduleEventCurrentFilter2muappᚗruᚋgraphᚋmodelsᚐScheduleEventCurrentFilter(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["filter"] = arg0
 	return args, nil
 }
 
@@ -2173,6 +2203,72 @@ func (ec *executionContext) _Mutation_scheduleEventUpdate(ctx context.Context, f
 		directive0 := func(rctx context.Context) (interface{}, error) {
 			ctx = rctx // use context from middleware stack in children
 			return ec.resolvers.Mutation().ScheduleEventUpdate(rctx, args["input"].(models.ScheduleEventCurrent), args["filter"].(models.ScheduleEventCurrentFilter))
+		}
+		directive1 := func(ctx context.Context) (interface{}, error) {
+			role, err := ec.unmarshalNRole2ᚕᚖmuappᚗruᚋgraphᚋmodelsᚐRole(ctx, []interface{}{"master"})
+			if err != nil {
+				return nil, err
+			}
+			if ec.directives.HasRole == nil {
+				return nil, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(bool); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be bool`, tmp)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_scheduleEventDelete(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_scheduleEventDelete_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		directive0 := func(rctx context.Context) (interface{}, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Mutation().ScheduleEventDelete(rctx, args["filter"].(models.ScheduleEventCurrentFilter))
 		}
 		directive1 := func(ctx context.Context) (interface{}, error) {
 			role, err := ec.unmarshalNRole2ᚕᚖmuappᚗruᚋgraphᚋmodelsᚐRole(ctx, []interface{}{"master"})
@@ -4885,6 +4981,11 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			}
 		case "scheduleEventUpdate":
 			out.Values[i] = ec._Mutation_scheduleEventUpdate(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "scheduleEventDelete":
+			out.Values[i] = ec._Mutation_scheduleEventDelete(ctx, field)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}

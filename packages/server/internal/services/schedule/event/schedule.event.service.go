@@ -177,6 +177,37 @@ func (s EventService) UpdateEventByID(input models.ScheduleEventCurrent, eventID
 	return res.RowsAffected() > 0, err
 }
 
+func (s EventService) DeleteEventByID(eventID, userID int) (bool, error) {
+	query := "DELETE FROM schedule_events WHERE id = $1 AND user_id = $2"
+	res, err := db.Exec(context.Background(), query, eventID, userID)
+	if err != nil {
+		return false, nil
+	}
+	return res.RowsAffected() > 0, nil
+}
+
+func (s EventService) DeleteManyEvents(filter models.ScheduleEventCurrentFilter, userID int) (bool, error) {
+	query := "DELETE FROM schedule_events WHERE user_id = $1 AND code = $2"
+	argsLen := 2
+	if filter.FromDate != nil {
+		argsLen++
+		query = query + " AND date >= $3"
+	}
+	args := make([]interface{}, argsLen)
+	args[0] = userID
+	args[1] = filter.Code
+	if filter.FromDate != nil {
+		args[2] = filter.FromDate
+	}
+
+	res, err := db.Exec(context.Background(), query, args...)
+	if err != nil {
+		return false, nil
+	}
+
+	return res.RowsAffected() > 0, nil
+}
+
 func (s EventService) DeleteEventServices(eventID int) error {
 	query := "DELETE FROM schedule_events_services WHERE schedule_id = $1"
 	_, err := db.Exec(context.Background(), query, eventID)

@@ -47,3 +47,15 @@ func (r *mutationResolver) ScheduleEventUpdate(
 	}
 	return res, nil
 }
+
+func (r *mutationResolver) ScheduleEventDelete(
+	ctx context.Context,
+	filter models.ScheduleEventCurrentFilter,
+) (bool, error) {
+	ctrl := new(event.EventController)
+	res, err := ctrl.DeleteEvent(ctx, filter)
+	if err != nil {
+		return false, gqlerror.Errorf(err.Error())
+	}
+	return res, nil
+}
