@@ -1,16 +1,22 @@
 import React, { useEffect, useMemo, useState } from 'react'
 
-import { Button, Flexbox, Spinner, Text, Grid, useTheme } from '@stage-ui/core'
+import { Button, Flexbox, Spinner, Text, Grid, dialog, useTheme } from '@stage-ui/core'
 import { Plus, Trash } from '@stage-ui/icons'
 import { useNavigate } from 'react-router-dom'
 import moment from 'moment'
 
+import {
+  ScheduleEventCurrentFilter,
+  ScheduleEvent,
+  ScheduleEventType,
+} from '~/generated/graphql'
 import { Page } from '~/components/Page'
 import { useTitle } from '~/hooks/useTitle'
 import { useSelector } from '~/hooks/useSelector'
 import { ScheduleActions } from '~/data/schedule'
 import { ListPlaceholder } from '~/components/ListPlaceholder'
 import { Calendar } from '~/components/Calendar'
+import { EventActionModal } from '~/modals/EventActionModal'
 import { FORMAT_DATE, STORAGE_EVENTS_FILTER, EventsFilter } from '~/utils/formats'
 import { font } from '~/theme'
 import PlaceholderImage from '~/assets/images/casual-life-3d-workspace.png'
@@ -38,13 +44,17 @@ export const Schedule = () => {
         },
   )
 
-  useEffect(() => {
+  const fetchEvents = () => {
     if (userId && filter.fromDate && filter.toDate) {
       ScheduleActions.eventsFetch(+userId, {
         fromDate: filter.fromDate,
         toDate: filter.toDate,
       })
     }
+  }
+
+  useEffect(() => {
+    fetchEvents()
   }, [filter.fromDate, filter.toDate])
 
   const handleChangeDay = (day: Date) => {
@@ -70,6 +80,38 @@ export const Schedule = () => {
 
   const handleClickEvent = (eventId: number) => () => {
     navigate(`edit/${eventId}`)
+  }
+
+  const handleEventDelete = (eventfilter: ScheduleEventCurrentFilter) => {
+    ScheduleActions.eventDelete(eventfilter, fetchEvents)
+  }
+
+  const handleClickDelete = (event: ScheduleEvent) => (e: React.MouseEvent) => {
+    e.stopPropagation()
+
+    if (event.type !== ScheduleEventType.Once) {
+      dialog({
+        title: '',
+        render: (close) => (
+          <EventActionModal
+            label="Удалить"
+            onClose={close}
+            onConfirm={(variant) => {
+              const eventfilter: ScheduleEventCurrentFilter = { code: event.code }
+              if (variant === 'current') {
+                eventfilter.id = event.id
+              } else if (variant === 'next') {
+                eventfilter.fromDate = event.date as string
+              }
+              handleEventDelete(eventfilter)
+            }}
+          />
+        ),
+      })
+      return
+    }
+
+    handleEventDelete({ id: event.id, code: event.code })
   }
 
   const isPastDate =
@@ -130,6 +172,7 @@ export const Schedule = () => {
               px="m"
               size="m"
               color={event.color ? color.palette[`${event.color}500`] : 'onBackground'}
+              onClick={handleClickDelete(event)}
             />
           </Flexbox>
         ))}

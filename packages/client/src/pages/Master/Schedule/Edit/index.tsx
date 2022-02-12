@@ -135,7 +135,7 @@ export const MasterScheduleEdit = () => {
       ScheduleActions.eventCreate(
         {
           ...data,
-          date: moment(data.date).format('YYYY-MM-DD'),
+          date: moment(data.date).format(FORMAT_DATE),
         },
         handleSave,
       )
@@ -151,10 +151,12 @@ export const MasterScheduleEdit = () => {
             label="Сохранить"
             onConfirm={(variant) => {
               const filter: ScheduleEventCurrentFilter = { code: codeRef.current }
-              if (variant === 'next') {
-                filter.fromDate = moment(data.date).format('YYYY-MM-DD')
+              if (variant === 'current') {
+                filter.id = +id
+              } else if (variant === 'next') {
+                filter.fromDate = moment(data.date).format(FORMAT_DATE)
               }
-              handleEventUpdate(data, { code: codeRef.current })
+              handleEventUpdate(data, filter)
             }}
           />
         ),

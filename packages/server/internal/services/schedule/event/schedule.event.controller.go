@@ -181,22 +181,8 @@ func (c EventController) DeleteEvent(
 ) (bool, error) {
 	srv := new(EventService)
 	userID := jwt.GetUserID(ctx)
-
-	tx, err := utils.DB.BeginTx(ctx, pgx.TxOptions{})
-	if err != nil {
-		return false, err
-	}
-	defer func() {
-		if err != nil {
-			tx.Rollback(ctx)
-		} else {
-			tx.Commit(ctx)
-		}
-	}()
-
 	if filter.ID != nil {
 		return srv.DeleteEventByID(*filter.ID, userID)
 	}
-
 	return srv.DeleteManyEvents(filter, userID)
 }

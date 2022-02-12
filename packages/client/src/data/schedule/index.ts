@@ -40,6 +40,19 @@ export const ScheduleActions = {
     }
   },
 
+  async eventDelete(filter: ScheduleEventCurrentFilter, callback?: () => void) {
+    try {
+      ScheduleStore.mutationPending(true)
+      await request('scheduleEventDelete', { filter })
+      callback?.()
+    } catch (e) {
+      const error = <RequestError>e
+      notify('Удаление события', error.message, 'error')
+    } finally {
+      ScheduleStore.mutationPending(false)
+    }
+  },
+
   async eventFetch(id: number) {
     try {
       ScheduleStore.mutationPending(true)

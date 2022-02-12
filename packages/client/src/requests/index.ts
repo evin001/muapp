@@ -19,6 +19,9 @@ import scheduleEventCreate, {
 import scheduleEventUpdate, {
   ScheduleEventUpdateMutationType,
 } from './mutations/scheduleEventUpdate'
+import scheduleEventDelete, {
+  ScheduleEventDeleteMutationType,
+} from './mutations/scheduleEventDelete'
 import scheduleEvent, { ScheduleEventQueryType } from './queries/scheduleEvent'
 import scheduleEvents, { ScheduleEventsQueryType } from './queries/scheduleEvents'
 
@@ -36,6 +39,7 @@ type Mutations = {
 
   scheduleEventCreate: ScheduleEventCreateMutationType
   scheduleEventUpdate: ScheduleEventUpdateMutationType
+  scheduleEventDelete: ScheduleEventDeleteMutationType
 }
 
 type Queries = {
@@ -59,6 +63,7 @@ const mutations = {
 
   scheduleEventCreate,
   scheduleEventUpdate,
+  scheduleEventDelete,
 }
 
 const queries = {
