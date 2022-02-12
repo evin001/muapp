@@ -54,6 +54,7 @@ export type Mutation = {
   userRefreshToken: Tokens;
   userSignIn: User;
   userSignUp: User;
+  userUpdateProfile: User;
 };
 
 
@@ -117,6 +118,14 @@ export type MutationUserSignInArgs = {
 export type MutationUserSignUpArgs = {
   email: Scalars['String'];
   password: Scalars['String'];
+  phone: Scalars['String'];
+};
+
+
+export type MutationUserUpdateProfileArgs = {
+  email: Scalars['String'];
+  firstName?: InputMaybe<Scalars['String']>;
+  lastName?: InputMaybe<Scalars['String']>;
   phone: Scalars['String'];
 };
 

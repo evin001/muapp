@@ -1,6 +1,7 @@
 package user
 
 import (
+	"context"
 	"time"
 
 	"muapp.ru/graph/models"
@@ -10,6 +11,21 @@ import (
 )
 
 type UserController struct{}
+
+func (c UserController) UpdateProfile(
+	ctx context.Context,
+	firstName, lastName *string,
+	email, phone string,
+) (*models.User, error) {
+	srv := new(UserService)
+	userID := jwt.GetUserID(ctx)
+	err := srv.UpdateProfile(userID, firstName, lastName, email, phone)
+	if err != nil {
+		return nil, err
+	}
+	u, _, err := srv.GetUser(email)
+	return u, err
+}
 
 func (c UserController) CreateUser(email, phone, password string, role models.Role) (*models.User, error) {
 	srv := new(UserService)

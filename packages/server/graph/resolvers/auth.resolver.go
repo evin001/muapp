@@ -44,3 +44,12 @@ func (r *mutationResolver) UserRefreshToken(ctx context.Context, refreshToken st
 	}
 	return tokens, nil
 }
+
+func (r *mutationResolver) UserUpdateProfile(ctx context.Context, firstName *string, lastName *string, email string, phone string) (*models.User, error) {
+	ctrl := new(user.UserController)
+	res, err := ctrl.UpdateProfile(ctx, firstName, lastName, email, phone)
+	if err != nil {
+		return nil, gqlerror.Errorf(err.Error())
+	}
+	return res, nil
+}

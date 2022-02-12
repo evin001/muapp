@@ -14,6 +14,50 @@ var db = utils.DB
 
 type UserService struct{}
 
+func (s UserService) UpdateProfile(userID int, firstName, lastName *string, email, phone string) error {
+	var e, p string
+	query := "SELECT email, phone FROM users WHERE id = $1"
+	err := db.QueryRow(context.Background(), query, userID).Scan(&e, &p)
+	if err != nil {
+		return nil
+	}
+
+	argsLen := 5
+	additional := 0
+	if email != e {
+		additional++
+	}
+	if phone != p {
+		additional++
+	}
+	args := make([]interface{}, argsLen+additional)
+	args[0] = userID
+	args[1] = firstName
+	args[2] = lastName
+	args[3] = email
+	args[4] = phone
+
+	query = "UPDATE users SET firstName = $2, lastName = $3, email = $4, phone = $5"
+	if email != e {
+		argsLen++
+		query = query + ", email_verified = $" + strconv.Itoa(argsLen)
+		args[argsLen] = false
+	}
+	if phone != p {
+		argsLen++
+		query = query + ", phone_verified = $" + strconv.Itoa(argsLen)
+		args[argsLen] = false
+	}
+	query = query + " WHERE id = $1"
+
+	_, err = db.Exec(context.Background(), query, args...)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (s UserService) GetUser(email string) (*models.User, string, error) {
 	var u = new(models.User)
 	var pwd string
