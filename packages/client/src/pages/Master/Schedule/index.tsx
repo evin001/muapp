@@ -17,6 +17,7 @@ import { ScheduleActions } from '~/data/schedule'
 import { ListPlaceholder } from '~/components/ListPlaceholder'
 import { Calendar } from '~/components/Calendar'
 import { EventActionModal } from '~/modals/EventActionModal'
+import { EventDeleteModal } from '~/modals/EventDeleteModal'
 import { FORMAT_DATE, STORAGE_EVENTS_FILTER, EventsFilter } from '~/utils/formats'
 import { font } from '~/theme'
 import PlaceholderImage from '~/assets/images/casual-life-3d-workspace.png'
@@ -91,7 +92,7 @@ export const Schedule = () => {
 
     if (event.type !== ScheduleEventType.Once) {
       dialog({
-        title: '',
+        title: 'Удаление события',
         render: (close) => (
           <EventActionModal
             label="Удалить"
@@ -111,7 +112,17 @@ export const Schedule = () => {
       return
     }
 
-    handleEventDelete({ id: event.id, code: event.code })
+    dialog({
+      title: 'Удаление события',
+      render: (close) => (
+        <EventDeleteModal
+          onClose={close}
+          onConfirm={() => {
+            handleEventDelete({ id: event.id, code: event.code })
+          }}
+        />
+      ),
+    })
   }
 
   const isPastDate =
