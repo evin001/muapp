@@ -13,6 +13,30 @@ import (
 
 type UserController struct{}
 
+func (c UserController) ChangePassword(ctx context.Context, oldPwd, newPwd, confirmPwd string) (bool, error) {
+	if newPwd != confirmPwd {
+		return false, errors.UserPasswordMismatch
+	}
+
+	srv := new(UserService)
+	userID := jwt.GetUserID(ctx)
+
+	_, hash, err := srv.GetUser(EmailOrID{ID: &userID})
+	if err != nil {
+		return false, err
+	}
+	if ok := utils.CheckPasswordHash(oldPwd, hash); !ok {
+		return false, errors.UserWrongCredentials
+	}
+
+	newHash, err := utils.HashPassword(newPwd)
+	if err != nil {
+		return false, err
+	}
+
+	return srv.ChangePassword(userID, newHash)
+}
+
 func (c UserController) UpdateProfile(
 	ctx context.Context,
 	firstName, lastName *string,
@@ -37,7 +61,7 @@ func (c UserController) UpdateProfile(
 	if err != nil {
 		return nil, err
 	}
-	user, _, err := srv.GetUser(email)
+	user, _, err := srv.GetUser(EmailOrID{ID: &userID})
 	if err != nil {
 		return nil, err
 	}
@@ -98,7 +122,7 @@ func (c UserController) CreateUser(email, phone, password string, role models.Ro
 func (c UserController) SignIn(email, password string) (*models.User, error) {
 	srv := new(UserService)
 
-	user, hash, err := srv.GetUser(email)
+	user, hash, err := srv.GetUser(EmailOrID{Email: &email})
 	if err != nil {
 		return nil, err
 	}

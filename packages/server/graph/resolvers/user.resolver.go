@@ -53,3 +53,12 @@ func (r *mutationResolver) UserProfileUpdate(ctx context.Context, firstName *str
 	}
 	return res, nil
 }
+
+func (r *mutationResolver) UserPasswordChange(ctx context.Context, oldPassword string, newPassword string, confirmPassword string) (bool, error) {
+	ctrl := new(user.UserController)
+	res, err := ctrl.ChangePassword(ctx, oldPassword, newPassword, confirmPassword)
+	if err != nil {
+		return false, gqlerror.Errorf(err.Error())
+	}
+	return res, nil
+}

@@ -14,6 +14,20 @@ var db = utils.DB
 
 type UserService struct{}
 
+type EmailOrID struct {
+	Email *string
+	ID    *int
+}
+
+func (s UserService) ChangePassword(userID int, hash string) (bool, error) {
+	query := "UPDATE users SET password = $2 WHERE id = $1"
+	res, err := db.Exec(context.Background(), query, hash)
+	if err != nil {
+		return false, err
+	}
+	return res.RowsAffected() > 0, nil
+}
+
 func (s UserService) UpdateProfile(userID int, firstName, lastName *string, email, phone string) error {
 	var e, p string
 	query := "SELECT email, phone FROM users WHERE id = $1"
@@ -58,7 +72,7 @@ func (s UserService) UpdateProfile(userID int, firstName, lastName *string, emai
 	return nil
 }
 
-func (s UserService) GetUser(email string) (*models.User, string, error) {
+func (s UserService) GetUser(p EmailOrID) (*models.User, string, error) {
 	var u = new(models.User)
 	var pwd string
 	var id int
@@ -66,9 +80,16 @@ func (s UserService) GetUser(email string) (*models.User, string, error) {
 	query := `
 		SELECT email, phone, role, email_verified, phone_verified, first_name, last_name, password, id
 		FROM users
-		WHERE email = $1
-	`
-	err := db.QueryRow(context.Background(), query, email).Scan(&u.Email, &u.Phone, &u.Role,
+		WHERE`
+	args := make([]interface{}, 1)
+	if p.Email != nil {
+		query += " email = $1"
+		args[0] = *p.Email
+	} else if p.ID != nil {
+		query += " id = $1"
+		args[0] = *p.ID
+	}
+	err := db.QueryRow(context.Background(), query, args...).Scan(&u.Email, &u.Phone, &u.Role,
 		&u.EmailVerified, &u.PhoneVerified, &u.FirstName, &u.LastName, &pwd, &id)
 
 	if errors.IsEmptyRows(err) {

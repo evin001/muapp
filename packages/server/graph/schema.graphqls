@@ -35,6 +35,11 @@ type Mutation {
     email: String!, @binding(constraint: "required,email")
     phone: String!, @binding(constraint: "required,e164")
   ): User! @hasRole(role: [master])
+  userPasswordChange(
+    oldPassword: String!,
+    newPassword: String!,
+    confirmPassword: String!,
+  ): Boolean! @hasRole(role: [master])
 
   categoryCreate(
     name: String!, @binding(constraint: "required,lte=255")

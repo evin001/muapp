@@ -16,6 +16,7 @@ var (
 	UserTokenWrong           = GenError("That's not even a token")
 	UserTokenExpired         = GenError("Token is expired")
 	UserTokenHandler         = GenError("Couldn't handle this token")
+	UserPasswordMismatch     = GenError("Password mismatch")
 
 	CallWrong = GenError("Can't make call")
 

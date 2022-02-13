@@ -11,6 +11,7 @@ export const messages = [
   ],
   ['Event not found', 'Событие не найдено'],
   ['Service not found', 'Услуга не найдена'],
+  ['Password mismatch', 'Пароли не совпадают'],
 ]
 
 // REFRESH_TOKEN_EXPIRED
