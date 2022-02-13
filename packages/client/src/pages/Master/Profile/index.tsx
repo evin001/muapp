@@ -12,6 +12,7 @@ import { HintError } from '~/components/HintError'
 import { useTitle } from '~/hooks/useTitle'
 import { useSelector } from '~/hooks/useSelector'
 import { UserActions } from '~/data/user'
+import { PhoneField } from '~/components/PhoneField'
 
 type ProfileFields = {
   email: string
@@ -123,13 +124,10 @@ export const Profile = () => {
             name="phone"
             control={control}
             render={({ field: { value, onChange } }) => (
-              <TextField
-                type="tel"
+              <PhoneField
                 label="Телефон"
                 value={value}
-                onChange={(e) => {
-                  onChange(e.target.value)
-                }}
+                onChange={onChange}
                 rightChild={
                   !user?.phoneVerified && (
                     <Link onClick={handleClickVerifyPhone}>Подтвердить</Link>

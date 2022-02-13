@@ -11,6 +11,7 @@ import { useSelector } from '~/hooks/useSelector'
 import { UserActions } from '~/data/user'
 import { verify } from '~/utils/auth'
 import { useTitle } from '~/hooks/useTitle'
+import { font } from '~/theme'
 
 export const Register = () => {
   useTitle('Регистрация')
@@ -101,7 +102,7 @@ export const Register = () => {
           alignItems: 'center',
           color: color.surface.hex(),
           fontSize: '1.125rem',
-          fontFamily: 'OfficinaSansBookC',
+          fontFamily: font.regular,
           boxSizing: 'border-box',
           outline: 'none',
           transition: 'border 0.125s',
