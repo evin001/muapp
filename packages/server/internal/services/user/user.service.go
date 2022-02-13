@@ -32,21 +32,21 @@ func (s UserService) UpdateProfile(userID int, firstName, lastName *string, emai
 	}
 	args := make([]interface{}, argsLen+additional)
 	args[0] = userID
-	args[1] = firstName
-	args[2] = lastName
+	args[1] = *firstName
+	args[2] = *lastName
 	args[3] = email
 	args[4] = phone
 
-	query = "UPDATE users SET firstName = $2, lastName = $3, email = $4, phone = $5"
+	query = "UPDATE users SET first_name = $2, last_name = $3, email = $4, phone = $5"
 	if email != e {
 		argsLen++
 		query = query + ", email_verified = $" + strconv.Itoa(argsLen)
-		args[argsLen] = false
+		args[argsLen-1] = false
 	}
 	if phone != p {
 		argsLen++
 		query = query + ", phone_verified = $" + strconv.Itoa(argsLen)
-		args[argsLen] = false
+		args[argsLen-1] = false
 	}
 	query = query + " WHERE id = $1"
 

@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/jackc/pgx/v4"
 	"muapp.ru/graph/models"
 	"muapp.ru/internal/utils"
 	"muapp.ru/internal/utils/errors"
@@ -19,12 +20,40 @@ func (c UserController) UpdateProfile(
 ) (*models.User, error) {
 	srv := new(UserService)
 	userID := jwt.GetUserID(ctx)
-	err := srv.UpdateProfile(userID, firstName, lastName, email, phone)
+
+	tx, err := utils.DB.BeginTx(ctx, pgx.TxOptions{})
 	if err != nil {
 		return nil, err
 	}
-	u, _, err := srv.GetUser(email)
-	return u, err
+	defer func() {
+		if err != nil {
+			tx.Rollback(ctx)
+		} else {
+			tx.Commit(ctx)
+		}
+	}()
+
+	err = srv.UpdateProfile(userID, firstName, lastName, email, phone)
+	if err != nil {
+		return nil, err
+	}
+	user, _, err := srv.GetUser(email)
+	if err != nil {
+		return nil, err
+	}
+	if err := jwt.GenTokens(user); err != nil {
+		return nil, err
+	}
+	rtClaims, err := jwt.VerifyAndParseToken(user.RefreshToken)
+	if err != nil {
+		return nil, err
+	}
+	err = srv.CreateSession(user.ID, user.RefreshToken, rtClaims.ExpiresAt)
+	if err != nil {
+		return nil, err
+	}
+
+	return user, err
 }
 
 func (c UserController) CreateUser(email, phone, password string, role models.Role) (*models.User, error) {
@@ -53,7 +82,7 @@ func (c UserController) CreateUser(email, phone, password string, role models.Ro
 		return nil, err
 	}
 
-	rtClaims, err := jwt.VerifyToken(user.RefreshToken)
+	rtClaims, err := jwt.VerifyAndParseToken(user.RefreshToken)
 	if err != nil {
 		return nil, err
 	}
@@ -82,7 +111,7 @@ func (c UserController) SignIn(email, password string) (*models.User, error) {
 		return nil, err
 	}
 
-	rtClaims, err := jwt.VerifyToken(user.RefreshToken)
+	rtClaims, err := jwt.VerifyAndParseToken(user.RefreshToken)
 	if err != nil {
 		return nil, err
 	}
@@ -95,7 +124,7 @@ func (c UserController) SignIn(email, password string) (*models.User, error) {
 }
 
 func (c UserController) RefreshToken(refreshToken string) (*models.Tokens, error) {
-	rtClaims, err := jwt.VerifyToken(refreshToken)
+	rtClaims, err := jwt.VerifyAndParseToken(refreshToken)
 	if err == errors.UserTokenExpired {
 		return nil, errors.UserRefreshTokenExpired
 	}
@@ -125,7 +154,7 @@ func (c UserController) RefreshToken(refreshToken string) (*models.Tokens, error
 		return nil, err
 	}
 
-	rtClaimsNew, err := jwt.VerifyToken(refreshToken)
+	rtClaimsNew, err := jwt.VerifyAndParseToken(refreshToken)
 	if err != nil {
 		return nil, err
 	}

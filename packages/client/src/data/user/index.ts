@@ -46,6 +46,23 @@ export const UserActions = {
     }
   },
 
+  async profileUpdate(data: {
+    email: string
+    phone: string
+    firstName?: string
+    lastName?: string
+  }) {
+    try {
+      UserStore.userFetch()
+      const user = await request('userProfileUpdate', data)
+      UserStorage.set(user)
+      UserStore.userResolve(user)
+    } catch (e) {
+      const error = <RequestError>e
+      UserStore.userReject(error.message)
+    }
+  },
+
   init() {
     const user = UserStorage.get()
     if (user) {

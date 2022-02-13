@@ -8,17 +8,18 @@ import (
 	"github.com/golang-jwt/jwt"
 
 	"muapp.ru/graph/models"
+	"muapp.ru/internal/middlewares"
 	"muapp.ru/internal/utils/errors"
 )
 
 func HasRole(ctx context.Context, obj interface{}, next graphql.Resolver, role []*models.Role) (res interface{}, err error) {
-	if err := ctx.Value("token-error"); err != nil {
+	if err := ctx.Value(middlewares.CtxTokenErrorKey); err != nil {
 		return nil, fmt.Errorf("%s", err)
 	}
 
 	if role != nil {
 		access := false
-		token := ctx.Value("token").(*jwt.StandardClaims)
+		token := ctx.Value(middlewares.CtxTokenKey).(*jwt.StandardClaims)
 		for _, r := range role {
 			if !access && r.String() == token.Issuer {
 				access = true

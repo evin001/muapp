@@ -51,10 +51,10 @@ export type Mutation = {
   serviceCreate: Service;
   serviceDelete: Scalars['Boolean'];
   serviceUpdate: Service;
+  userProfileUpdate: User;
   userRefreshToken: Tokens;
   userSignIn: User;
   userSignUp: User;
-  userUpdateProfile: User;
 };
 
 
@@ -104,6 +104,14 @@ export type MutationServiceUpdateArgs = {
 };
 
 
+export type MutationUserProfileUpdateArgs = {
+  email: Scalars['String'];
+  firstName?: InputMaybe<Scalars['String']>;
+  lastName?: InputMaybe<Scalars['String']>;
+  phone: Scalars['String'];
+};
+
+
 export type MutationUserRefreshTokenArgs = {
   refreshToken: Scalars['String'];
 };
@@ -118,14 +126,6 @@ export type MutationUserSignInArgs = {
 export type MutationUserSignUpArgs = {
   email: Scalars['String'];
   password: Scalars['String'];
-  phone: Scalars['String'];
-};
-
-
-export type MutationUserUpdateProfileArgs = {
-  email: Scalars['String'];
-  firstName?: InputMaybe<Scalars['String']>;
-  lastName?: InputMaybe<Scalars['String']>;
   phone: Scalars['String'];
 };
 

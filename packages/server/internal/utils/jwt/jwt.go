@@ -31,7 +31,7 @@ func GenToken(user *models.User, tokenKey string) (string, error) {
 	return token.SignedString(key)
 }
 
-func VerifyToken(tokenString string) (*jwt.StandardClaims, error) {
+func VerifyAndParseToken(tokenString string) (*jwt.StandardClaims, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &jwt.StandardClaims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])

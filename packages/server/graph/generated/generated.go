@@ -72,10 +72,10 @@ type ComplexityRoot struct {
 		ServiceCreate       func(childComplexity int, categoryID int, duration int, price int) int
 		ServiceDelete       func(childComplexity int, serviceID int) int
 		ServiceUpdate       func(childComplexity int, serviceID int, duration int, price int) int
+		UserProfileUpdate   func(childComplexity int, firstName *string, lastName *string, email string, phone string) int
 		UserRefreshToken    func(childComplexity int, refreshToken string) int
 		UserSignIn          func(childComplexity int, email string, password string) int
 		UserSignUp          func(childComplexity int, email string, phone string, password string) int
-		UserUpdateProfile   func(childComplexity int, firstName *string, lastName *string, email string, phone string) int
 	}
 
 	Query struct {
@@ -130,7 +130,7 @@ type MutationResolver interface {
 	UserSignUp(ctx context.Context, email string, phone string, password string) (*models.User, error)
 	UserSignIn(ctx context.Context, email string, password string) (*models.User, error)
 	UserRefreshToken(ctx context.Context, refreshToken string) (*models.Tokens, error)
-	UserUpdateProfile(ctx context.Context, firstName *string, lastName *string, email string, phone string) (*models.User, error)
+	UserProfileUpdate(ctx context.Context, firstName *string, lastName *string, email string, phone string) (*models.User, error)
 	CategoryCreate(ctx context.Context, name string, parentID *int) (*models.Category, error)
 	ServiceCreate(ctx context.Context, categoryID int, duration int, price int) (*models.Service, error)
 	ServiceUpdate(ctx context.Context, serviceID int, duration int, price int) (*models.Service, error)
@@ -317,6 +317,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.ServiceUpdate(childComplexity, args["serviceId"].(int), args["duration"].(int), args["price"].(int)), true
 
+	case "Mutation.userProfileUpdate":
+		if e.complexity.Mutation.UserProfileUpdate == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_userProfileUpdate_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UserProfileUpdate(childComplexity, args["firstName"].(*string), args["lastName"].(*string), args["email"].(string), args["phone"].(string)), true
+
 	case "Mutation.userRefreshToken":
 		if e.complexity.Mutation.UserRefreshToken == nil {
 			break
@@ -352,18 +364,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UserSignUp(childComplexity, args["email"].(string), args["phone"].(string), args["password"].(string)), true
-
-	case "Mutation.userUpdateProfile":
-		if e.complexity.Mutation.UserUpdateProfile == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_userUpdateProfile_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.UserUpdateProfile(childComplexity, args["firstName"].(*string), args["lastName"].(*string), args["email"].(string), args["phone"].(string)), true
 
 	case "Query.categories":
 		if e.complexity.Query.Categories == nil {
@@ -697,12 +697,12 @@ type Mutation {
     password: String!, @binding(constraint: "required,gte=6")
   ): User!
   userRefreshToken(refreshToken: String!): Tokens!
-  userUpdateProfile(
+  userProfileUpdate(
     firstName: String,
     lastName: String,
     email: String!, @binding(constraint: "required,email")
     phone: String!, @binding(constraint: "required,e164")
-  ): User!
+  ): User! @hasRole(role: [master])
 
   categoryCreate(
     name: String!, @binding(constraint: "required,lte=255")
@@ -1142,6 +1142,82 @@ func (ec *executionContext) field_Mutation_serviceUpdate_args(ctx context.Contex
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_userProfileUpdate_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *string
+	if tmp, ok := rawArgs["firstName"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("firstName"))
+		arg0, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["firstName"] = arg0
+	var arg1 *string
+	if tmp, ok := rawArgs["lastName"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("lastName"))
+		arg1, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["lastName"] = arg1
+	var arg2 string
+	if tmp, ok := rawArgs["email"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("email"))
+		directive0 := func(ctx context.Context) (interface{}, error) { return ec.unmarshalNString2string(ctx, tmp) }
+		directive1 := func(ctx context.Context) (interface{}, error) {
+			constraint, err := ec.unmarshalNString2string(ctx, "required,email")
+			if err != nil {
+				return nil, err
+			}
+			if ec.directives.Binding == nil {
+				return nil, errors.New("directive binding is not implemented")
+			}
+			return ec.directives.Binding(ctx, rawArgs, directive0, constraint)
+		}
+
+		tmp, err = directive1(ctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if data, ok := tmp.(string); ok {
+			arg2 = data
+		} else {
+			return nil, graphql.ErrorOnPath(ctx, fmt.Errorf(`unexpected type %T from directive, should be string`, tmp))
+		}
+	}
+	args["email"] = arg2
+	var arg3 string
+	if tmp, ok := rawArgs["phone"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("phone"))
+		directive0 := func(ctx context.Context) (interface{}, error) { return ec.unmarshalNString2string(ctx, tmp) }
+		directive1 := func(ctx context.Context) (interface{}, error) {
+			constraint, err := ec.unmarshalNString2string(ctx, "required,e164")
+			if err != nil {
+				return nil, err
+			}
+			if ec.directives.Binding == nil {
+				return nil, errors.New("directive binding is not implemented")
+			}
+			return ec.directives.Binding(ctx, rawArgs, directive0, constraint)
+		}
+
+		tmp, err = directive1(ctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if data, ok := tmp.(string); ok {
+			arg3 = data
+		} else {
+			return nil, graphql.ErrorOnPath(ctx, fmt.Errorf(`unexpected type %T from directive, should be string`, tmp))
+		}
+	}
+	args["phone"] = arg3
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_userRefreshToken_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -1296,82 +1372,6 @@ func (ec *executionContext) field_Mutation_userSignUp_args(ctx context.Context, 
 		}
 	}
 	args["password"] = arg2
-	return args, nil
-}
-
-func (ec *executionContext) field_Mutation_userUpdateProfile_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 *string
-	if tmp, ok := rawArgs["firstName"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("firstName"))
-		arg0, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["firstName"] = arg0
-	var arg1 *string
-	if tmp, ok := rawArgs["lastName"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("lastName"))
-		arg1, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["lastName"] = arg1
-	var arg2 string
-	if tmp, ok := rawArgs["email"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("email"))
-		directive0 := func(ctx context.Context) (interface{}, error) { return ec.unmarshalNString2string(ctx, tmp) }
-		directive1 := func(ctx context.Context) (interface{}, error) {
-			constraint, err := ec.unmarshalNString2string(ctx, "required,email")
-			if err != nil {
-				return nil, err
-			}
-			if ec.directives.Binding == nil {
-				return nil, errors.New("directive binding is not implemented")
-			}
-			return ec.directives.Binding(ctx, rawArgs, directive0, constraint)
-		}
-
-		tmp, err = directive1(ctx)
-		if err != nil {
-			return nil, graphql.ErrorOnPath(ctx, err)
-		}
-		if data, ok := tmp.(string); ok {
-			arg2 = data
-		} else {
-			return nil, graphql.ErrorOnPath(ctx, fmt.Errorf(`unexpected type %T from directive, should be string`, tmp))
-		}
-	}
-	args["email"] = arg2
-	var arg3 string
-	if tmp, ok := rawArgs["phone"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("phone"))
-		directive0 := func(ctx context.Context) (interface{}, error) { return ec.unmarshalNString2string(ctx, tmp) }
-		directive1 := func(ctx context.Context) (interface{}, error) {
-			constraint, err := ec.unmarshalNString2string(ctx, "required,e164")
-			if err != nil {
-				return nil, err
-			}
-			if ec.directives.Binding == nil {
-				return nil, errors.New("directive binding is not implemented")
-			}
-			return ec.directives.Binding(ctx, rawArgs, directive0, constraint)
-		}
-
-		tmp, err = directive1(ctx)
-		if err != nil {
-			return nil, graphql.ErrorOnPath(ctx, err)
-		}
-		if data, ok := tmp.(string); ok {
-			arg3 = data
-		} else {
-			return nil, graphql.ErrorOnPath(ctx, fmt.Errorf(`unexpected type %T from directive, should be string`, tmp))
-		}
-	}
-	args["phone"] = arg3
 	return args, nil
 }
 
@@ -1942,7 +1942,7 @@ func (ec *executionContext) _Mutation_userRefreshToken(ctx context.Context, fiel
 	return ec.marshalNTokens2ᚖmuappᚗruᚋgraphᚋmodelsᚐTokens(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Mutation_userUpdateProfile(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Mutation_userProfileUpdate(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1959,15 +1959,39 @@ func (ec *executionContext) _Mutation_userUpdateProfile(ctx context.Context, fie
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Mutation_userUpdateProfile_args(ctx, rawArgs)
+	args, err := ec.field_Mutation_userProfileUpdate_args(ctx, rawArgs)
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
 	}
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UserUpdateProfile(rctx, args["firstName"].(*string), args["lastName"].(*string), args["email"].(string), args["phone"].(string))
+		directive0 := func(rctx context.Context) (interface{}, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Mutation().UserProfileUpdate(rctx, args["firstName"].(*string), args["lastName"].(*string), args["email"].(string), args["phone"].(string))
+		}
+		directive1 := func(ctx context.Context) (interface{}, error) {
+			role, err := ec.unmarshalNRole2ᚕᚖmuappᚗruᚋgraphᚋmodelsᚐRole(ctx, []interface{}{"master"})
+			if err != nil {
+				return nil, err
+			}
+			if ec.directives.HasRole == nil {
+				return nil, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*models.User); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *muapp.ru/graph/models.User`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -5092,8 +5116,8 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "userUpdateProfile":
-			out.Values[i] = ec._Mutation_userUpdateProfile(ctx, field)
+		case "userProfileUpdate":
+			out.Values[i] = ec._Mutation_userProfileUpdate(ctx, field)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}

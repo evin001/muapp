@@ -7,6 +7,11 @@ import (
 	"muapp.ru/internal/utils/jwt"
 )
 
+const (
+	CtxTokenErrorKey = "token-error"
+	CtxTokenKey      = "token"
+)
+
 func AuthHandler(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authHeader := r.Header.Get("Authorization")
@@ -16,10 +21,10 @@ func AuthHandler(next http.Handler) http.Handler {
 				next.ServeHTTP(w, r)
 			} else {
 				var ctx context.Context
-				if token, err := jwt.VerifyToken(tokenString); err != nil {
-					ctx = context.WithValue(r.Context(), "token-error", err)
+				if token, err := jwt.VerifyAndParseToken(tokenString); err != nil {
+					ctx = context.WithValue(r.Context(), CtxTokenErrorKey, err)
 				} else {
-					ctx = context.WithValue(r.Context(), "token", token)
+					ctx = context.WithValue(r.Context(), CtxTokenKey, token)
 				}
 				next.ServeHTTP(w, r.WithContext(ctx))
 			}

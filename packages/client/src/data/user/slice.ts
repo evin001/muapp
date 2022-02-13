@@ -22,7 +22,6 @@ const userSlice = createSlice({
   reducers: {
     userFetch(state) {
       state.fetch = 'pending'
-      state.data = null
       state.error = null
     },
     userResolve(state, { payload }: PayloadAction<User>) {
