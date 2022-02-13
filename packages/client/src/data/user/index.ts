@@ -3,6 +3,8 @@ import { UserStore } from '../store'
 import request from '~/requests/request'
 import { UserStorage } from '~/utils/auth'
 
+import { MutationUserPasswordChangeArgs } from '~/generated/graphql'
+
 export const UserActions = {
   async register(email: string, phone: string, password: string) {
     try {
@@ -60,6 +62,16 @@ export const UserActions = {
     } catch (e) {
       const error = <RequestError>e
       UserStore.userReject(error.message)
+    }
+  },
+
+  async passwordChange(input: MutationUserPasswordChangeArgs) {
+    try {
+      const res = await request('userPasswordChange', input)
+      return res
+    } catch (e) {
+      const error = <RequestError>e
+      return error.message
     }
   },
 

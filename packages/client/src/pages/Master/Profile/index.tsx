@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Grid, TextField, Button, Link } from '@stage-ui/core'
+import { Grid, TextField, Button, Link, dialog } from '@stage-ui/core'
 import { useForm, Controller } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -13,6 +13,7 @@ import { useTitle } from '~/hooks/useTitle'
 import { useSelector } from '~/hooks/useSelector'
 import { UserActions } from '~/data/user'
 import { PhoneField } from '~/components/PhoneField'
+import { PasswordChangeModal } from '~/modals/PasswordChangeModal'
 
 type ProfileFields = {
   email: string
@@ -54,15 +55,24 @@ export const Profile = () => {
 
   const handleClickChangePassword = (e: React.MouseEvent) => {
     e.preventDefault()
-    console.log('[handleClickChangePassword]: not implemented yet')
+    dialog({
+      title: 'Изменение пароля',
+      render: (close) => <PasswordChangeModal onClose={close} />,
+      overrides: {
+        window: () => ({
+          width: '90vw',
+          maxWidth: '20rem',
+        }),
+      },
+    })
   }
 
-  const handleClickVerifyEmail = () => {
-    console.log('[handleClickVerifyEmail]: not implemented yet')
+  const handleClickVerifyEmail = (e: React.MouseEvent) => {
+    e.preventDefault()
   }
 
-  const handleClickVerifyPhone = () => {
-    console.log('[handleClickVerifyPhone]: not implemented yet')
+  const handleClickVerifyPhone = (e: React.MouseEvent) => {
+    e.preventDefault()
   }
 
   const handleForm = (form: ProfileFields) => {
@@ -139,7 +149,7 @@ export const Profile = () => {
           <HintError error={error || ''} ellipsis={false} />
           <Grid gap="1rem" templateColumns="auto auto" justifyContent="center">
             <Button
-              label="Сменить пароль"
+              label="Изменить пароль"
               decoration="outline"
               onClick={handleClickChangePassword}
               disabled={loading}

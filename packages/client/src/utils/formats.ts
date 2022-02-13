@@ -1,3 +1,5 @@
+export const PASSWORD_MIN_LEN = 6
+
 export const FORMAT_DATE = 'YYYY-MM-DD'
 export const FORMAT_PHONE = /^\+[1-9]\d{10,14}$/
 

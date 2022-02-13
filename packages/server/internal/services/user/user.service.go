@@ -21,7 +21,7 @@ type EmailOrID struct {
 
 func (s UserService) ChangePassword(userID int, hash string) (bool, error) {
 	query := "UPDATE users SET password = $2 WHERE id = $1"
-	res, err := db.Exec(context.Background(), query, hash)
+	res, err := db.Exec(context.Background(), query, userID, hash)
 	if err != nil {
 		return false, err
 	}

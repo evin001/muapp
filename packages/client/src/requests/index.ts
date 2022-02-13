@@ -6,6 +6,9 @@ import userRefreshToken, {
 import userProfileUpdate, {
   UserProfileUpdateMutationType,
 } from './mutations/userProfileUpdate'
+import userPasswordChange, {
+  UserPasswordChangeMutationType,
+} from './mutations/userPasswordChange'
 
 import categoryCreate, { CategoryCreateMutationType } from './mutations/categoryCreate'
 import categories, { CategoriesQueryType } from './queries/categories'
@@ -34,6 +37,7 @@ type Mutations = {
   userSignIn: UserSignInMutationType
   userRefreshToken: UserRefreshTokenMutationType
   userProfileUpdate: UserProfileUpdateMutationType
+  userPasswordChange: UserPasswordChangeMutationType
 
   categoryCreate: CategoryCreateMutationType
 
@@ -59,6 +63,7 @@ const mutations = {
   userSignIn,
   userRefreshToken,
   userProfileUpdate,
+  userPasswordChange,
 
   categoryCreate,
 

@@ -1,8 +1,7 @@
+import { PASSWORD_MIN_LEN, FORMAT_PHONE } from './formats'
+
 import { User } from '~/generated/graphql'
 
-export const PASSWORD_MIN_LEN = 6
-
-export const PHONE_FORMAT = /^\+[1-9]\d{1,14}$/
 export const EMAIL_FORMAT =
   /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
 
@@ -13,7 +12,7 @@ export const verify = (
   if (type === 'email' && !EMAIL_FORMAT.test(value)) {
     return { ok: false, error: 'Пожалуйста, укажите корректный адрес электронной почты' }
   }
-  if (type === 'phone' && !PHONE_FORMAT.test(`+${value}`)) {
+  if (type === 'phone' && !FORMAT_PHONE.test(`+${value}`)) {
     return { ok: false, error: 'Пожалуйста, укажите корректный номер телефона' }
   }
   if (type === 'password' && value.length < PASSWORD_MIN_LEN) {
