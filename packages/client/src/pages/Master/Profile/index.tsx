@@ -14,6 +14,8 @@ import { useSelector } from '~/hooks/useSelector'
 import { UserActions } from '~/data/user'
 import { PhoneField } from '~/components/PhoneField'
 import { PasswordChangeModal } from '~/modals/PasswordChangeModal'
+import { ConfirmPhoneModal } from '~/modals/ConfirmPhoneModal'
+import { ConfirmEmailModal } from '~/modals/ConfirmEmailModal'
 
 type ProfileFields = {
   email: string
@@ -41,6 +43,7 @@ export const Profile = () => {
   const {
     handleSubmit,
     control,
+    getValues,
     formState: { isValid },
   } = useForm<ProfileFields>({
     defaultValues: {
@@ -61,7 +64,7 @@ export const Profile = () => {
       overrides: {
         window: () => ({
           width: '90vw',
-          maxWidth: '20rem',
+          maxWidth: '22rem',
         }),
       },
     })
@@ -69,10 +72,30 @@ export const Profile = () => {
 
   const handleClickVerifyEmail = (e: React.MouseEvent) => {
     e.preventDefault()
+    dialog({
+      title: 'Подтверждение почты',
+      render: (close) => <ConfirmEmailModal onClose={close} />,
+      overrides: {
+        window: () => ({
+          width: '90vw',
+          maxWidth: '22rem',
+        }),
+      },
+    })
   }
 
   const handleClickVerifyPhone = (e: React.MouseEvent) => {
     e.preventDefault()
+    dialog({
+      title: 'Подтверждение телефона',
+      render: (close) => <ConfirmPhoneModal onClose={close} phone={getValues('phone')} />,
+      overrides: {
+        window: () => ({
+          width: '90vw',
+          maxWidth: '22rem',
+        }),
+      },
+    })
   }
 
   const handleForm = (form: ProfileFields) => {
@@ -133,35 +156,36 @@ export const Profile = () => {
           <Controller
             name="phone"
             control={control}
-            render={({ field: { value, onChange } }) => (
+            render={({ field: { value, onChange }, formState }) => (
               <PhoneField
                 label="Телефон"
                 value={value}
                 onChange={onChange}
                 rightChild={
-                  !user?.phoneVerified && (
+                  !user?.phoneVerified &&
+                  formState.isValid && (
                     <Link onClick={handleClickVerifyPhone}>Подтвердить</Link>
                   )
                 }
               />
             )}
           />
-          <HintError error={error || ''} ellipsis={false} />
-          <Grid gap="1rem" templateColumns="auto auto" justifyContent="center">
-            <Button
-              label="Изменить пароль"
-              decoration="outline"
-              onClick={handleClickChangePassword}
-              disabled={loading}
-            />
-            <Button
-              w="8rem"
-              label="Сохранить"
-              textColor="surface"
-              type="submit"
-              disabled={!isValid || loading}
-            />
-          </Grid>
+        </Grid>
+        <HintError my="0.25rem" error={error || ''} ellipsis={false} />
+        <Grid gap="1rem" templateColumns="auto auto" justifyContent="center">
+          <Button
+            label="Изменить пароль"
+            decoration="outline"
+            onClick={handleClickChangePassword}
+            disabled={loading}
+          />
+          <Button
+            w="8rem"
+            label="Сохранить"
+            textColor="surface"
+            type="submit"
+            disabled={!isValid || loading}
+          />
         </Grid>
       </form>
     </Page>

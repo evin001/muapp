@@ -17,7 +17,7 @@ type Query {
 }
 
 type Mutation {
-  callPassword(phone: String! @binding(constraint: "required,e164")): Call!
+  callPassword(phone: String! @binding(constraint: "required,e164")): Call! @hasRole(role: [master])
 
   userSignUp(
     email: String!, @binding(constraint: "required,email")

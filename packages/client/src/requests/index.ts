@@ -31,8 +31,9 @@ import scheduleEventDelete, {
 import scheduleEvent, { ScheduleEventQueryType } from './queries/scheduleEvent'
 import scheduleEvents, { ScheduleEventsQueryType } from './queries/scheduleEvents'
 
+import callPassword, { CallPasswordMutationType } from './mutations/callPassword'
+
 type Mutations = {
-  // User
   userSignUp: UserSignUpMutationType
   userSignIn: UserSignInMutationType
   userRefreshToken: UserRefreshTokenMutationType
@@ -48,6 +49,8 @@ type Mutations = {
   scheduleEventCreate: ScheduleEventCreateMutationType
   scheduleEventUpdate: ScheduleEventUpdateMutationType
   scheduleEventDelete: ScheduleEventDeleteMutationType
+
+  callPassword: CallPasswordMutationType
 }
 
 type Queries = {
@@ -74,6 +77,8 @@ const mutations = {
   scheduleEventCreate,
   scheduleEventUpdate,
   scheduleEventDelete,
+
+  callPassword,
 }
 
 const queries = {

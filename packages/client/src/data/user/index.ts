@@ -75,6 +75,16 @@ export const UserActions = {
     }
   },
 
+  async makeCall(phone: string) {
+    try {
+      const res = await request('callPassword', { phone })
+      return res
+    } catch (e) {
+      const error = <RequestError>e
+      return error.message
+    }
+  },
+
   init() {
     const user = UserStorage.get()
     if (user) {

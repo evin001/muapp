@@ -699,7 +699,7 @@ type Query {
 }
 
 type Mutation {
-  callPassword(phone: String! @binding(constraint: "required,e164")): Call!
+  callPassword(phone: String! @binding(constraint: "required,e164")): Call! @hasRole(role: [master])
 
   userSignUp(
     email: String!, @binding(constraint: "required,email")
@@ -1850,8 +1850,32 @@ func (ec *executionContext) _Mutation_callPassword(ctx context.Context, field gr
 	}
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CallPassword(rctx, args["phone"].(string))
+		directive0 := func(rctx context.Context) (interface{}, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Mutation().CallPassword(rctx, args["phone"].(string))
+		}
+		directive1 := func(ctx context.Context) (interface{}, error) {
+			role, err := ec.unmarshalNRole2ᚕᚖmuappᚗruᚋgraphᚋmodelsᚐRole(ctx, []interface{}{"master"})
+			if err != nil {
+				return nil, err
+			}
+			if ec.directives.HasRole == nil {
+				return nil, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*models.Call); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *muapp.ru/graph/models.Call`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
