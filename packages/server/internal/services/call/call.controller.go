@@ -6,6 +6,8 @@ import (
 	"time"
 
 	"muapp.ru/graph/models"
+	"muapp.ru/internal/services/user"
+	"muapp.ru/internal/utils"
 	"muapp.ru/internal/utils/call"
 	"muapp.ru/internal/utils/errors"
 	"muapp.ru/internal/utils/jwt"
@@ -14,11 +16,21 @@ import (
 type CallController struct{}
 
 func (c CallController) CallPassword(ctx context.Context, phone string) (*models.Call, error) {
+	userID := jwt.GetUserID(ctx)
+	usrv := new(user.UserService)
+	user, _, err := usrv.GetUser(user.EmailOrID{ID: &userID})
+	if err != nil {
+		return nil, err
+	}
+	if user.PhoneVerified {
+		return nil, errors.UserPhoneAlreadyVerified
+	}
+
 	code := call.GenerateCode()
 	srv := new(CallService)
 
 	beforeTime, err := srv.CheckAvailability(phone)
-	if err != nil {
+	if err != nil && !errors.IsEmptyRows(err) {
 		return nil, err
 	}
 
@@ -43,7 +55,6 @@ func (c CallController) CallPassword(ctx context.Context, phone string) (*models
 		return nil, err
 	}
 
-	userID := jwt.GetUserID(ctx)
 	err = srv.CreateLog(userID, phone, code, string(response))
 	if err != nil {
 		return nil, err
@@ -52,6 +63,6 @@ func (c CallController) CallPassword(ctx context.Context, phone string) (*models
 	return &models.Call{
 		Success: true,
 		Type:    models.CallTypeNew,
-		Time:    0,
+		Time:    utils.GetIntEnv("CALL_DELAY_SEC"),
 	}, nil
 }

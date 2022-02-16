@@ -18,7 +18,7 @@ func (s CallService) CreateLog(userID int, phone string, code string, response s
 	activeBefore := cteatedAt.Add(time.Second * time.Duration(deleySec))
 
 	query := `
-		INSERT INTO call_log (phone_number, code, created_at, active_before, response, user_id)
+		INSERT INTO call_log (phone, code, created_at, active_before, response, user_id)
 		VALUES ($1, $2, $3, $4, $5, $6)
 	`
 	_, err := db.Exec(context.Background(), query,
@@ -35,7 +35,7 @@ func (s CallService) CheckAvailability(phone string) (*time.Time, error) {
 
 	query := `
 		SELECT active_before
-		FROM call_log WHERE phone_number = $1
+		FROM call_log WHERE phone = $1
 		ORDER BY created_at DESC
 	`
 	err := db.QueryRow(context.Background(), query, phone).Scan(&beforeTime)

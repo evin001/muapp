@@ -8,6 +8,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { UserActions } from '~/data/user'
 import { Call } from '~/generated/graphql'
 import { HintError } from '~/components/HintError'
+import { Timer } from '~/components/Timer'
 
 type ConfirmPhoneModalProps = {
   phone: string
@@ -39,8 +40,10 @@ export const ConfirmPhoneModal = ({ phone, onClose }: ConfirmPhoneModalProps) =>
   const [call, setCall] = useState<Call>()
   const [loading, setLoading] = useState(false)
   const [errorResponse, setErrorResponse] = useState('')
-  console.log({ call, errorResponse })
-  const handleForm = (data: ConfrimPhoneFields) => {}
+
+  const handleForm = (data: ConfrimPhoneFields) => {
+    console.log(data)
+  }
 
   const handleClose = (e: React.MouseEvent) => {
     e.preventDefault()
@@ -58,6 +61,10 @@ export const ConfirmPhoneModal = ({ phone, onClose }: ConfirmPhoneModalProps) =>
     } else {
       setErrorResponse(res)
     }
+  }
+
+  const clearCall = () => {
+    setCall(undefined)
   }
 
   return (
@@ -79,7 +86,10 @@ export const ConfirmPhoneModal = ({ phone, onClose }: ConfirmPhoneModalProps) =>
                 onChange(e.target.value)
               }}
               rightChild={
-                loading ? <Spinner /> : <Link onClick={handleMakeCall}>Отправить</Link>
+                (loading && <Spinner />) ||
+                (call?.time && <Timer seconds={call.time} onExpired={clearCall} />) || (
+                  <Link onClick={handleMakeCall}>Отправить</Link>
+                )
               }
             />
           )}
