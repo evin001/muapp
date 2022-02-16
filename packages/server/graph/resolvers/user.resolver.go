@@ -11,7 +11,7 @@ import (
 
 func (r *mutationResolver) CallPassword(ctx context.Context, phone string) (*models.Call, error) {
 	ctrl := new(call.CallController)
-	res, err := ctrl.CallPassword(phone)
+	res, err := ctrl.CallPassword(ctx, phone)
 	if err != nil {
 		return nil, gqlerror.Errorf(err.Error())
 	}

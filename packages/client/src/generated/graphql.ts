@@ -18,7 +18,7 @@ export type Call = {
   __typename?: 'Call';
   success: Scalars['Boolean'];
   time: Scalars['Int'];
-  type: Scalars['String'];
+  type: CallType;
 };
 
 export enum CallType {

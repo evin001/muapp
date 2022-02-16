@@ -10,9 +10,9 @@ import (
 )
 
 type Call struct {
-	Time    int    `json:"time"`
-	Success bool   `json:"success"`
-	Type    string `json:"type"`
+	Time    int      `json:"time"`
+	Success bool     `json:"success"`
+	Type    CallType `json:"type"`
 }
 
 type Category struct {

@@ -1,7 +1,7 @@
 type Call {
   time: Int!
   success: Boolean!
-  type: String!
+  type: CallType!
 }
 
 enum CallType {

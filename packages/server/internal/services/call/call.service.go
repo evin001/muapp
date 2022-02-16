@@ -11,15 +11,18 @@ var db = utils.DB
 
 type CallService struct{}
 
-func (s CallService) CreateLog(phone string, code string, response string) error {
+func (s CallService) CreateLog(userID int, phone string, code string, response string) error {
 	deleySec := utils.GetIntEnv("CALL_DELAY_SEC")
 
 	cteatedAt := time.Now().Local()
 	activeBefore := cteatedAt.Add(time.Second * time.Duration(deleySec))
 
-	query := "INSERT INTO call_log (phone_number, code, created_at, active_before, response) VALUES ($1, $2, $3, $4, $5)"
+	query := `
+		INSERT INTO call_log (phone_number, code, created_at, active_before, response, user_id)
+		VALUES ($1, $2, $3, $4, $5, $6)
+	`
 	_, err := db.Exec(context.Background(), query,
-		phone, code, cteatedAt.Format(time.RFC3339), activeBefore.Format(time.RFC3339), response)
+		phone, code, cteatedAt.Format(time.RFC3339), activeBefore.Format(time.RFC3339), response, userID)
 	if err != nil {
 		return err
 	}

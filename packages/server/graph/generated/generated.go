@@ -753,7 +753,7 @@ type Mutation {
 	{Name: "graph/schemas/call.graphqls", Input: `type Call {
   time: Int!
   success: Boolean!
-  type: String!
+  type: CallType!
 }
 
 enum CallType {
@@ -1649,9 +1649,9 @@ func (ec *executionContext) _Call_type(ctx context.Context, field graphql.Collec
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(models.CallType)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNCallType2muappᚗruᚋgraphᚋmodelsᚐCallType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Category_id(ctx context.Context, field graphql.CollectedField, obj *models.Category) (ret graphql.Marshaler) {
@@ -5906,6 +5906,16 @@ func (ec *executionContext) marshalNCall2ᚖmuappᚗruᚋgraphᚋmodelsᚐCall(c
 		return graphql.Null
 	}
 	return ec._Call(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNCallType2muappᚗruᚋgraphᚋmodelsᚐCallType(ctx context.Context, v interface{}) (models.CallType, error) {
+	var res models.CallType
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNCallType2muappᚗruᚋgraphᚋmodelsᚐCallType(ctx context.Context, sel ast.SelectionSet, v models.CallType) graphql.Marshaler {
+	return v
 }
 
 func (ec *executionContext) marshalNCategory2muappᚗruᚋgraphᚋmodelsᚐCategory(ctx context.Context, sel ast.SelectionSet, v models.Category) graphql.Marshaler {

@@ -1,17 +1,19 @@
 package call
 
 import (
+	"context"
 	"encoding/json"
 	"time"
 
 	"muapp.ru/graph/models"
 	"muapp.ru/internal/utils/call"
 	"muapp.ru/internal/utils/errors"
+	"muapp.ru/internal/utils/jwt"
 )
 
 type CallController struct{}
 
-func (c CallController) CallPassword(phone string) (*models.Call, error) {
+func (c CallController) CallPassword(ctx context.Context, phone string) (*models.Call, error) {
 	code := call.GenerateCode()
 	srv := new(CallService)
 
@@ -23,8 +25,8 @@ func (c CallController) CallPassword(phone string) (*models.Call, error) {
 	if beforeTime != nil {
 		return &models.Call{
 			Success: false,
-			Type:    models.CallTypeRepeat.String(),
-			Time:    int(beforeTime.Sub(time.Now()).Seconds()),
+			Type:    models.CallTypeRepeat,
+			Time:    int(time.Until(*beforeTime).Seconds()),
 		}, nil
 	}
 
@@ -41,14 +43,15 @@ func (c CallController) CallPassword(phone string) (*models.Call, error) {
 		return nil, err
 	}
 
-	err = srv.CreateLog(phone, code, string(response))
+	userID := jwt.GetUserID(ctx)
+	err = srv.CreateLog(userID, phone, code, string(response))
 	if err != nil {
 		return nil, err
 	}
 
 	return &models.Call{
 		Success: true,
-		Type:    models.CallTypeNew.String(),
+		Type:    models.CallTypeNew,
 		Time:    0,
 	}, nil
 }
