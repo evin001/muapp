@@ -72,7 +72,7 @@ type ComplexityRoot struct {
 		ServiceCreate       func(childComplexity int, categoryID int, duration int, price int) int
 		ServiceDelete       func(childComplexity int, serviceID int) int
 		ServiceUpdate       func(childComplexity int, serviceID int, duration int, price int) int
-		UserEmailConfirm    func(childComplexity int) int
+		UserEmailConfirm    func(childComplexity int, email string) int
 		UserPasswordChange  func(childComplexity int, oldPassword string, newPassword string, confirmPassword string) int
 		UserProfileUpdate   func(childComplexity int, firstName *string, lastName *string, email string, phone string) int
 		UserRefreshToken    func(childComplexity int, refreshToken string) int
@@ -134,7 +134,7 @@ type MutationResolver interface {
 	UserRefreshToken(ctx context.Context, refreshToken string) (*models.Tokens, error)
 	UserProfileUpdate(ctx context.Context, firstName *string, lastName *string, email string, phone string) (*models.User, error)
 	UserPasswordChange(ctx context.Context, oldPassword string, newPassword string, confirmPassword string) (bool, error)
-	UserEmailConfirm(ctx context.Context) (bool, error)
+	UserEmailConfirm(ctx context.Context, email string) (bool, error)
 	CategoryCreate(ctx context.Context, name string, parentID *int) (*models.Category, error)
 	ServiceCreate(ctx context.Context, categoryID int, duration int, price int) (*models.Service, error)
 	ServiceUpdate(ctx context.Context, serviceID int, duration int, price int) (*models.Service, error)
@@ -326,7 +326,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			break
 		}
 
-		return e.complexity.Mutation.UserEmailConfirm(childComplexity), true
+		args, err := ec.field_Mutation_userEmailConfirm_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UserEmailConfirm(childComplexity, args["email"].(string)), true
 
 	case "Mutation.userPasswordChange":
 		if e.complexity.Mutation.UserPasswordChange == nil {
@@ -731,7 +736,9 @@ type Mutation {
     newPassword: String!,
     confirmPassword: String!,
   ): Boolean! @hasRole(role: [master])
-  userEmailConfirm: Boolean! @hasRole(role: [master])
+  userEmailConfirm(
+    email: String!, @binding(constraint: "required,email")
+  ): Boolean! @hasRole(role: [master])
 
   categoryCreate(
     name: String!, @binding(constraint: "required,lte=255")
@@ -1168,6 +1175,38 @@ func (ec *executionContext) field_Mutation_serviceUpdate_args(ctx context.Contex
 		}
 	}
 	args["price"] = arg2
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_userEmailConfirm_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["email"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("email"))
+		directive0 := func(ctx context.Context) (interface{}, error) { return ec.unmarshalNString2string(ctx, tmp) }
+		directive1 := func(ctx context.Context) (interface{}, error) {
+			constraint, err := ec.unmarshalNString2string(ctx, "required,email")
+			if err != nil {
+				return nil, err
+			}
+			if ec.directives.Binding == nil {
+				return nil, errors.New("directive binding is not implemented")
+			}
+			return ec.directives.Binding(ctx, rawArgs, directive0, constraint)
+		}
+
+		tmp, err = directive1(ctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if data, ok := tmp.(string); ok {
+			arg0 = data
+		} else {
+			return nil, graphql.ErrorOnPath(ctx, fmt.Errorf(`unexpected type %T from directive, should be string`, tmp))
+		}
+	}
+	args["email"] = arg0
 	return args, nil
 }
 
@@ -2176,10 +2215,17 @@ func (ec *executionContext) _Mutation_userEmailConfirm(ctx context.Context, fiel
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_userEmailConfirm_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		directive0 := func(rctx context.Context) (interface{}, error) {
 			ctx = rctx // use context from middleware stack in children
-			return ec.resolvers.Mutation().UserEmailConfirm(rctx)
+			return ec.resolvers.Mutation().UserEmailConfirm(rctx, args["email"].(string))
 		}
 		directive1 := func(ctx context.Context) (interface{}, error) {
 			role, err := ec.unmarshalNRole2ᚕᚖmuappᚗruᚋgraphᚋmodelsᚐRole(ctx, []interface{}{"master"})

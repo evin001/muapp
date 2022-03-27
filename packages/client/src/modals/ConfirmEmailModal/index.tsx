@@ -5,6 +5,9 @@ import { useForm, Controller } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 
+import { UserActions } from '~/data/user'
+import { useSelector } from '~/hooks/useSelector'
+
 type ConfirmPhoneModalProps = {
   onClose: () => void
 }
@@ -32,8 +35,12 @@ export const ConfirmEmailModal = ({ onClose }: ConfirmPhoneModalProps) => {
     resolver: yupResolver(schema),
   })
 
+  const email = useSelector((state) => state.user.data?.email)
+
   useEffect(() => {
-    console.log(1)
+    if (email) {
+      UserActions.confirmEmail(email)
+    }
   }, [])
 
   const handleForm = (data: ConfrimEmailFields) => {

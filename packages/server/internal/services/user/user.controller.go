@@ -9,9 +9,16 @@ import (
 	"muapp.ru/internal/utils"
 	"muapp.ru/internal/utils/errors"
 	"muapp.ru/internal/utils/jwt"
+	"muapp.ru/internal/utils/unisender"
 )
 
 type UserController struct{}
+
+func (c UserController) ConfirmEmail(ctx context.Context, email string) (bool, error) {
+	unisender := unisender.NewUnisender()
+	unisender.IsContactInLists(email)
+	return false, nil
+}
 
 func (c UserController) ChangePassword(ctx context.Context, oldPwd, newPwd, confirmPwd string) (bool, error) {
 	if newPwd != confirmPwd {

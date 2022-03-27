@@ -51,6 +51,7 @@ export type Mutation = {
   serviceCreate: Service;
   serviceDelete: Scalars['Boolean'];
   serviceUpdate: Service;
+  userEmailConfirm: Scalars['Boolean'];
   userPasswordChange: Scalars['Boolean'];
   userProfileUpdate: User;
   userRefreshToken: Tokens;
@@ -102,6 +103,11 @@ export type MutationServiceUpdateArgs = {
   duration: Scalars['Int'];
   price: Scalars['Int'];
   serviceId: Scalars['Int'];
+};
+
+
+export type MutationUserEmailConfirmArgs = {
+  email: Scalars['String'];
 };
 
 

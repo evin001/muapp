@@ -85,6 +85,14 @@ export const UserActions = {
     }
   },
 
+  async confirmEmail(email: string) {
+    try {
+      await request('userEmailConfirm', { email })
+    } catch (e) {
+      console.log(e)
+    }
+  },
+
   init() {
     const user = UserStorage.get()
     if (user) {
