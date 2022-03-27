@@ -40,6 +40,7 @@ type Mutation {
     newPassword: String!,
     confirmPassword: String!,
   ): Boolean! @hasRole(role: [master])
+  userEmailConfirm: Boolean! @hasRole(role: [master])
 
   categoryCreate(
     name: String!, @binding(constraint: "required,lte=255")

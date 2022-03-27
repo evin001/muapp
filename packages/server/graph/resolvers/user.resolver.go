@@ -62,3 +62,7 @@ func (r *mutationResolver) UserPasswordChange(ctx context.Context, oldPassword s
 	}
 	return res, nil
 }
+
+func (r *mutationResolver) UserEmailConfirm(ctx context.Context) (bool, error) {
+	return true, nil
+}
