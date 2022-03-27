@@ -50,7 +50,7 @@ func request[T any](url string) (*T, error) {
 
 func (u *Unisender) IsContactInLists(email string) (*IsContactInLists, error) {
 	url := fmt.Sprintf(
-		"%s/isContactInLists?api_key=%s&email=%s&list_ids=%sLIST_ID&condition=and",
+		"%s/isContactInLists?api_key=%s&email=%s&list_ids=%s&condition=and",
 		u.ApiUrl, u.ApiKey, email, u.ListIDRegister,
 	)
 	return request[IsContactInLists](url)
